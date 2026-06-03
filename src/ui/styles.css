@@ -72,7 +72,40 @@
 /* ── Structural theming ──────────────────────────────── */
 body          { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
 .app-header   { background-color: var(--header-bg); border-color: var(--header-border); }
-.app-divider  { background-color: var(--header-border); }
+.resize-handle {
+  background-color: var(--header-border);
+  height: 1px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .resize-handle {
+    position: relative;
+    background-color: transparent;
+    height: auto;
+    width: 8px;
+    cursor: col-resize;
+  }
+
+  .resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background-color: var(--header-border);
+    transition: width 0.15s, background-color 0.15s;
+  }
+
+  .resize-handle:hover::after,
+  .resize-handle.is-dragging::after {
+    width: 3px;
+    background-color: var(--text-muted);
+  }
+}
 .output-panel { background-color: var(--output-bg); }
 .output-label { border-color: var(--output-border); color: var(--text-muted); }
 
@@ -97,19 +130,6 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 /* ── Examples toolbar ───────────────────────────────── */
 .examples-toolbar { background-color: var(--header-bg); border-color: var(--header-border); }
 .text-muted       { color: var(--text-muted); }
-
-.example-btn {
-  background-color: var(--btn-secondary-bg);
-  color: var(--text-primary);
-  border-radius: 9999px;
-  padding: 0.15rem 0.6rem;
-  font-size: 0.7rem;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 0.15s;
-  shrink: 0;
-}
-.example-btn:hover { background-color: var(--btn-secondary-hover); }
 
 /* ── Output text colours ─────────────────────────────── */
 .output-stdout { color: var(--output-stdout); }

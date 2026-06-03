@@ -30,12 +30,13 @@
   <main class="flex flex-col md:flex-row flex-1 overflow-hidden">
     <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
       <div class="examples-toolbar flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
-        <div id="examples-toolbar" class="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto">
-          <span class="text-muted text-xs shrink-0 mr-0.5">Examples:</span>
-        </div>
+        <span class="text-muted text-xs shrink-0">Examples:</span>
+        <select id="examples-select" class="theme-select">
+          <option value="">— pick one —</option>
+        </select>
         <button
           id="run-btn"
-          class="shrink-0 px-3 py-1 text-xs font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
+          class="ml-auto shrink-0 px-3 py-1 text-xs font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
           disabled
         >
           Run
@@ -43,8 +44,8 @@
       </div>
       <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>
     </div>
-    <div class="app-divider h-px w-full md:h-auto md:w-px shrink-0"></div>
-    <div class="output-panel flex flex-col flex-1 md:flex-none md:w-2/5 overflow-hidden">
+    <div id="resize-handle" class="resize-handle shrink-0"></div>
+    <div id="output-panel" class="output-panel flex flex-col flex-1 md:flex-none overflow-hidden">
       <div class="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0">
         Output
       </div>

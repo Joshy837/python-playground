@@ -2,6 +2,7 @@ import './ui/styles.css'
 import { setupEditor, getValue, setValue, setTheme } from './editor.js'
 import { initPyodide, runCode } from './runner.js'
 import { renderOutput } from './ui/output.js'
+import { setupResizer } from './ui/resizer.js'
 
 const EXAMPLES = [
   { label: 'Hello World',        file: 'hello_world.py'        },
@@ -56,20 +57,22 @@ function handleThemeChange(monacoTheme) {
 }
 
 async function init() {
+  setupResizer()
   editor = setupEditor('editor-container', handleRun)
 
-  const toolbar = document.getElementById('examples-toolbar')
+  const examplesSelect = document.getElementById('examples-select')
   for (const { label, file } of EXAMPLES) {
-    const btn = document.createElement('button')
-    btn.className = 'example-btn'
-    btn.textContent = label
-    btn.addEventListener('click', async () => {
-      const res = await fetch(`/examples/${file}`)
-      const code = await res.text()
-      setValue(editor, code)
-    })
-    toolbar.appendChild(btn)
+    const opt = document.createElement('option')
+    opt.value = file
+    opt.textContent = label
+    examplesSelect.appendChild(opt)
   }
+  examplesSelect.addEventListener('change', async () => {
+    if (!examplesSelect.value) return
+    const res = await fetch(`/examples/${examplesSelect.value}`)
+    const code = await res.text()
+    setValue(editor, code)
+  })
   try {
     await initPyodide()
     setStatus('Ready', 'green')
