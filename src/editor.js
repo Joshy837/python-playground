@@ -27,3 +27,7 @@ export function setupEditor(containerId, onRun) {
 export function getValue(editor) {
   return editor.getValue()
 }
+
+export function setTheme(themeId) {
+  monaco.editor.setTheme(themeId)
+}

@@ -1,1 +1,101 @@
 @import "tailwindcss";
+
+/* ── Theme variables ─────────────────────────────────── */
+:root {
+  --app-bg:           #111827;
+  --header-bg:        #1f2937;
+  --header-border:    #374151;
+  --output-bg:        #030712;
+  --output-border:    #1f2937;
+  --text-primary:     #f3f4f6;
+  --text-muted:       #6b7280;
+  --btn-secondary-bg:    #374151;
+  --btn-secondary-hover: #4b5563;
+  --select-bg:        #374151;
+  --select-border:    #4b5563;
+  --output-stdout:    #f3f4f6;
+  --output-stderr:    #fbbf24;
+  --output-error:     #f87171;
+}
+
+[data-theme="light"] {
+  --app-bg:           #ffffff;
+  --header-bg:        #f3f4f6;
+  --header-border:    #e5e7eb;
+  --output-bg:        #f9fafb;
+  --output-border:    #e5e7eb;
+  --text-primary:     #111827;
+  --text-muted:       #6b7280;
+  --btn-secondary-bg:    #e5e7eb;
+  --btn-secondary-hover: #d1d5db;
+  --select-bg:        #e5e7eb;
+  --select-border:    #d1d5db;
+  --output-stdout:    #111827;
+  --output-stderr:    #b45309;
+  --output-error:     #dc2626;
+}
+
+[data-theme="hc-dark"] {
+  --app-bg:           #000000;
+  --header-bg:        #000000;
+  --header-border:    #ffffff;
+  --output-bg:        #000000;
+  --output-border:    #ffffff;
+  --text-primary:     #ffffff;
+  --text-muted:       #ffffff;
+  --btn-secondary-bg:    #000000;
+  --btn-secondary-hover: #1a1a1a;
+  --select-bg:        #000000;
+  --select-border:    #ffffff;
+  --output-stdout:    #ffffff;
+  --output-stderr:    #ffff00;
+  --output-error:     #ff6b6b;
+}
+
+[data-theme="hc-light"] {
+  --app-bg:           #ffffff;
+  --header-bg:        #ffffff;
+  --header-border:    #000000;
+  --output-bg:        #ffffff;
+  --output-border:    #000000;
+  --text-primary:     #000000;
+  --text-muted:       #000000;
+  --btn-secondary-bg:    #ffffff;
+  --btn-secondary-hover: #f0f0f0;
+  --select-bg:        #ffffff;
+  --select-border:    #000000;
+  --output-stdout:    #000000;
+  --output-stderr:    #7c4b00;
+  --output-error:     #cc0000;
+}
+
+/* ── Structural theming ──────────────────────────────── */
+body          { background-color: var(--app-bg); color: var(--text-primary); }
+.app-header   { background-color: var(--header-bg); border-color: var(--header-border); }
+.app-divider  { background-color: var(--header-border); }
+.output-panel { background-color: var(--output-bg); }
+.output-label { border-color: var(--output-border); color: var(--text-muted); }
+
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+.btn-secondary:hover { background-color: var(--btn-secondary-hover); }
+
+.theme-select {
+  background-color: var(--select-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--select-border);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── Output text colours ─────────────────────────────── */
+.output-stdout { color: var(--output-stdout); }
+.output-stderr { color: var(--output-stderr); }
+.output-error  { color: var(--output-error);  }
+.output-empty  { color: var(--text-muted);    }

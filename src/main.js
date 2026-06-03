@@ -1,11 +1,19 @@
 import './ui/styles.css'
-import { setupEditor, getValue } from './editor.js'
+import { setupEditor, getValue, setTheme } from './editor.js'
 import { initPyodide, runCode } from './runner.js'
 import { renderOutput, clearOutput } from './ui/output.js'
 
 const statusEl = document.getElementById('pyodide-status')
 const runBtn = document.getElementById('run-btn')
 const clearBtn = document.getElementById('clear-btn')
+const themeSelect = document.getElementById('theme-select')
+
+const PAGE_THEME = {
+  'vs-dark':  'dark',
+  'vs':       'light',
+  'hc-black': 'hc-dark',
+  'hc-light': 'hc-light',
+}
 
 let editor = null
 
@@ -20,6 +28,11 @@ async function handleRun() {
     runBtn.disabled = false
     runBtn.textContent = 'Run'
   }
+}
+
+function handleThemeChange(monacoTheme) {
+  setTheme(monacoTheme)
+  document.documentElement.dataset.theme = PAGE_THEME[monacoTheme]
 }
 
 async function init() {
@@ -38,5 +51,6 @@ async function init() {
 
 runBtn.addEventListener('click', handleRun)
 clearBtn.addEventListener('click', clearOutput)
+themeSelect.addEventListener('change', (e) => handleThemeChange(e.target.value))
 
 init()
