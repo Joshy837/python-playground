@@ -11,21 +11,35 @@ export const NODES = [
     steps: [
       {
         title: 'Strings',
-        instructions: `# Variables — Strings
+        description: `# Variables — Strings
 
-A variable stores a value. You create one by writing a name, then \`=\`, then the value.
+A **variable** stores a value so you can use it later. You create one by writing a name, then \`=\`, then the value.
 
-**str** — text wrapped in quotes: \`"hello"\`, \`'world'\`
+**str** is Python's type for text. Wrap the text in quotes — single \`'\` or double \`"\` both work.
 
 \`\`\`python
 name = "Alice"
-print(name)   # Alice
+print(name)        # Alice
 print(type(name))  # <class 'str'>
 \`\`\`
 
-## Challenge
+The variable \`name\` now holds the string \`"Alice"\`. You can use it anywhere you need that value — in \`print()\`, in calculations, or to build new strings.`,
+        example: `name = "Alice"
+print(name)
+print(type(name))
 
-Create a variable \`name\` and assign it any string value.`,
+# Try changing the name and running again
+greeting = "Hello, " + name
+print(greeting)`,
+        quiz: [
+          {
+            question: 'Which of these creates a string variable in Python?',
+            options: ['age = 25', 'name = "Alice"', 'is_active = True', 'price = 9.99'],
+            answer: 1,
+            explanation: 'Strings are text values wrapped in quote marks — single or double.',
+          },
+        ],
+        task: `Create a variable called \`name\` and assign it any string value (some text wrapped in quotes).`,
         starter: `# Create a string variable:
 name =
 `,
@@ -35,9 +49,9 @@ name =
       },
       {
         title: 'Integers',
-        instructions: `# Variables — Integers
+        description: `# Variables — Integers
 
-**int** — whole numbers: \`42\`, \`-7\`, \`0\`
+**int** is Python's type for whole numbers — no quotes, no decimal point.
 
 \`\`\`python
 age = 25
@@ -45,11 +59,31 @@ print(age)        # 25
 print(type(age))  # <class 'int'>
 \`\`\`
 
-No quotes, no decimal point — just the number.
+You can use negative integers too. Python integers have no size limit — they can be as big as your memory allows.
 
-## Challenge
+\`\`\`python
+temperature = -5
+big_number = 1_000_000   # underscores are allowed for readability
+\`\`\``,
+        example: `age = 25
+print(age)
+print(type(age))
 
-Create a variable \`age\` and assign it any integer value.`,
+temperature = -5
+print(temperature)
+
+# Basic math with integers
+print(age + 10)
+print(age * 2)`,
+        quiz: [
+          {
+            question: 'Which value is an integer in Python?',
+            options: ['"25"', '25.0', '25', 'True'],
+            answer: 2,
+            explanation: 'Integers are whole numbers with no quotes and no decimal point.',
+          },
+        ],
+        task: `Create a variable called \`age\` and assign it any integer value (a whole number, no quotes, no decimal point).`,
         starter: `# Create an integer variable:
 age =
 `,
@@ -59,9 +93,9 @@ age =
       },
       {
         title: 'Floats',
-        instructions: `# Variables — Floats
+        description: `# Variables — Floats
 
-**float** — decimal numbers: \`3.14\`, \`1.75\`
+**float** is Python's type for decimal numbers. A float always has a decimal point.
 
 \`\`\`python
 height = 1.75
@@ -69,11 +103,29 @@ print(height)        # 1.75
 print(type(height))  # <class 'float'>
 \`\`\`
 
-A float always has a decimal point.
+Even \`1.0\` is a float — the decimal point is what determines the type, not whether there are digits after it.
 
-## Challenge
+\`\`\`python
+pi = 3.14159
+print(pi * 2)  # 6.28318
+\`\`\``,
+        example: `height = 1.75
+print(height)
+print(type(height))
 
-Create a variable \`height\` and assign it any float value (e.g. \`1.75\`).`,
+pi = 3.14159
+radius = 5.0
+area = pi * radius * radius
+print(area)`,
+        quiz: [
+          {
+            question: 'What makes a number a float in Python?',
+            options: ['It is larger than 1,000', 'It has a decimal point', 'It is negative', 'It is a whole number'],
+            answer: 1,
+            explanation: 'Any number with a decimal point — like 1.0 or 3.14 — is a float, regardless of its value.',
+          },
+        ],
+        task: `Create a variable called \`height\` and assign it any float value (a number with a decimal point, e.g. \`1.75\`).`,
         starter: `# Create a float variable:
 height =
 `,
@@ -83,9 +135,9 @@ height =
       },
       {
         title: 'Booleans',
-        instructions: `# Variables — Booleans
+        description: `# Variables — Booleans
 
-**bool** — exactly \`True\` or \`False\` (capital first letter, no quotes)
+**bool** has exactly two values: \`True\` or \`False\`. Capital first letter, no quotes.
 
 \`\`\`python
 is_student = True
@@ -93,9 +145,30 @@ print(is_student)        # True
 print(type(is_student))  # <class 'bool'>
 \`\`\`
 
-## Challenge
+Booleans often come from comparisons — any comparison in Python produces a \`True\` or \`False\`:
 
-Create a variable \`is_student\` and assign it \`True\` or \`False\`.`,
+\`\`\`python
+print(5 > 3)   # True
+print(2 == 4)  # False
+print(10 != 7) # True
+\`\`\``,
+        example: `is_student = True
+print(is_student)
+print(type(is_student))
+
+# Booleans from comparisons
+print(5 > 3)
+print(2 == 4)
+print(10 != 7)`,
+        quiz: [
+          {
+            question: 'Which is a valid Python boolean value?',
+            options: ['"True"', 'true', 'True', '1'],
+            answer: 2,
+            explanation: 'Python booleans are exactly True or False — capital first letter, no quotes.',
+          },
+        ],
+        task: `Create a variable called \`is_student\` and assign it \`True\` or \`False\` (capital first letter, no quotes).`,
         starter: `# Create a boolean variable:
 is_student =
 `,
@@ -115,9 +188,9 @@ is_student =
     steps: [
       {
         title: 'if / else',
-        instructions: `# Conditionals — if / else
+        description: `# Conditionals — if / else
 
-Use \`if\` to run code only when a condition is true. Use \`else\` as the fallback.
+Use \`if\` to run code only when a condition is true. Use \`else\` as the fallback when it's false.
 
 \`\`\`python
 if temperature > 30:
@@ -126,13 +199,33 @@ else:
     print("Not hot")
 \`\`\`
 
-The indented block runs only when the condition is \`True\`.
+**Indentation matters.** Python uses 4 spaces to mark what's inside the \`if\` block. Everything indented under \`if\` only runs when the condition is \`True\`.
 
-## Challenge
+The \`else\` block is optional — you can have an \`if\` without one.`,
+        example: `temperature = 35
 
-Write a function \`is_even(n)\` that returns \`True\` if \`n\` is even, \`False\` if it's odd.
+if temperature > 30:
+    print("Hot!")
+else:
+    print("Not hot")
 
-Hint: \`n % 2\` gives the remainder when dividing by 2. Even numbers have remainder \`0\`.`,
+# Try changing temperature to 20 and running again`,
+        quiz: [
+          {
+            question: 'What happens when the if condition is False and there is an else block?',
+            options: [
+              'The if block still runs',
+              'Python raises an error',
+              'The else block runs',
+              'The program ends',
+            ],
+            answer: 2,
+            explanation: 'When the condition is False, Python skips the if block and runs the else block instead.',
+          },
+        ],
+        task: `Write a function \`is_even(n)\` that returns \`True\` if \`n\` is even, \`False\` if it's odd.
+
+**Hint:** \`n % 2\` gives the remainder when dividing by 2. Even numbers have remainder \`0\`.`,
         starter: `def is_even(n):
     # return True if n is even, False if odd
     pass
@@ -145,9 +238,9 @@ Hint: \`n % 2\` gives the remainder when dividing by 2. Even numbers have remain
       },
       {
         title: 'if / elif / else',
-        instructions: `# Conditionals — if / elif / else
+        description: `# Conditionals — if / elif / else
 
-\`elif\` lets you check multiple conditions in sequence. Only the **first** matching branch runs.
+\`elif\` (short for "else if") lets you check multiple conditions in order. Only the **first** matching branch runs — all others are skipped.
 
 \`\`\`python
 if score >= 90:
@@ -158,9 +251,29 @@ else:
     grade = "C"
 \`\`\`
 
-## Challenge
+You can have as many \`elif\` branches as you need. The \`else\` at the end catches everything that didn't match.`,
+        example: `score = 85
 
-Write a function \`classify(n)\` that returns:
+if score >= 90:
+    grade = "A"
+elif score >= 70:
+    grade = "B"
+elif score >= 50:
+    grade = "C"
+else:
+    grade = "F"
+
+print(grade)
+# Try changing score to 95, 60, or 40`,
+        quiz: [
+          {
+            question: 'How many branches of an if/elif/else chain can run at most?',
+            options: ['All of them', 'None of them', 'Exactly one', 'Two at most'],
+            answer: 2,
+            explanation: 'Python evaluates conditions in order and runs the first one that is True. The rest are always skipped.',
+          },
+        ],
+        task: `Write a function \`classify(n)\` that returns:
 - \`'positive'\` if \`n > 0\`
 - \`'negative'\` if \`n < 0\`
 - \`'zero'\` if \`n == 0\``,
@@ -186,9 +299,9 @@ Write a function \`classify(n)\` that returns:
     steps: [
       {
         title: 'Creating a List',
-        instructions: `# Lists — Creating
+        description: `# Lists — Creating
 
-A list holds an ordered sequence of values in square brackets.
+A list holds an ordered sequence of values inside square brackets \`[]\`, separated by commas.
 
 \`\`\`python
 fruits = ["apple", "banana", "cherry"]
@@ -196,9 +309,29 @@ print(fruits)       # ['apple', 'banana', 'cherry']
 print(len(fruits))  # 3
 \`\`\`
 
-## Challenge
+Lists can hold any type — strings, numbers, booleans, even other lists. You can also mix types in a single list.
 
-Create a list \`numbers\` containing exactly \`[3, 1, 4, 1, 5]\`.`,
+\`\`\`python
+mixed = [1, "hello", True, 3.14]
+empty = []
+\`\`\``,
+        example: `fruits = ["apple", "banana", "cherry"]
+print(fruits)
+print(len(fruits))
+
+# Numbers work too
+scores = [95, 82, 71, 88]
+print(scores)
+print(len(scores))`,
+        quiz: [
+          {
+            question: 'Which syntax correctly creates a list in Python?',
+            options: ['(1, 2, 3)', '{1, 2, 3}', '[1, 2, 3]', '1, 2, 3'],
+            answer: 2,
+            explanation: 'Lists use square brackets []. Parentheses make a tuple, curly braces make a set or dict.',
+          },
+        ],
+        task: `Create a list called \`numbers\` containing exactly \`[3, 1, 4, 1, 5]\`.`,
         starter: `# Create the list:
 numbers =
 `,
@@ -208,19 +341,36 @@ numbers =
       },
       {
         title: 'Accessing by Index',
-        instructions: `# Lists — Accessing by Index
+        description: `# Lists — Accessing by Index
 
-Each item in a list has an index. Indexing starts at \`0\`.
+Each item in a list has a numbered **index**. Indexing starts at \`0\`, not \`1\`.
 
 \`\`\`python
 fruits = ["apple", "banana", "cherry"]
-print(fruits[0])    # "apple"  — first item
-print(fruits[-1])   # "cherry" — last item
+print(fruits[0])   # "apple"  — first item
+print(fruits[1])   # "banana" — second item
+print(fruits[2])   # "cherry" — third item
 \`\`\`
 
-## Challenge
-
-Write a function \`first_and_last(lst)\` that returns a **new list** containing the first and last elements of \`lst\`.
+**Negative indexes** count from the end:
+\`\`\`python
+print(fruits[-1])  # "cherry" — last item
+print(fruits[-2])  # "banana" — second to last
+\`\`\``,
+        example: `fruits = ["apple", "banana", "cherry", "date"]
+print(fruits[0])   # first
+print(fruits[1])   # second
+print(fruits[-1])  # last
+print(fruits[-2])  # second to last`,
+        quiz: [
+          {
+            question: 'For lst = ["a", "b", "c"], what is lst[-1]?',
+            options: ['"a"', '"b"', '"c"', 'An error'],
+            answer: 2,
+            explanation: 'Negative indexes count from the end. -1 is always the last element.',
+          },
+        ],
+        task: `Write a function \`first_and_last(lst)\` that returns a **new list** containing only the first and last elements of \`lst\`.
 
 Example: \`first_and_last([10, 20, 30])\` → \`[10, 30]\``,
         starter: `def first_and_last(lst):
@@ -235,20 +385,44 @@ Example: \`first_and_last([10, 20, 30])\` → \`[10, 30]\``,
       },
       {
         title: 'Modifying Lists',
-        instructions: `# Lists — Modifying
+        description: `# Lists — Modifying
 
-Lists are **mutable** — you can change them after creation.
+Lists are **mutable** — you can change them after creation. Two common ways:
 
+**\`.append(x)\`** adds an item to the end:
 \`\`\`python
-fruits = ["apple", "banana"]
-fruits.append("cherry")   # add to end
-fruits[0] = "mango"       # replace an item
-print(fruits)  # ["mango", "banana", "cherry"]
+fruits.append("cherry")
 \`\`\`
 
-## Challenge
+**Index assignment** replaces an existing item:
+\`\`\`python
+fruits[0] = "mango"
+\`\`\`
 
-Write a function \`double_list(lst)\` that returns a **new list** where every element is multiplied by 2.
+Together:
+\`\`\`python
+fruits = ["apple", "banana"]
+fruits.append("cherry")
+fruits[0] = "mango"
+print(fruits)  # ['mango', 'banana', 'cherry']
+\`\`\``,
+        example: `fruits = ["apple", "banana"]
+print("Before:", fruits)
+
+fruits.append("cherry")
+print("After append:", fruits)
+
+fruits[0] = "mango"
+print("After replace:", fruits)`,
+        quiz: [
+          {
+            question: 'Which method adds an item to the END of a list?',
+            options: ['.add()', '.push()', '.insert()', '.append()'],
+            answer: 3,
+            explanation: '.append(x) adds x to the end. .insert(i, x) adds at a specific position.',
+          },
+        ],
+        task: `Write a function \`double_list(lst)\` that returns a **new list** where every element is multiplied by 2.
 
 Example: \`double_list([1, 2, 3])\` → \`[2, 4, 6]\``,
         starter: `def double_list(lst):
@@ -273,25 +447,43 @@ Example: \`double_list([1, 2, 3])\` → \`[2, 4, 6]\``,
     steps: [
       {
         title: 'for loops',
-        instructions: `# Loops — for
+        description: `# Loops — for
 
 A \`for\` loop runs a block of code once for each item in a sequence.
 
 \`\`\`python
 for fruit in ["apple", "banana"]:
     print(fruit)
-
-for i in range(5):   # 0, 1, 2, 3, 4
-    print(i)
+# apple
+# banana
 \`\`\`
 
-## Challenge
+Use \`range(n)\` to loop a specific number of times. \`range(5)\` produces \`0, 1, 2, 3, 4\` — starting at 0, stopping before 5.
 
-Write a function \`total(lst)\` that returns the sum of all numbers in \`lst\` using a \`for\` loop.
+\`\`\`python
+for i in range(5):
+    print(i)  # 0, 1, 2, 3, 4
+\`\`\``,
+        example: `for fruit in ["apple", "banana", "cherry"]:
+    print(fruit)
+
+print("---")
+
+for i in range(5):
+    print(i)`,
+        quiz: [
+          {
+            question: 'How many times does "for i in range(3):" execute?',
+            options: ['2', '3', '4', 'It depends'],
+            answer: 1,
+            explanation: 'range(3) produces 0, 1, 2 — exactly 3 values, so the loop body runs 3 times.',
+          },
+        ],
+        task: `Write a function \`total(lst)\` that returns the sum of all numbers in \`lst\` using a \`for\` loop.
 
 Example: \`total([1, 2, 3, 4])\` → \`10\`
 
-(Don't use the built-in \`sum()\`)`,
+*(Don't use the built-in \`sum()\`)*`,
         starter: `def total(lst):
     # return the sum using a for loop
     pass
@@ -304,22 +496,41 @@ Example: \`total([1, 2, 3, 4])\` → \`10\`
       },
       {
         title: 'while loops',
-        instructions: `# Loops — while
+        description: `# Loops — while
 
-A \`while\` loop repeats as long as a condition is true.
+A \`while\` loop repeats as long as a condition is \`True\`. It checks the condition before each iteration.
 
 \`\`\`python
 n = 3
 while n > 0:
     print(n)
-    n -= 1   # without this the loop runs forever!
+    n -= 1
+# 3
+# 2
+# 1
 \`\`\`
 
-Always make sure the condition eventually becomes \`False\`.
+**Always make sure the condition eventually becomes \`False\`.** Here, \`n -= 1\` decreases \`n\` on every iteration until it reaches 0. Without that line, the loop would run forever.`,
+        example: `n = 5
+while n > 0:
+    print(n)
+    n -= 1
 
-## Challenge
-
-Write a function \`count_down(n)\` that returns a **list** counting down from \`n\` to \`1\`.
+print("Done!")`,
+        quiz: [
+          {
+            question: "What's the risk of a while loop if you're not careful?",
+            options: [
+              'It can only run once',
+              'It runs forever if the condition never becomes False',
+              'It uses more memory than a for loop',
+              'It only works with numbers',
+            ],
+            answer: 1,
+            explanation: 'An infinite loop runs forever because the condition is always True. Always ensure your loop has a way to exit.',
+          },
+        ],
+        task: `Write a function \`count_down(n)\` that returns a **list** counting down from \`n\` to \`1\`.
 
 Example: \`count_down(5)\` → \`[5, 4, 3, 2, 1]\``,
         starter: `def count_down(n):
@@ -344,9 +555,9 @@ Example: \`count_down(5)\` → \`[5, 4, 3, 2, 1]\``,
     steps: [
       {
         title: 'Creating a Dictionary',
-        instructions: `# Dictionaries — Creating
+        description: `# Dictionaries — Creating
 
-A dictionary maps **keys** to **values**. Use curly braces and colons.
+A dictionary maps **keys** to **values**. Use curly braces \`{}\` with a colon between each key and value, and commas between pairs.
 
 \`\`\`python
 person = {"name": "Alice", "age": 25}
@@ -354,9 +565,27 @@ print(person["name"])  # "Alice"
 print(person["age"])   # 25
 \`\`\`
 
-## Challenge
+Keys are usually strings. Values can be anything — strings, numbers, lists, even other dicts. You can also add new keys after creation:
 
-Create a dict \`student\` with a \`"name"\` key set to any string.`,
+\`\`\`python
+person["city"] = "Singapore"
+\`\`\``,
+        example: `person = {"name": "Alice", "age": 25}
+print(person["name"])
+print(person["age"])
+
+# Add a new key
+person["city"] = "Singapore"
+print(person)`,
+        quiz: [
+          {
+            question: 'Which creates a Python dictionary?',
+            options: ['[name: "Alice"]', '("name", "Alice")', '{"name": "Alice"}', '{"Alice"}'],
+            answer: 2,
+            explanation: 'Dictionaries use curly braces with key: value pairs. {"Alice"} is a set, not a dict.',
+          },
+        ],
+        task: `Create a dict called \`student\` that has at least a \`"name"\` key set to any string value.`,
         starter: `# Create a dictionary with a "name" key:
 student =
 `,
@@ -366,18 +595,38 @@ student =
       },
       {
         title: 'Accessing Values',
-        instructions: `# Dictionaries — Accessing Values
+        description: `# Dictionaries — Accessing Values
 
-Use square brackets with the key name to read a value.
+Use square brackets with the key to read a value. If the key doesn't exist, you get a \`KeyError\`.
 
 \`\`\`python
 person = {"name": "Alice", "age": 25}
 print(person["name"])  # "Alice"
 \`\`\`
 
-## Challenge
+Use \`.get(key, default)\` for a safe lookup — it returns the default instead of crashing if the key is missing:
 
-Write a function \`get_name(d)\` that returns the value at key \`"name"\` from the dict \`d\`.`,
+\`\`\`python
+print(person.get("city", "Unknown"))  # "Unknown"
+print(person.get("name", "Unknown"))  # "Alice"
+\`\`\``,
+        example: `person = {"name": "Alice", "age": 25}
+
+# Direct access
+print(person["name"])
+
+# Safe access with .get()
+print(person.get("city", "Unknown"))
+print(person.get("name", "Unknown"))`,
+        quiz: [
+          {
+            question: 'What does d.get("key", 0) return if "key" is not in d?',
+            options: ['Raises a KeyError', 'Returns None', 'Returns 0', 'Returns False'],
+            answer: 2,
+            explanation: '.get(key, default) returns the default value when the key does not exist, avoiding a KeyError.',
+          },
+        ],
+        task: `Write a function \`get_name(d)\` that returns the value stored at key \`"name"\` in the dict \`d\`.`,
         starter: `def get_name(d):
     # return the value at key "name"
     pass
@@ -389,9 +638,9 @@ Write a function \`get_name(d)\` that returns the value at key \`"name"\` from t
       },
       {
         title: 'Iterating',
-        instructions: `# Dictionaries — Iterating
+        description: `# Dictionaries — Iterating
 
-You can loop over keys, values, or both with \`.items()\`.
+You can loop over a dict in several ways. The most useful is \`.items()\`, which gives you both the key and value on each iteration.
 
 \`\`\`python
 scores = {"Alice": 95, "Bob": 82}
@@ -401,9 +650,24 @@ for key, value in scores.items():
 # Bob -> 82
 \`\`\`
 
-## Challenge
+You can also use \`.keys()\` for just keys, or \`.values()\` for just values.`,
+        example: `scores = {"Alice": 95, "Bob": 82, "Carol": 71}
 
-Write a function \`total_score(scores)\` that takes a dict mapping names to integers, and returns the sum of all scores.
+for name, score in scores.items():
+    print(name, "->", score)
+
+print("---")
+print("Names:", list(scores.keys()))
+print("Scores:", list(scores.values()))`,
+        quiz: [
+          {
+            question: 'Which method gives you both keys AND values when looping over a dict?',
+            options: ['.keys()', '.values()', '.items()', '.pairs()'],
+            answer: 2,
+            explanation: '.items() returns (key, value) tuples that you can unpack directly in a for loop.',
+          },
+        ],
+        task: `Write a function \`total_score(scores)\` that takes a dict mapping names to integers and returns the sum of all the score values.
 
 Example: \`total_score({"Alice": 95, "Bob": 82})\` → \`177\``,
         starter: `def total_score(scores):
@@ -418,9 +682,9 @@ Example: \`total_score({"Alice": 95, "Bob": 82})\` → \`177\``,
       },
       {
         title: 'Word Count',
-        instructions: `# Dictionaries — Word Count
+        description: `# Dictionaries — Word Count
 
-Dicts are great for counting. Here's the standard pattern:
+Dicts are great for counting occurrences. Here's the standard pattern:
 
 \`\`\`python
 counts = {}
@@ -428,13 +692,40 @@ for item in items:
     counts[item] = counts.get(item, 0) + 1
 \`\`\`
 
-\`.get(key, default)\` returns the value if the key exists, or \`default\` if it doesn't.
+How it works: \`.get(item, 0)\` returns the current count (or \`0\` if first time seeing it), then we add \`1\` and store it back.
 
-## Challenge
+\`\`\`python
+items = ["apple", "banana", "apple"]
+# counts starts as {}
+# after "apple": {"apple": 1}
+# after "banana": {"apple": 1, "banana": 1}
+# after "apple": {"apple": 2, "banana": 1}
+\`\`\``,
+        example: `items = ["apple", "banana", "apple", "cherry", "banana", "apple"]
 
-Write a function \`word_count(text)\` that splits \`text\` into words and returns a dict mapping each word to how many times it appears.
+counts = {}
+for item in items:
+    counts[item] = counts.get(item, 0) + 1
 
-Example: \`word_count("hi hi hello")\` → \`{"hi": 2, "hello": 1}\``,
+print(counts)`,
+        quiz: [
+          {
+            question: 'In "counts.get(item, 0) + 1", what does the 0 represent?',
+            options: [
+              'The count when item is seen twice',
+              'The starting count for a new item',
+              'The maximum allowed count',
+              'A random default value',
+            ],
+            answer: 1,
+            explanation: 'If item has not been seen yet, .get() returns 0, so we correctly start counting from 1.',
+          },
+        ],
+        task: `Write a function \`word_count(text)\` that splits \`text\` into words and returns a dict mapping each word to how many times it appears.
+
+Example: \`word_count("hi hi hello")\` → \`{"hi": 2, "hello": 1}\`
+
+**Hint:** use \`text.split()\` to split by spaces.`,
         starter: `def word_count(text):
     # count occurrences of each word in text
     pass

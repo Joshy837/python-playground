@@ -28,15 +28,54 @@ function parseTestResults(stdout) {
   const marker = '__TESTS__:'
   const line = stdout.split('\n').find(l => l.startsWith(marker))
   if (!line) return null
-  try {
-    return JSON.parse(line.slice(marker.length))
-  } catch {
-    return null
-  }
+  try { return JSON.parse(line.slice(marker.length)) } catch { return null }
 }
 
 function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
+}
+
+function editorHeight(code) {
+  return Math.min(Math.max(code.split('\n').length * 22 + 20, 100), 300)
+}
+
+function QuizQuestion({ question }) {
+  const [selected, setSelected] = useState(null)
+  const answered = selected !== null
+
+  return (
+    <div className="quiz-block">
+      <p className="quiz-question-text">{question.question}</p>
+      <div className="quiz-options">
+        {question.options.map((opt, i) => {
+          const isSelected = selected === i
+          const isCorrect = i === question.answer
+          let cls = 'quiz-option'
+          if (answered) {
+            if (isSelected && isCorrect) cls += ' quiz-option-correct'
+            else if (isSelected) cls += ' quiz-option-wrong'
+            else if (isCorrect) cls += ' quiz-option-reveal'
+          }
+          return (
+            <button key={i} className={cls} onClick={() => !answered && setSelected(i)}>
+              <span className="quiz-marker">
+                {answered && isCorrect ? '✓' : answered && isSelected ? '✗' : String.fromCharCode(65 + i)}
+              </span>
+              {opt}
+            </button>
+          )
+        })}
+      </div>
+      {answered && (
+        <p className={`quiz-feedback ${selected === question.answer ? 'quiz-fb-correct' : 'quiz-fb-wrong'}`}>
+          {selected === question.answer
+            ? '✓ Correct!'
+            : `✗ The answer is: ${question.options[question.answer]}.`}
+          {question.explanation && ` ${question.explanation}`}
+        </p>
+      )}
+    </div>
+  )
 }
 
 export default function LessonPage({ pyodideReady, monacoTheme }) {
@@ -44,75 +83,112 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const navigate = useNavigate()
   const node = NODES.find(n => n.id === id)
 
-  // step param is 1-indexed in URL; default to step 1 if absent
   const stepIdx = step ? Math.max(0, parseInt(step, 10) - 1) : 0
   const currentStep = node?.steps[stepIdx]
   const isLastStep = node ? stepIdx === node.steps.length - 1 : true
 
   const { isComplete, isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
-  const editorContainerRef = useRef(null)
-  const editorRef = useRef(null)
-  const initialThemeRef = useRef(monacoTheme)
-  const handleRunRef = useRef(null)
-
-  const [isRunning, setIsRunning] = useState(false)
+  const [isTryRunning, setIsTryRunning] = useState(false)
+  const [tryOutput, setTryOutput] = useState(null)
+  const [isTestRunning, setIsTestRunning] = useState(false)
   const [testResults, setTestResults] = useState(null)
   const [runtimeOutput, setRuntimeOutput] = useState(null)
   const [allPassed, setAllPassed] = useState(false)
 
-  // reset state when step changes
+  const tryContainerRef = useRef(null)
+  const tryEditorRef = useRef(null)
+  const challengeContainerRef = useRef(null)
+  const challengeEditorRef = useRef(null)
+  const runTryRef = useRef(null)
+  const runChallengeRef = useRef(null)
+  const initialThemeRef = useRef(monacoTheme)
+
   useEffect(() => {
     setTestResults(null)
     setRuntimeOutput(null)
-    if (node && isStepComplete(node.id, stepIdx)) setAllPassed(true)
-    else setAllPassed(false)
+    setTryOutput(null)
+    setAllPassed(!!(node && isStepComplete(node.id, stepIdx)))
   }, [node?.id, stepIdx])
 
+  useEffect(() => { monaco.editor.setTheme(monacoTheme) }, [monacoTheme])
+
   useEffect(() => {
-    if (!currentStep) return
-    const editor = monaco.editor.create(editorContainerRef.current, {
-      value: currentStep.starter,
+    if (!currentStep || !tryContainerRef.current) return
+    tryContainerRef.current.style.height = `${editorHeight(currentStep.example)}px`
+    const editor = monaco.editor.create(tryContainerRef.current, {
+      value: currentStep.example,
       language: 'python',
       theme: initialThemeRef.current,
-      fontSize: 14,
+      fontSize: 13,
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
       minimap: { enabled: false },
       automaticLayout: true,
       scrollBeyondLastLine: false,
-      padding: { top: 12, bottom: 12 },
+      padding: { top: 10, bottom: 10 },
       tabSize: 4,
       insertSpaces: true,
       wordWrap: 'on',
+      lineNumbers: 'off',
+      folding: false,
+      renderLineHighlight: 'none',
     })
-    editorRef.current = editor
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-      handleRunRef.current?.()
-    })
-    return () => { editor.dispose(); editorRef.current = null }
+    tryEditorRef.current = editor
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runTryRef.current?.())
+    return () => { editor.dispose(); tryEditorRef.current = null }
   }, [node?.id, stepIdx])
 
   useEffect(() => {
-    if (editorRef.current) {
-      monaco.editor.setTheme(monacoTheme)
-    }
-  }, [monacoTheme])
+    if (!currentStep || !challengeContainerRef.current) return
+    challengeContainerRef.current.style.height = `${editorHeight(currentStep.starter)}px`
+    const editor = monaco.editor.create(challengeContainerRef.current, {
+      value: currentStep.starter,
+      language: 'python',
+      theme: initialThemeRef.current,
+      fontSize: 13,
+      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+      minimap: { enabled: false },
+      automaticLayout: true,
+      scrollBeyondLastLine: false,
+      padding: { top: 10, bottom: 10 },
+      tabSize: 4,
+      insertSpaces: true,
+      wordWrap: 'on',
+      lineNumbers: 'on',
+      folding: false,
+    })
+    challengeEditorRef.current = editor
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runChallengeRef.current?.())
+    return () => { editor.dispose(); challengeEditorRef.current = null }
+  }, [node?.id, stepIdx])
 
-  async function handleRun() {
-    if (isRunning || !pyodideReady) return
-    setIsRunning(true)
+  async function handleRunTry() {
+    if (isTryRunning || !pyodideReady) return
+    setIsTryRunning(true)
+    setTryOutput(null)
+    try {
+      const code = tryEditorRef.current?.getValue()
+      if (!code) return
+      const result = await runCode(code)
+      setTryOutput({ stdout: result.stdout || '', stderr: result.stderr || '', error: result.error || '' })
+    } finally {
+      setIsTryRunning(false)
+    }
+  }
+  runTryRef.current = handleRunTry
+
+  async function handleRunChallenge() {
+    if (isTestRunning || !pyodideReady) return
+    setIsTestRunning(true)
     setTestResults(null)
     setRuntimeOutput(null)
     try {
-      const code = editorRef.current.getValue()
+      const code = challengeEditorRef.current?.getValue()
+      if (!code) return
       const result = await runCode(buildTestCode(code, currentStep.tests))
       const userStdout = stripTestLine(result.stdout || '')
       const parsed = parseTestResults(result.stdout || '')
-      setRuntimeOutput({
-        stdout: userStdout,
-        stderr: result.stderr || '',
-        error: result.error || '',
-      })
+      setRuntimeOutput({ stdout: userStdout, stderr: result.stderr || '', error: result.error || '' })
       if (parsed) {
         setTestResults(parsed)
         if (parsed.every(t => t.passed)) {
@@ -121,11 +197,10 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         }
       }
     } finally {
-      setIsRunning(false)
+      setIsTestRunning(false)
     }
   }
-
-  handleRunRef.current = handleRun
+  runChallengeRef.current = handleRunChallenge
 
   if (!node || !currentStep) {
     return (
@@ -154,130 +229,181 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const totalSteps = node.steps.length
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden">
-      {/* Instructions panel */}
-      <div className="lesson-instructions md:w-2/5 shrink-0 flex flex-col overflow-hidden">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b shrink-0" style={{ borderColor: 'var(--header-border)' }}>
-          <button
-            onClick={() => navigate('/course')}
-            className="lesson-back-btn"
-            title="Back to course"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <div className="flex flex-col min-w-0">
-            <span className="font-semibold text-sm truncate">{node.title}</span>
-            <span className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
-              Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
-            </span>
-          </div>
-          {isComplete(node.id) && (
-            <CheckCircle size={15} className="ml-auto shrink-0" style={{ color: 'var(--status-green)' }} />
-          )}
+    <div className="lesson-scroll-page">
+
+      {/* Sticky header */}
+      <div className="lesson-scroll-header">
+        <button onClick={() => navigate('/course')} className="lesson-back-btn" title="Back to course">
+          <ChevronLeft size={16} />
+        </button>
+        <div className="flex flex-col min-w-0 flex-1">
+          <span className="text-sm font-semibold truncate">{node.title}</span>
+          <span className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+            Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
+          </span>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-4 lesson-prose">
-          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.instructions) }} />
+        <div className="flex items-center gap-1.5 shrink-0">
+          {node.steps.map((s, i) => (
+            <button
+              key={i}
+              className={[
+                'lesson-step-dot',
+                i === stepIdx ? 'lesson-step-dot-current' : '',
+                isStepComplete(node.id, i) ? 'lesson-step-dot-done' : '',
+              ].join(' ')}
+              onClick={() => {
+                if (i === stepIdx) return
+                if (isStepComplete(node.id, i) || isStepUnlocked(node.id, i))
+                  navigate(`/learn/${node.id}/${i + 1}`)
+              }}
+              title={s.title}
+            />
+          ))}
         </div>
+        {isComplete(node.id) && (
+          <CheckCircle size={15} className="shrink-0" style={{ color: 'var(--status-green)' }} />
+        )}
       </div>
 
-      {/* Editor + output */}
-      <div className="flex flex-col flex-1 min-h-0 overflow-hidden" style={{ borderLeft: '1px solid var(--header-border)' }}>
-        {/* Toolbar */}
-        <div className="examples-toolbar flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
-          <span className="text-muted text-xs">
-            {testResults ? `${passed} / ${total} tests passing` : `${total} tests`}
-          </span>
-          <button
-            className="run-btn ml-auto"
-            data-running="false"
-            disabled={!pyodideReady || isRunning}
-            title={isRunning ? 'Running…' : 'Run Tests (Ctrl+Enter)'}
-            onClick={handleRun}
-          >
-            <Play size={18} fill="currentColor" stroke="none" />
-          </button>
+      {/* Scrollable body */}
+      <div className="lesson-scroll-body">
+
+        {/* ── Section 1: Explanation ── */}
+        <div className="lesson-prose">
+          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description) }} />
         </div>
 
-        {/* Monaco editor */}
-        <div ref={editorContainerRef} className="flex-1 min-h-0 overflow-hidden" />
-
-        {/* Test results */}
-        {(testResults || runtimeOutput?.error || runtimeOutput?.stderr) && (
-          <div className="lesson-results shrink-0 overflow-y-auto" style={{ maxHeight: '38%', borderTop: '1px solid var(--output-border)' }}>
-            {(runtimeOutput?.error || runtimeOutput?.stderr) && (
-              <div className="px-4 py-2">
-                {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
-                {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
-              </div>
-            )}
-            {runtimeOutput?.stdout && (
-              <div className="px-4 pt-2">
-                <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>
-              </div>
-            )}
-            {testResults && (
-              <div className="px-4 py-3 flex flex-col gap-1.5">
-                {testResults.map((t, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs">
-                    <span style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)', flexShrink: 0 }}>
-                      {t.passed ? '✓' : '✗'}
-                    </span>
-                    <span style={{ color: t.passed ? 'var(--text-muted)' : 'var(--text-primary)' }}>
-                      {t.name}
-                      {!t.passed && t.error && <span className="output-error"> — {t.error}</span>}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-            {allPassed && (
-              <div className="px-4 pb-3 pt-1 flex items-center justify-between">
-                <span className="text-xs font-medium" style={{ color: 'var(--status-green)' }}>
-                  {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
-                </span>
-                {isLastStep ? (
-                  <button
-                    className="btn-secondary text-xs px-3 py-1 rounded-md"
-                    onClick={() => navigate('/course')}
-                  >
-                    Back to course
-                  </button>
-                ) : (
-                  <button
-                    className="lesson-next-btn"
-                    onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
-                  >
-                    Next step <ChevronRight size={13} />
-                  </button>
-                )}
+        {/* ── Section 2: Try it ── */}
+        <div className="lesson-section-divider" />
+        <div className="lesson-section">
+          <p className="lesson-section-label">Try it yourself</p>
+          <div className="lesson-editor-box">
+            <div className="lesson-editor-toolbar">
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Python</span>
+              <button
+                className="lesson-run-btn"
+                disabled={!pyodideReady || isTryRunning}
+                onClick={handleRunTry}
+                title="Run (Ctrl+Enter)"
+              >
+                <Play size={12} fill="currentColor" stroke="none" />
+                {isTryRunning ? 'Running…' : 'Run'}
+              </button>
+            </div>
+            <div ref={tryContainerRef} />
+            {tryOutput && (
+              <div className="lesson-output">
+                {tryOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
+                {tryOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
+                {tryOutput.stdout
+                  ? <pre className="output-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
+                  : !tryOutput.error && !tryOutput.stderr && (
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No output</span>
+                  )}
               </div>
             )}
           </div>
+        </div>
+
+        {/* ── Section 3: Quiz ── */}
+        {currentStep.quiz?.length > 0 && (
+          <>
+            <div className="lesson-section-divider" />
+            <div className="lesson-section">
+              <p className="lesson-section-label">Check your understanding</p>
+              {currentStep.quiz.map((q, i) => (
+                <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} />
+              ))}
+            </div>
+          </>
         )}
+
+        {/* ── Section 4: Challenge ── */}
+        <div className="lesson-section-divider" />
+        <div className="lesson-section" style={{ paddingBottom: '4rem' }}>
+          <p className="lesson-section-label">Challenge</p>
+          <div className="lesson-task-text lesson-prose">
+            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task) }} />
+          </div>
+          <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
+            <div className="lesson-editor-toolbar">
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
+              </span>
+              <button
+                className="lesson-run-btn"
+                disabled={!pyodideReady || isTestRunning}
+                onClick={handleRunChallenge}
+                title="Run Tests (Ctrl+Enter)"
+              >
+                <Play size={12} fill="currentColor" stroke="none" />
+                {isTestRunning ? 'Running…' : 'Run Tests'}
+              </button>
+            </div>
+            <div ref={challengeContainerRef} />
+            {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) && (
+              <div className="lesson-output">
+                {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
+                {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
+                {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
+              </div>
+            )}
+          </div>
+
+          {testResults && (
+            <div className="lesson-test-list">
+              {testResults.map((t, i) => (
+                <div key={i} className="lesson-test-row">
+                  <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
+                    {t.passed ? '✓' : '✗'}
+                  </span>
+                  <span className="text-sm" style={{ color: t.passed ? 'var(--text-muted)' : 'var(--text-primary)' }}>
+                    {t.name}
+                    {!t.passed && t.error && (
+                      <span className="output-error block text-xs mt-0.5">{t.error}</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {allPassed && (
+            <div className="lesson-complete-bar">
+              <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
+                {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
+              </span>
+              {isLastStep ? (
+                <button className="btn-secondary text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
+                  Back to course
+                </button>
+              ) : (
+                <button className="lesson-next-btn" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
+                  Next step <ChevronRight size={14} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   )
 }
 
-// Minimal markdown renderer (bold, inline code, code blocks, headings, paragraphs)
 function renderMarkdown(md) {
   let html = md
-    // code blocks
     .replace(/```python\n([\s\S]*?)```/g, (_, code) =>
       `<pre class="lesson-code-block"><code>${escHtml(code.trimEnd())}</code></pre>`)
     .replace(/```\n?([\s\S]*?)```/g, (_, code) =>
       `<pre class="lesson-code-block"><code>${escHtml(code.trimEnd())}</code></pre>`)
-    // headings
     .replace(/^## (.+)$/gm, '<h2 class="lesson-h2">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 class="lesson-h1">$1</h1>')
-    // bold
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // inline code
     .replace(/`([^`]+)`/g, '<code class="lesson-inline-code">$1</code>')
-    // list items
+    .replace(/^\* (.+)$/gm, '<li>$1</li>')
     .replace(/^- (.+)$/gm, '<li>$1</li>')
     .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul class="lesson-list">${m}</ul>`)
-    // paragraphs
     .split(/\n\n+/)
     .map(block => {
       block = block.trim()
