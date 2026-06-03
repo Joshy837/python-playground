@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, Check, ChevronRight, Terminal, HelpCircle, Trophy } from 'lucide-react'
+import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, Terminal, HelpCircle, Trophy } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -35,7 +35,6 @@ function parseTestResults(stdout) {
 function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
 }
-
 
 function QuizQuestion({ question }) {
   const [selected, setSelected] = useState(null)
@@ -76,16 +75,31 @@ function QuizQuestion({ question }) {
   )
 }
 
-const SLIDE_DEFS = {
-  learn:     { label: 'Learn' },
-  try:       { label: 'Try it' },
-  quiz:      { label: 'Quiz' },
-  challenge: { label: 'Challenge' },
+// revealedUpTo: 0=description only, 1=+try-it, 2=+quiz, 3=+challenge
+// when no quiz: 0=description, 1=+try-it, 2=+challenge
+
+function ContinueArrow({ onClick, preview }) {
+  return (
+    <div className="lesson-continue-wrap">
+      <button className="lesson-continue-btn" onClick={onClick}>
+        <ChevronDown size={36} />
+      </button>
+      {preview && (
+        <div className="lesson-spoiler">{preview}</div>
+      )}
+    </div>
+  )
 }
 
-function getSlides(step) {
-  if (!step) return []
-  return ['learn', 'challenge']
+function stripMarkdown(md) {
+  return (md ?? '')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/#+\s/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^\s*[-*]\s/gm, '')
+    .replace(/\n+/g, ' ')
+    .trim()
 }
 
 export default function LessonPage({ pyodideReady, monacoTheme }) {
@@ -96,13 +110,17 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const stepIdx = step ? Math.max(0, parseInt(step, 10) - 1) : 0
   const currentStep = node?.steps[stepIdx]
   const isLastStep = node ? stepIdx === node.steps.length - 1 : true
+  const hasQuiz = (currentStep?.quiz?.length ?? 0) > 0
 
-  const slides = useMemo(() => getSlides(currentStep), [node?.id, stepIdx])
-  const [slideIdx, setSlideIdx] = useState(0)
-  const currentSlide = slides[slideIdx] ?? 'learn'
+  // Section indices
+  const SECTION_TRY      = 1
+  const SECTION_QUIZ     = hasQuiz ? 2 : null
+  const SECTION_CHALLENGE = hasQuiz ? 3 : 2
+  const SECTION_MAX      = SECTION_CHALLENGE
 
   const { isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
+  const [revealedUpTo, setRevealedUpTo] = useState(0)
   const [isTryRunning, setIsTryRunning] = useState(false)
   const [tryOutput, setTryOutput] = useState(null)
   const [isTestRunning, setIsTestRunning] = useState(false)
@@ -114,19 +132,39 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const tryEditorRef = useRef(null)
   const challengeContainerRef = useRef(null)
   const challengeEditorRef = useRef(null)
+  const trySectionRef = useRef(null)
+  const quizSectionRef = useRef(null)
+  const challengeSectionRef = useRef(null)
+  const scrollContainerRef = useRef(null)
+  const pendingScrollRef = useRef(null)
   const initialThemeRef = useRef(monacoTheme)
 
   useEffect(() => {
-    setSlideIdx(0)
     setTestResults(null)
     setRuntimeOutput(null)
     setTryOutput(null)
-    setAllPassed(!!(node && isStepComplete(node.id, stepIdx)))
+    const complete = !!(node && isStepComplete(node.id, stepIdx))
+    setAllPassed(complete)
+    setRevealedUpTo(complete ? SECTION_MAX : 0)
   }, [node?.id, stepIdx])
 
   useEffect(() => { monaco.editor.setTheme(monacoTheme) }, [monacoTheme])
 
+  useEffect(() => {
+    const target = pendingScrollRef.current
+    pendingScrollRef.current = null
+    if (!target?.current || !scrollContainerRef.current) return
+    const container = scrollContainerRef.current
+    const offset = target.current.getBoundingClientRect().top - container.getBoundingClientRect().top
+    container.scrollBy({ top: offset, behavior: 'smooth' })
+  }, [revealedUpTo])
+
   const stepKey = `${node?.id ?? 'none'}-${stepIdx}`
+
+  function revealSection(section, ref) {
+    pendingScrollRef.current = ref
+    setRevealedUpTo(section)
+  }
 
   async function handleRunTry() {
     if (isTryRunning || !pyodideReady) return
@@ -167,7 +205,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   }
 
   useMonacoEditor({
-    active: currentSlide === 'learn',
+    active: revealedUpTo >= SECTION_TRY,
     containerRef: tryContainerRef,
     editorRef: tryEditorRef,
     initialCode: currentStep?.example ?? '',
@@ -178,7 +216,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   })
 
   useMonacoEditor({
-    active: currentSlide === 'challenge',
+    active: revealedUpTo >= SECTION_CHALLENGE,
     containerRef: challengeContainerRef,
     editorRef: challengeEditorRef,
     initialCode: currentStep?.starter ?? '',
@@ -213,15 +251,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const passed = testResults?.filter(t => t.passed).length ?? 0
   const total = currentStep.tests.length
   const totalSteps = node.steps.length
-  const isLastSlide = slideIdx === slides.length - 1
-
-  function handleBack() {
-    if (slideIdx > 0) setSlideIdx(i => i - 1)
-    else navigate('/course')
-  }
-  function handleNext() {
-    if (slideIdx < slides.length - 1) setSlideIdx(i => i + 1)
-  }
 
   return (
     <div className="lesson-page">
@@ -263,16 +292,25 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </div>
       </div>
 
-      {/* Scrollable slide content */}
-      <div className="lesson-slide-content">
+      {/* Scrollable content */}
+      <div className="lesson-slide-content" ref={scrollContainerRef}>
         <div className="lesson-slide-body">
 
-          {currentSlide === 'learn' && (
+          {/* Section 1: Description */}
+          <div className="lesson-prose">
+            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description) }} />
+          </div>
+
+          {revealedUpTo < SECTION_TRY ? (
+            <ContinueArrow
+              onClick={() => revealSection(SECTION_TRY, trySectionRef)}
+              preview={<pre className="lesson-code-block" style={{ margin: 0 }}>{currentStep.example}</pre>}
+            />
+          ) : (
             <>
-              <div className="lesson-prose">
-                <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description) }} />
-              </div>
-              <div className="lesson-section" style={{ marginTop: '1.75rem' }}>
+              {/* Section 2: Try it */}
+              <div ref={trySectionRef} style={{ marginTop: '2.5rem' }}>
+                <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                 <p className="lesson-section-label"><Terminal size={12} />Try it yourself</p>
                 <div className="lesson-editor-box">
                   <div className="lesson-editor-toolbar">
@@ -301,121 +339,114 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   )}
                 </div>
               </div>
-            </>
-          )}
 
-          {currentSlide === 'challenge' && (
-            <div className="lesson-section">
-              {currentStep.quiz?.length > 0 && (
-                <>
-                  <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
-                  {currentStep.quiz.map((q, i) => (
-                    <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} />
-                  ))}
-                  <div style={{ marginTop: '2rem' }} />
-                </>
-              )}
-              <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
-              <div className="lesson-task-text lesson-prose">
-                <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task) }} />
-              </div>
-              <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
-                <div className="lesson-editor-toolbar">
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
-                  </span>
-                  <button
-                    className="lesson-run-btn"
-                    disabled={!pyodideReady || isTestRunning}
-                    onClick={handleRunChallenge}
-                    title="Run Tests (Ctrl+Enter)"
-                  >
-                    <Play size={12} fill="currentColor" stroke="none" />
-                    {isTestRunning ? 'Running…' : 'Run Tests'}
-                  </button>
-                </div>
-                <div ref={challengeContainerRef} />
-                {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) && (
-                  <div className="lesson-output">
-                    {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
-                    {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
-                    {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
-                  </div>
-                )}
-              </div>
-
-              {testResults && (
-                <div className="lesson-test-list">
-                  {testResults.map((t, i) => (
-                    <div key={i} className="lesson-test-row">
-                      <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
-                        {t.passed ? '✓' : '✗'}
-                      </span>
-                      <span className="text-sm" style={{ color: t.passed ? 'var(--text-muted)' : 'var(--text-primary)' }}>
-                        {t.name}
-                        {!t.passed && t.error && (
-                          <span className="output-error block text-xs mt-0.5">{t.error}</span>
-                        )}
-                      </span>
+              {hasQuiz ? (
+                revealedUpTo < SECTION_QUIZ ? (
+                  <ContinueArrow
+                    onClick={() => revealSection(SECTION_QUIZ, quizSectionRef)}
+                    preview={<p className="lesson-prose">{currentStep.quiz[0]?.question}</p>}
+                  />
+                ) : (
+                  <>
+                    {/* Section 3: Quiz */}
+                    <div ref={quizSectionRef} style={{ marginTop: '2.5rem' }}>
+                      <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
+                      <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
+                      {currentStep.quiz.map((q, i) => (
+                        <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} />
+                      ))}
                     </div>
-                  ))}
-                </div>
+
+                    {revealedUpTo < SECTION_CHALLENGE && (
+                      <ContinueArrow
+                        onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
+                        preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
+                      />
+                    )}
+                  </>
+                )
+              ) : (
+                revealedUpTo < SECTION_CHALLENGE && (
+                  <ContinueArrow
+                    onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
+                    preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
+                  />
+                )
               )}
 
-              {allPassed && (
-                <div className="lesson-complete-bar">
-                  <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
-                    {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
-                  </span>
-                  {isLastStep ? (
-                    <button className="btn-secondary text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
-                      Back to course
-                    </button>
-                  ) : (
-                    <button className="lesson-next-btn" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
-                      Next step <ChevronRight size={14} />
-                    </button>
+              {/* Section 4: Challenge */}
+              {revealedUpTo >= SECTION_CHALLENGE && (
+                <div ref={challengeSectionRef} style={{ marginTop: '2.5rem' }}>
+                  <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
+                  <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
+                  <div className="lesson-task-text lesson-prose">
+                    <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task) }} />
+                  </div>
+                  <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
+                    <div className="lesson-editor-toolbar">
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                        {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
+                      </span>
+                      <button
+                        className="lesson-run-btn"
+                        disabled={!pyodideReady || isTestRunning}
+                        onClick={handleRunChallenge}
+                        title="Run Tests (Ctrl+Enter)"
+                      >
+                        <Play size={12} fill="currentColor" stroke="none" />
+                        {isTestRunning ? 'Running…' : 'Run Tests'}
+                      </button>
+                    </div>
+                    <div ref={challengeContainerRef} />
+                    {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) && (
+                      <div className="lesson-output">
+                        {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
+                        {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
+                        {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
+                      </div>
+                    )}
+                  </div>
+
+                  {testResults && (
+                    <div className="lesson-test-list">
+                      {testResults.map((t, i) => (
+                        <div key={i} className="lesson-test-row">
+                          <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
+                            {t.passed ? '✓' : '✗'}
+                          </span>
+                          <span className="text-sm" style={{ color: t.passed ? 'var(--text-muted)' : 'var(--text-primary)' }}>
+                            {t.name}
+                            {!t.passed && t.error && (
+                              <span className="output-error block text-xs mt-0.5">{t.error}</span>
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {allPassed && (
+                    <div className="lesson-complete-bar">
+                      <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
+                        {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
+                      </span>
+                      {isLastStep ? (
+                        <button className="btn-secondary text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
+                          Back to course
+                        </button>
+                      ) : (
+                        <button className="lesson-next-btn" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
+                          Next step <ChevronRight size={14} />
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
-            </div>
+            </>
           )}
 
         </div>
-      </div>
-
-      {/* Nav bar — locked to bottom of viewport */}
-      <div className="lesson-nav-bar">
-        {slideIdx > 0 ? (
-          <button onClick={handleBack} className="lesson-nav-btn">
-            <ChevronLeft size={14} />
-            Back
-          </button>
-        ) : (
-          <div className="lesson-nav-btn-placeholder" />
-        )}
-
-        <div className="lesson-slide-pips">
-          {slides.map((slideId, i) => (
-            <span
-              key={slideId}
-              className={[
-                'lesson-slide-pip',
-                i === slideIdx ? 'lesson-slide-pip-current' : '',
-                i < slideIdx ? 'lesson-slide-pip-done' : '',
-              ].filter(Boolean).join(' ')}
-              title={SLIDE_DEFS[slideId].label}
-            />
-          ))}
-        </div>
-
-        {isLastSlide ? (
-          <div className="lesson-nav-btn-placeholder" />
-        ) : (
-          <button onClick={handleNext} className="lesson-nav-btn">
-            Next <ChevronRight size={14} />
-          </button>
-        )}
       </div>
 
     </div>

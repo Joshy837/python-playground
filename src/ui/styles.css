@@ -401,7 +401,7 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   max-width: 740px;
   width: 100%;
   margin: 0 auto;
-  padding: 2.25rem 1.5rem 2rem;
+  padding: 2.25rem 1.5rem 60vh;
 }
 
 /* Nav bar — locked to bottom of viewport */
@@ -637,6 +637,50 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   align-items: flex-start;
   gap: 0.6rem;
   font-size: 0.84rem;
+}
+
+/* Continue-to-challenge down arrow */
+.lesson-continue-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 0 0;
+  gap: 0.75rem;
+}
+
+.lesson-spoiler {
+  width: 100%;
+  max-height: 80px;
+  overflow: hidden;
+  filter: blur(4px);
+  opacity: 0.45;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 10%, transparent 100%);
+}
+
+.lesson-continue-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+  animation: lesson-continue-pulse 2s ease-in-out infinite;
+}
+
+.lesson-continue-btn:hover {
+  color: var(--text-primary);
+  animation: none;
+}
+
+@keyframes lesson-continue-pulse {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(4px); opacity: 1; }
 }
 
 /* Completion bar */
