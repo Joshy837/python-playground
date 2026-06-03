@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ReactFlow, Background, Handle, Position } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
@@ -26,9 +26,21 @@ function CourseNode({ data }) {
 const nodeTypes = { courseNode: CourseNode }
 const nodeOrigin = [0.5, 0.5]
 
+function useTheme() {
+  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? '')
+  useEffect(() => {
+    const obs = new MutationObserver(() => setTheme(document.documentElement.dataset.theme ?? ''))
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => obs.disconnect()
+  }, [])
+  return theme
+}
+
 export default function CoursePage() {
   const navigate = useNavigate()
   const { completed } = useProgress()
+  const theme = useTheme()
+  const isLight = theme === 'light' || theme === 'hc-light'
 
   const nodes = useMemo(() => NODES.map(node => ({
     id: node.id,
@@ -85,7 +97,7 @@ export default function CoursePage() {
       </div>
 
       {/* Tree canvas */}
-      <div className="flex-1" style={{ background: 'var(--app-bg)' }}>
+      <div className="flex-1" style={{ background: 'var(--course-bg)' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -100,7 +112,7 @@ export default function CoursePage() {
         panOnScroll
         zoomOnScroll={false}
       >
-        <Background color="var(--header-border)" gap={28} size={1} />
+        <Background variant={isLight ? 'lines' : 'dots'} color="var(--course-dot)" gap={28} size={1} lineWidth={0.75} />
       </ReactFlow>
       </div>
     </div>

@@ -19,6 +19,8 @@
   --status-yellow:    #facc15;
   --status-green:     #4ade80;
   --status-red:       #f87171;
+  --course-bg:        #111827;
+  --course-dot:       #374151;
 }
 
 [data-theme="light"] {
@@ -39,6 +41,8 @@
   --status-yellow:    #b45309;
   --status-green:     #15803d;
   --status-red:       #dc2626;
+  --course-bg:        #fefce8;
+  --course-dot:       #d1d5db;
 }
 
 [data-theme="hc-dark"] {
