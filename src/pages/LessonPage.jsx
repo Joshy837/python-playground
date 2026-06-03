@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, CheckCircle, ChevronRight } from 'lucide-react'
+import { Play, ChevronLeft, CheckCircle, ChevronRight, Terminal, HelpCircle, Trophy } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -276,7 +276,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         {/* ── Section 2: Try it ── */}
         <div className="lesson-section-divider" />
         <div className="lesson-section">
-          <p className="lesson-section-label">Try it yourself</p>
+          <p className="lesson-section-label"><Terminal size={12} />Try it yourself</p>
           <div className="lesson-editor-box">
             <div className="lesson-editor-toolbar">
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Python</span>
@@ -310,7 +310,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           <>
             <div className="lesson-section-divider" />
             <div className="lesson-section">
-              <p className="lesson-section-label">Check your understanding</p>
+              <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
               {currentStep.quiz.map((q, i) => (
                 <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} />
               ))}
@@ -321,7 +321,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         {/* ── Section 4: Challenge ── */}
         <div className="lesson-section-divider" />
         <div className="lesson-section" style={{ paddingBottom: '4rem' }}>
-          <p className="lesson-section-label">Challenge</p>
+          <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
           <div className="lesson-task-text lesson-prose">
             <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task) }} />
           </div>
