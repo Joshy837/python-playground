@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Play, Square } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode, cancelRun } from '../runner.js'
+import { BASE_EDITOR_CONFIG } from '../editor.js'
 import OutputPanel from '../components/OutputPanel.jsx'
 
 const EXAMPLES = [
@@ -33,18 +34,11 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   // Monaco setup
   useEffect(() => {
     const editor = monaco.editor.create(editorContainerRef.current, {
+      ...BASE_EDITOR_CONFIG,
       value: DEFAULT_CODE,
-      language: 'python',
       theme: initialThemeRef.current,
       fontSize: 14,
-      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      minimap: { enabled: false },
-      automaticLayout: true,
-      scrollBeyondLastLine: false,
       padding: { top: 16, bottom: 16 },
-      tabSize: 4,
-      insertSpaces: true,
-      wordWrap: 'on',
     })
     editorRef.current = editor
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {

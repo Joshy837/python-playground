@@ -5,6 +5,7 @@ import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
+import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 
 function buildTestCode(userCode, tests) {
   const checks = tests.map(t =>
@@ -35,9 +36,6 @@ function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
 }
 
-function editorHeight(code) {
-  return Math.min(Math.max(code.split('\n').length * 22 + 20, 100), 300)
-}
 
 function QuizQuestion({ question }) {
   const [selected, setSelected] = useState(null)
@@ -116,16 +114,10 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const tryEditorRef = useRef(null)
   const challengeContainerRef = useRef(null)
   const challengeEditorRef = useRef(null)
-  const runTryRef = useRef(null)
-  const runChallengeRef = useRef(null)
   const initialThemeRef = useRef(monacoTheme)
-  const savedTryCodeRef = useRef(null)
-  const savedChallengeCodeRef = useRef(null)
 
   useEffect(() => {
     setSlideIdx(0)
-    savedTryCodeRef.current = null
-    savedChallengeCodeRef.current = null
     setTestResults(null)
     setRuntimeOutput(null)
     setTryOutput(null)
@@ -134,64 +126,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
   useEffect(() => { monaco.editor.setTheme(monacoTheme) }, [monacoTheme])
 
-  useEffect(() => {
-    if (currentSlide !== 'learn' || !currentStep || !tryContainerRef.current) return
-    const code = savedTryCodeRef.current ?? currentStep.example
-    tryContainerRef.current.style.height = `${editorHeight(code)}px`
-    const editor = monaco.editor.create(tryContainerRef.current, {
-      value: code,
-      language: 'python',
-      theme: initialThemeRef.current,
-      fontSize: 13,
-      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      minimap: { enabled: false },
-      automaticLayout: true,
-      scrollBeyondLastLine: false,
-      padding: { top: 10, bottom: 10 },
-      tabSize: 4,
-      insertSpaces: true,
-      wordWrap: 'on',
-      lineNumbers: 'off',
-      folding: false,
-      renderLineHighlight: 'none',
-    })
-    tryEditorRef.current = editor
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runTryRef.current?.())
-    return () => {
-      savedTryCodeRef.current = editor.getValue()
-      editor.dispose()
-      tryEditorRef.current = null
-    }
-  }, [currentSlide, node?.id, stepIdx])
-
-  useEffect(() => {
-    if (currentSlide !== 'challenge' || !currentStep || !challengeContainerRef.current) return
-    const code = savedChallengeCodeRef.current ?? currentStep.starter
-    challengeContainerRef.current.style.height = `${editorHeight(code)}px`
-    const editor = monaco.editor.create(challengeContainerRef.current, {
-      value: code,
-      language: 'python',
-      theme: initialThemeRef.current,
-      fontSize: 13,
-      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      minimap: { enabled: false },
-      automaticLayout: true,
-      scrollBeyondLastLine: false,
-      padding: { top: 10, bottom: 10 },
-      tabSize: 4,
-      insertSpaces: true,
-      wordWrap: 'on',
-      lineNumbers: 'on',
-      folding: false,
-    })
-    challengeEditorRef.current = editor
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runChallengeRef.current?.())
-    return () => {
-      savedChallengeCodeRef.current = editor.getValue()
-      editor.dispose()
-      challengeEditorRef.current = null
-    }
-  }, [currentSlide, node?.id, stepIdx])
+  const stepKey = `${node?.id ?? 'none'}-${stepIdx}`
 
   async function handleRunTry() {
     if (isTryRunning || !pyodideReady) return
@@ -206,7 +141,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       setIsTryRunning(false)
     }
   }
-  runTryRef.current = handleRunTry
 
   async function handleRunChallenge() {
     if (isTestRunning || !pyodideReady) return
@@ -231,7 +165,28 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       setIsTestRunning(false)
     }
   }
-  runChallengeRef.current = handleRunChallenge
+
+  useMonacoEditor({
+    active: currentSlide === 'learn',
+    containerRef: tryContainerRef,
+    editorRef: tryEditorRef,
+    initialCode: currentStep?.example ?? '',
+    stepKey,
+    theme: initialThemeRef.current,
+    onRun: handleRunTry,
+    extraOptions: { fontSize: 13, padding: { top: 10, bottom: 10 }, lineNumbers: 'off', folding: false, renderLineHighlight: 'none' },
+  })
+
+  useMonacoEditor({
+    active: currentSlide === 'challenge',
+    containerRef: challengeContainerRef,
+    editorRef: challengeEditorRef,
+    initialCode: currentStep?.starter ?? '',
+    stepKey,
+    theme: initialThemeRef.current,
+    onRun: handleRunChallenge,
+    extraOptions: { fontSize: 13, padding: { top: 10, bottom: 10 }, folding: false },
+  })
 
   if (!node || !currentStep) {
     return (
