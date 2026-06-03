@@ -3,6 +3,7 @@ import { setupEditor, getValue, setValue, setTheme } from './editor.js'
 import { initPyodide, runCode, cancelRun } from './runner.js'
 import { renderOutput } from './ui/output.js'
 import { setupResizer } from './ui/resizer.js'
+import { startRouter } from './router.js'
 import { Play, Square, Sun, Moon } from 'lucide'
 
 function lucideIcon(iconData, { size = 18, filled = false } = {}) {
@@ -89,6 +90,7 @@ async function handleRun() {
 
 
 async function init() {
+  startRouter()
   setupResizer()
   editor = setupEditor('editor-container', handleRun)
 

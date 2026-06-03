@@ -47,3 +47,14 @@ Responsive split-pane: editor and output panel are stacked (`flex-col`) on mobil
 Exports both `renderOutput` and `clearOutput`. `clearOutput` is not currently wired to any UI element.
 
 **Example snippets** live in `public/examples/` as plain `.py` files, served as static assets and fetched at runtime via `fetch('/examples/<file>')`.
+
+## Ideas
+
+### Course / Tech Tree page
+- A dedicated page showing a visual technology tree of Python concepts
+- Completing a level unlocks the next one (progression mechanic)
+- Canvas-style interaction: drag to pan, pinch/scroll to zoom
+- Each node links to its own lesson page (e.g. `/learn/loops`, `/learn/functions`) so URLs are shareable and the back button works
+- Progress stored in `localStorage` (acceptable tradeoff for a client-side-only app — users lose progress if they clear storage)
+- Open question: how is a level "cleared"? Options: code produces expected output, passes hidden tests, or manual "mark complete"
+- Tree shape TBD: linear chain vs. branching paths
