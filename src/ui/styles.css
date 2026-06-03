@@ -70,7 +70,7 @@
 }
 
 /* ── Structural theming ──────────────────────────────── */
-body          { background-color: var(--app-bg); color: var(--text-primary); }
+body          { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
 .app-header   { background-color: var(--header-bg); border-color: var(--header-border); }
 .app-divider  { background-color: var(--header-border); }
 .output-panel { background-color: var(--output-bg); }
