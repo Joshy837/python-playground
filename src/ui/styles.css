@@ -618,6 +618,25 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 }
 .lesson-run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.lesson-editor-body {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.lesson-editor-pane {
+  flex: 1;
+  min-width: 0;
+}
+
+.lesson-output-panel {
+  width: 40%;
+  border-left: 1px solid var(--output-border);
+  background: var(--output-bg);
+  padding: 0.65rem 0.9rem;
+  overflow-y: auto;
+}
+
 .lesson-output {
   border-top: 1px solid var(--output-border);
   padding: 0.65rem 0.9rem;
@@ -673,9 +692,21 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   animation: lesson-continue-pulse 2s ease-in-out infinite;
 }
 
-.lesson-continue-btn:hover {
+.lesson-continue-btn:hover:not(:disabled) {
   color: var(--text-primary);
   animation: none;
+}
+
+.lesson-continue-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  animation: none;
+}
+
+.lesson-continue-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 @keyframes lesson-continue-pulse {

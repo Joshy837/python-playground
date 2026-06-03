@@ -36,7 +36,7 @@ function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
 }
 
-function QuizQuestion({ question }) {
+function QuizQuestion({ question, onAnswer }) {
   const [selected, setSelected] = useState(null)
   const answered = selected !== null
 
@@ -54,7 +54,7 @@ function QuizQuestion({ question }) {
             else if (isCorrect) cls += ' quiz-option-reveal'
           }
           return (
-            <button key={i} className={cls} onClick={() => !answered && setSelected(i)}>
+            <button key={i} className={cls} onClick={() => { if (!answered) { setSelected(i); onAnswer?.() } }}>
               <span className="quiz-marker">
                 {answered && isCorrect ? '✓' : answered && isSelected ? '✗' : String.fromCharCode(65 + i)}
               </span>
@@ -78,12 +78,15 @@ function QuizQuestion({ question }) {
 // revealedUpTo: 0=description only, 1=+try-it, 2=+quiz, 3=+challenge
 // when no quiz: 0=description, 1=+try-it, 2=+challenge
 
-function ContinueArrow({ onClick, preview }) {
+function ContinueArrow({ onClick, preview, disabled }) {
   return (
     <div className="lesson-continue-wrap">
-      <button className="lesson-continue-btn" onClick={onClick}>
+      <button className="lesson-continue-btn" onClick={onClick} disabled={disabled} data-disabled={disabled ? 'true' : undefined}>
         <ChevronDown size={36} />
       </button>
+      {disabled && (
+        <span className="lesson-continue-hint">Answer the question{preview ? 's' : ''} above to continue</span>
+      )}
       {preview && (
         <div className="lesson-spoiler">{preview}</div>
       )}
@@ -127,6 +130,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const [testResults, setTestResults] = useState(null)
   const [runtimeOutput, setRuntimeOutput] = useState(null)
   const [allPassed, setAllPassed] = useState(false)
+  const [quizAnsweredCount, setQuizAnsweredCount] = useState(0)
+  const quizAllAnswered = quizAnsweredCount >= (currentStep?.quiz?.length ?? 0)
 
   const tryContainerRef = useRef(null)
   const tryEditorRef = useRef(null)
@@ -143,6 +148,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setTestResults(null)
     setRuntimeOutput(null)
     setTryOutput(null)
+    setQuizAnsweredCount(0)
     const complete = !!(node && isStepComplete(node.id, stepIdx))
     setAllPassed(complete)
     setRevealedUpTo(complete ? SECTION_MAX : 0)
@@ -325,18 +331,24 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       {isTryRunning ? 'Running…' : 'Run'}
                     </button>
                   </div>
-                  <div ref={tryContainerRef} />
-                  {tryOutput && (
-                    <div className="lesson-output">
-                      {tryOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
-                      {tryOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
-                      {tryOutput.stdout
-                        ? <pre className="output-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
-                        : !tryOutput.error && !tryOutput.stderr && (
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No output</span>
-                        )}
+                  <div className="lesson-editor-body">
+                    <div ref={tryContainerRef} className="lesson-editor-pane" />
+                    <div className="lesson-output-panel">
+                      {tryOutput ? (
+                        <>
+                          {tryOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
+                          {tryOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
+                          {tryOutput.stdout
+                            ? <pre className="output-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
+                            : !tryOutput.error && !tryOutput.stderr && (
+                              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No output</span>
+                            )}
+                        </>
+                      ) : (
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Run code to see output</span>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
 
@@ -353,7 +365,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                       <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
                       {currentStep.quiz.map((q, i) => (
-                        <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} />
+                        <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} onAnswer={() => setQuizAnsweredCount(c => c + 1)} />
                       ))}
                     </div>
 
@@ -361,6 +373,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       <ContinueArrow
                         onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
                         preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
+                        disabled={!quizAllAnswered}
                       />
                     )}
                   </>
@@ -397,14 +410,20 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                         {isTestRunning ? 'Running…' : 'Run Tests'}
                       </button>
                     </div>
-                    <div ref={challengeContainerRef} />
-                    {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) && (
-                      <div className="lesson-output">
-                        {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
-                        {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
-                        {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
+                    <div className="lesson-editor-body">
+                      <div ref={challengeContainerRef} className="lesson-editor-pane" />
+                      <div className="lesson-output-panel">
+                        {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) ? (
+                          <>
+                            {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
+                            {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
+                            {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
+                          </>
+                        ) : (
+                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Run code to see output</span>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
 
                   {testResults && (
