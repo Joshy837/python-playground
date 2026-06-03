@@ -24,6 +24,12 @@ const PAGE_THEME = {
 
 let editor = null
 
+function setStatus(text, color) {
+  const colors = { yellow: 'text-yellow-400', green: 'text-green-400', red: 'text-red-400' }
+  statusEl.textContent = text
+  statusEl.className = `text-xs ${colors[color]}`
+}
+
 async function handleRun() {
   if (runBtn.disabled) return
   runBtn.disabled = true
@@ -31,6 +37,12 @@ async function handleRun() {
   try {
     const result = await runCode(getValue(editor))
     renderOutput(result)
+    if (result.restartPromise) {
+      runBtn.textContent = 'Restarting…'
+      setStatus('Restarting…', 'yellow')
+      await result.restartPromise
+      setStatus('Ready', 'green')
+    }
   } finally {
     runBtn.disabled = false
     runBtn.textContent = 'Run'
@@ -59,12 +71,10 @@ async function init() {
   }
   try {
     await initPyodide()
-    statusEl.textContent = 'Ready'
-    statusEl.className = 'text-xs text-green-400'
+    setStatus('Ready', 'green')
     runBtn.disabled = false
   } catch (err) {
-    statusEl.textContent = 'Load failed'
-    statusEl.className = 'text-xs text-red-400'
+    setStatus('Load failed', 'red')
     console.error(err)
   }
 }

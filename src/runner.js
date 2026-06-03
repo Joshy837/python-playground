@@ -1,40 +1,50 @@
-const PYODIDE_VERSION = '0.29.4'
-const PYODIDE_CDN = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/pyodide.js`
+const TIMEOUT_MS = 10_000
 
-let pyodide = null
+let worker = null
+let pendingReady = null
+let pendingResult = null
 
-function injectScript(src) {
+function spawnWorker() {
+  if (worker) worker.terminate()
+  worker = new Worker('/pyodide-worker.js')
+  worker.onmessage = ({ data }) => {
+    if (data.type === 'ready') {
+      pendingReady?.()
+      pendingReady = null
+    } else if (data.type === 'result') {
+      pendingResult?.(data)
+      pendingResult = null
+    }
+  }
+}
+
+export function initPyodide() {
+  spawnWorker()
   return new Promise((resolve, reject) => {
-    const script = document.createElement('script')
-    script.src = src
-    script.onload = resolve
-    script.onerror = () => reject(new Error('Failed to load Pyodide from CDN'))
-    document.head.appendChild(script)
+    pendingReady = resolve
+    worker.onerror = reject
   })
 }
 
-export async function initPyodide() {
-  await injectScript(PYODIDE_CDN)
-  pyodide = await window.loadPyodide()
-  await pyodide.runPythonAsync('import sys, io')
-}
+export function runCode(code) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      pendingResult = null
+      spawnWorker()
+      const restartPromise = new Promise((res) => { pendingReady = res })
+      resolve({
+        stdout: '',
+        stderr: '',
+        error: `Execution timed out after ${TIMEOUT_MS / 1000} s. Runtime is restarting…`,
+        restartPromise,
+      })
+    }, TIMEOUT_MS)
 
-export async function runCode(code) {
-  await pyodide.runPythonAsync(`
-import sys, io
-sys.stdout = io.StringIO()
-sys.stderr = io.StringIO()
-`)
+    pendingResult = (data) => {
+      clearTimeout(timer)
+      resolve(data)
+    }
 
-  let error = null
-  try {
-    await pyodide.runPythonAsync(code)
-  } catch (err) {
-    error = err.message
-  }
-
-  const stdout = pyodide.runPython('sys.stdout.getvalue()')
-  const stderr = pyodide.runPython('sys.stderr.getvalue()')
-
-  return { stdout, stderr, error }
+    worker.postMessage({ type: 'run', code })
+  })
 }
