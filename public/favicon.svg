@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background: app header color, iOS-style rounded square -->
+  <rect width="100" height="100" rx="22" fill="#1f2937"/>
+
+  <!-- Snake body (play triangle with gently bowed back) -->
+  <path d="M 16,12 Q 22,50 16,88 L 87,50 Z" fill="#16a34a"/>
+
+  <!-- Scale texture: four arcs flowing toward the head -->
+  <g stroke="#15803d" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.55">
+    <path d="M 22,16 Q 42,27 62,43"/>
+    <path d="M 20,37 Q 44,43 66,50"/>
+    <path d="M 20,63 Q 44,57 66,50"/>
+    <path d="M 22,84 Q 42,73 62,57"/>
+  </g>
+
+  <!-- Snake head: lighter green, wider than the body tip -->
+  <ellipse cx="82" cy="50" rx="13" ry="11" fill="#22c55e"/>
+
+  <!-- Eye -->
+  <circle cx="87" cy="44" r="3" fill="#0d1117"/>
+  <circle cx="88.2" cy="42.5" r="1" fill="rgba(255,255,255,0.7)"/>
+
+  <!-- Forked tongue -->
+  <line x1="94" y1="50" x2="98.5" y2="46.5" stroke="#f87171" stroke-width="1.6" stroke-linecap="round"/>
+  <line x1="94" y1="50" x2="98.5" y2="53.5" stroke="#f87171" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
