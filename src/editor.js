@@ -29,6 +29,10 @@ export function getValue(editor) {
   return editor.getValue()
 }
 
+export function setValue(editor, code) {
+  editor.setValue(code)
+}
+
 export function setTheme(themeId) {
   monaco.editor.setTheme(themeId)
 }

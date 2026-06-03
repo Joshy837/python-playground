@@ -94,6 +94,23 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   outline: none;
 }
 
+/* ── Examples toolbar ───────────────────────────────── */
+.examples-toolbar { background-color: var(--header-bg); border-color: var(--header-border); }
+.text-muted       { color: var(--text-muted); }
+
+.example-btn {
+  background-color: var(--btn-secondary-bg);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  shrink: 0;
+}
+.example-btn:hover { background-color: var(--btn-secondary-hover); }
+
 /* ── Output text colours ─────────────────────────────── */
 .output-stdout { color: var(--output-stdout); }
 .output-stderr { color: var(--output-stderr); }

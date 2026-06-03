@@ -1,11 +1,18 @@
 import './ui/styles.css'
-import { setupEditor, getValue, setTheme } from './editor.js'
+import { setupEditor, getValue, setValue, setTheme } from './editor.js'
 import { initPyodide, runCode } from './runner.js'
-import { renderOutput, clearOutput } from './ui/output.js'
+import { renderOutput } from './ui/output.js'
+
+const EXAMPLES = [
+  { label: 'Hello World',        file: 'hello_world.py'        },
+  { label: 'Fibonacci',          file: 'fibonacci.py'          },
+  { label: 'FizzBuzz',           file: 'fizzbuzz.py'           },
+  { label: 'List Comprehensions',file: 'list_comprehensions.py'},
+  { label: 'Classes',            file: 'classes.py'            },
+]
 
 const statusEl = document.getElementById('pyodide-status')
 const runBtn = document.getElementById('run-btn')
-const clearBtn = document.getElementById('clear-btn')
 const themeSelect = document.getElementById('theme-select')
 
 const PAGE_THEME = {
@@ -37,6 +44,19 @@ function handleThemeChange(monacoTheme) {
 
 async function init() {
   editor = setupEditor('editor-container', handleRun)
+
+  const toolbar = document.getElementById('examples-toolbar')
+  for (const { label, file } of EXAMPLES) {
+    const btn = document.createElement('button')
+    btn.className = 'example-btn'
+    btn.textContent = label
+    btn.addEventListener('click', async () => {
+      const res = await fetch(`/examples/${file}`)
+      const code = await res.text()
+      setValue(editor, code)
+    })
+    toolbar.appendChild(btn)
+  }
   try {
     await initPyodide()
     statusEl.textContent = 'Ready'
@@ -50,7 +70,6 @@ async function init() {
 }
 
 runBtn.addEventListener('click', handleRun)
-clearBtn.addEventListener('click', clearOutput)
 themeSelect.addEventListener('change', (e) => handleThemeChange(e.target.value))
 
 init()

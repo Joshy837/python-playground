@@ -24,21 +24,25 @@
         <option value="hc-black">High Contrast Dark</option>
         <option value="hc-light">High Contrast Light</option>
       </select>
-      <button id="clear-btn" class="btn-secondary px-2.5 sm:px-3 py-1.5 text-sm rounded cursor-pointer">
-        Clear
-      </button>
-      <button
-        id="run-btn"
-        class="px-3 sm:px-4 py-1.5 text-sm font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
-        disabled
-      >
-        Run
-      </button>
     </div>
   </header>
 
   <main class="flex flex-col md:flex-row flex-1 overflow-hidden">
-    <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>
+    <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div class="examples-toolbar flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
+        <div id="examples-toolbar" class="flex items-center gap-1.5 flex-1 min-w-0 overflow-x-auto">
+          <span class="text-muted text-xs shrink-0 mr-0.5">Examples:</span>
+        </div>
+        <button
+          id="run-btn"
+          class="shrink-0 px-3 py-1 text-xs font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
+          disabled
+        >
+          Run
+        </button>
+      </div>
+      <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>
+    </div>
     <div class="app-divider h-px w-full md:h-auto md:w-px shrink-0"></div>
     <div class="output-panel flex flex-col flex-1 md:flex-none md:w-2/5 overflow-hidden">
       <div class="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0">
