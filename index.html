@@ -11,25 +11,25 @@
   <link rel="stylesheet" href="/src/ui/styles.css">
 </head>
 <body class="h-full flex flex-col overflow-hidden">
-  <header class="app-header flex items-center justify-between px-4 py-2.5 border-b shrink-0">
-    <div class="flex items-center gap-2">
-      <img src="/favicon.svg" alt="" width="24" height="24" class="rounded-md">
-      <span class="font-semibold">Python Playground</span>
+  <header class="app-header flex items-center justify-between gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0">
+    <div class="flex items-center gap-2 min-w-0">
+      <img src="/favicon.svg" alt="" width="24" height="24" class="rounded-md shrink-0">
+      <span class="font-semibold hidden sm:inline truncate">Python Playground</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span id="pyodide-status" class="text-xs text-yellow-400">Loading Python runtime...</span>
-      <select id="theme-select" class="theme-select">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <span id="pyodide-status" class="text-xs text-yellow-400 shrink-0">Loading...</span>
+      <select id="theme-select" class="theme-select hidden sm:block">
         <option value="vs-dark">Dark</option>
         <option value="vs">Light</option>
         <option value="hc-black">High Contrast Dark</option>
         <option value="hc-light">High Contrast Light</option>
       </select>
-      <button id="clear-btn" class="btn-secondary px-3 py-1.5 text-sm rounded cursor-pointer">
+      <button id="clear-btn" class="btn-secondary px-2.5 sm:px-3 py-1.5 text-sm rounded cursor-pointer">
         Clear
       </button>
       <button
         id="run-btn"
-        class="px-4 py-1.5 text-sm font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
+        class="px-3 sm:px-4 py-1.5 text-sm font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
         disabled
       >
         Run
@@ -37,10 +37,10 @@
     </div>
   </header>
 
-  <main class="flex flex-1 overflow-hidden">
-    <div id="editor-container" class="flex-1 overflow-hidden"></div>
-    <div class="app-divider w-px shrink-0"></div>
-    <div class="output-panel flex flex-col w-2/5 overflow-hidden">
+  <main class="flex flex-col md:flex-row flex-1 overflow-hidden">
+    <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>
+    <div class="app-divider h-px w-full md:h-auto md:w-px shrink-0"></div>
+    <div class="output-panel flex flex-col flex-1 md:flex-none md:w-2/5 overflow-hidden">
       <div class="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0">
         Output
       </div>

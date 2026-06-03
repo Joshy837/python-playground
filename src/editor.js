@@ -17,6 +17,7 @@ export function setupEditor(containerId, onRun) {
     padding: { top: 16, bottom: 16 },
     tabSize: 4,
     insertSpaces: true,
+    wordWrap: 'on',
   })
 
   editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, onRun)

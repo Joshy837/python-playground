@@ -39,11 +39,11 @@ async function init() {
   editor = setupEditor('editor-container', handleRun)
   try {
     await initPyodide()
-    statusEl.textContent = 'Python ready'
+    statusEl.textContent = 'Ready'
     statusEl.className = 'text-xs text-green-400'
     runBtn.disabled = false
   } catch (err) {
-    statusEl.textContent = 'Failed to load Python runtime'
+    statusEl.textContent = 'Load failed'
     statusEl.className = 'text-xs text-red-400'
     console.error(err)
   }
