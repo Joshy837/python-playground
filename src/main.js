@@ -9,6 +9,7 @@ const EXAMPLES = [
   { label: 'FizzBuzz',           file: 'fizzbuzz.py'           },
   { label: 'List Comprehensions',file: 'list_comprehensions.py'},
   { label: 'Classes',            file: 'classes.py'            },
+  { label: 'Matplotlib',         file: 'matplotlib_plot.py'    },
 ]
 
 const statusEl = document.getElementById('pyodide-status')

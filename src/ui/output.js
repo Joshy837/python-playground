@@ -1,10 +1,11 @@
 const outputEl = () => document.getElementById('output')
 
-export function renderOutput({ stdout, stderr, error }) {
+export function renderOutput({ stdout, stderr, error, plots }) {
   const el = outputEl()
   el.innerHTML = ''
 
-  if (!stdout && !stderr && !error) {
+  const hasPlots = plots && plots.length > 0
+  if (!stdout && !stderr && !error && !hasPlots) {
     el.innerHTML = '<span class="output-empty">No output</span>'
     return
   }
@@ -14,6 +15,15 @@ export function renderOutput({ stdout, stderr, error }) {
     pre.className = 'output-stdout whitespace-pre-wrap break-words'
     pre.textContent = stdout
     el.appendChild(pre)
+  }
+
+  if (hasPlots) {
+    for (const b64 of plots) {
+      const img = document.createElement('img')
+      img.src = `data:image/png;base64,${b64}`
+      img.className = 'output-plot'
+      el.appendChild(img)
+    }
   }
 
   if (stderr) {

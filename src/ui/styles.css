@@ -116,3 +116,12 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 .output-stderr { color: var(--output-stderr); }
 .output-error  { color: var(--output-error);  }
 .output-empty  { color: var(--text-muted);    }
+
+/* ── Plot images ─────────────────────────────────────── */
+.output-plot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+}
