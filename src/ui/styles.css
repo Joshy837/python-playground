@@ -16,6 +16,9 @@
   --output-stdout:    #f3f4f6;
   --output-stderr:    #fbbf24;
   --output-error:     #f87171;
+  --status-yellow:    #facc15;
+  --status-green:     #4ade80;
+  --status-red:       #f87171;
 }
 
 [data-theme="light"] {
@@ -33,6 +36,9 @@
   --output-stdout:    #111827;
   --output-stderr:    #b45309;
   --output-error:     #dc2626;
+  --status-yellow:    #b45309;
+  --status-green:     #15803d;
+  --status-red:       #dc2626;
 }
 
 [data-theme="hc-dark"] {
@@ -127,8 +133,53 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   outline: none;
 }
 
+.status-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-badge[data-status="yellow"] { color: var(--status-yellow); }
+.status-badge[data-status="yellow"] .status-dot { background-color: var(--status-yellow); }
+.status-badge[data-status="green"]  { color: var(--status-green); }
+.status-badge[data-status="green"]  .status-dot { background-color: var(--status-green); }
+.status-badge[data-status="red"]    { color: var(--status-red); }
+.status-badge[data-status="red"]    .status-dot { background-color: var(--status-red); }
+
+.theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { opacity: 0.65; }
+
 /* ── Examples toolbar ───────────────────────────────── */
 .examples-toolbar { background-color: var(--header-bg); border-color: var(--header-border); }
+
+.run-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.run-btn:hover:not(:disabled) { opacity: 0.75; }
+.run-btn[data-running="false"] { color: #16a34a; }
+.run-btn[data-running="true"]  { color: #dc2626; }
 .text-muted       { color: var(--text-muted); }
 
 /* ── Output text colours ─────────────────────────────── */

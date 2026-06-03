@@ -1,8 +1,20 @@
 import './ui/styles.css'
 import { setupEditor, getValue, setValue, setTheme } from './editor.js'
-import { initPyodide, runCode } from './runner.js'
+import { initPyodide, runCode, cancelRun } from './runner.js'
 import { renderOutput } from './ui/output.js'
 import { setupResizer } from './ui/resizer.js'
+import { Play, Square, Sun, Moon } from 'lucide'
+
+function lucideIcon(iconData, { size = 18, filled = false } = {}) {
+  const children = iconData.map(([tag, attrs]) => {
+    const a = Object.entries(attrs).map(([k, v]) => `${k}="${v}"`).join(' ')
+    return `<${tag} ${a}/>`
+  }).join('')
+  const svgAttrs = filled
+    ? `fill="currentColor" stroke="none"`
+    : `fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" ${svgAttrs}>${children}</svg>`
+}
 
 const EXAMPLES = [
   { label: 'Hello World',        file: 'hello_world.py'        },
@@ -13,48 +25,68 @@ const EXAMPLES = [
   { label: 'Matplotlib',         file: 'matplotlib_plot.py'    },
 ]
 
+const PLAY_ICON = lucideIcon(Play, { filled: true })
+const STOP_ICON = lucideIcon(Square, { filled: true })
+const SUN_ICON = lucideIcon(Sun)
+const MOON_ICON = lucideIcon(Moon)
+
 const statusEl = document.getElementById('pyodide-status')
 const runBtn = document.getElementById('run-btn')
-const themeSelect = document.getElementById('theme-select')
+const themeToggle = document.getElementById('theme-toggle')
 
-const PAGE_THEME = {
-  'vs-dark':  'dark',
-  'vs':       'light',
-  'hc-black': 'hc-dark',
-  'hc-light': 'hc-light',
+let isRunning = false
+let isDark = true
+
+function setRunBtnState(state) {
+  const running = state === 'running' || state === 'restarting'
+  runBtn.dataset.running = running ? 'true' : 'false'
+  runBtn.innerHTML = running ? STOP_ICON : PLAY_ICON
+  runBtn.disabled = state === 'loading' || state === 'restarting'
+  runBtn.title = state === 'running' ? 'Stop' : state === 'restarting' ? 'Restarting…' : 'Run (Shift+Enter)'
 }
 
 let editor = null
 
 function setStatus(text, color) {
-  const colors = { yellow: 'text-yellow-400', green: 'text-green-400', red: 'text-red-400' }
-  statusEl.textContent = text
-  statusEl.className = `text-xs ${colors[color]}`
+  statusEl.dataset.status = color
+  statusEl.querySelector('.status-text').textContent = text
+}
+
+function applyTheme(dark) {
+  const monacoTheme = dark ? 'vs-dark' : 'vs'
+  setTheme(monacoTheme)
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+  themeToggle.innerHTML = dark ? SUN_ICON : MOON_ICON
+  themeToggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode'
 }
 
 async function handleRun() {
-  if (runBtn.disabled) return
-  runBtn.disabled = true
-  runBtn.textContent = 'Running...'
+  if (isRunning) {
+    isRunning = false
+    setRunBtnState('restarting')
+    setStatus('Restarting…', 'yellow')
+    await cancelRun()
+    setStatus('Ready', 'green')
+    setRunBtnState('idle')
+    return
+  }
+  isRunning = true
+  setRunBtnState('running')
   try {
     const result = await runCode(getValue(editor))
     renderOutput(result)
     if (result.restartPromise) {
-      runBtn.textContent = 'Restarting…'
+      setRunBtnState('restarting')
       setStatus('Restarting…', 'yellow')
       await result.restartPromise
       setStatus('Ready', 'green')
     }
   } finally {
-    runBtn.disabled = false
-    runBtn.textContent = 'Run'
+    isRunning = false
+    setRunBtnState('idle')
   }
 }
 
-function handleThemeChange(monacoTheme) {
-  setTheme(monacoTheme)
-  document.documentElement.dataset.theme = PAGE_THEME[monacoTheme]
-}
 
 async function init() {
   setupResizer()
@@ -73,10 +105,12 @@ async function init() {
     const code = await res.text()
     setValue(editor, code)
   })
+  applyTheme(isDark)
+
   try {
     await initPyodide()
     setStatus('Ready', 'green')
-    runBtn.disabled = false
+    setRunBtnState('idle')
   } catch (err) {
     setStatus('Load failed', 'red')
     console.error(err)
@@ -84,6 +118,9 @@ async function init() {
 }
 
 runBtn.addEventListener('click', handleRun)
-themeSelect.addEventListener('change', (e) => handleThemeChange(e.target.value))
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark
+  applyTheme(isDark)
+})
 
 init()

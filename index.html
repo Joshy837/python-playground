@@ -17,13 +17,11 @@
       <span class="font-semibold hidden sm:inline truncate">Python Playground</span>
     </div>
     <div class="flex items-center gap-2 sm:gap-3">
-      <span id="pyodide-status" class="text-xs text-yellow-400 shrink-0">Loading...</span>
-      <select id="theme-select" class="theme-select hidden sm:block">
-        <option value="vs-dark">Dark</option>
-        <option value="vs">Light</option>
-        <option value="hc-black">High Contrast Dark</option>
-        <option value="hc-light">High Contrast Light</option>
-      </select>
+      <span id="pyodide-status" class="status-badge" data-status="yellow">
+        <span class="status-dot"></span>
+        <span class="status-text">Loading...</span>
+      </span>
+      <button id="theme-toggle" class="theme-toggle" title="Toggle theme"></button>
     </div>
   </header>
 
@@ -36,10 +34,11 @@
         </select>
         <button
           id="run-btn"
-          class="ml-auto shrink-0 px-3 py-1 text-xs font-medium bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
+          class="run-btn ml-auto"
+          data-running="false"
+          title="Run (Shift+Enter)"
           disabled
         >
-          Run
         </button>
       </div>
       <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>

@@ -26,6 +26,12 @@ export function initPyodide() {
   })
 }
 
+export function cancelRun() {
+  pendingResult = null
+  spawnWorker()
+  return new Promise((resolve) => { pendingReady = resolve })
+}
+
 export function runCode(code) {
   return new Promise((resolve) => {
     const timer = setTimeout(() => {

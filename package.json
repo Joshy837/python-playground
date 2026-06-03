@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lucide": "^1.17.0",
     "monaco-editor": "^0.52.0"
   },
   "devDependencies": {
