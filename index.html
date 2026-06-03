@@ -8,58 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/src/ui/styles.css">
 </head>
 <body class="h-full flex flex-col overflow-hidden">
-  <header class="app-header flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0">
-    <div class="flex items-center gap-2 min-w-0 shrink-0">
-      <img src="/favicon.svg" alt="" width="24" height="24" class="rounded-md shrink-0">
-      <span class="font-semibold hidden sm:inline truncate">Python Playground</span>
-    </div>
-    <nav class="flex items-center gap-1 ml-4">
-      <a href="#/" data-route="/" class="nav-link">Playground</a>
-      <a href="#/course" data-route="/course" class="nav-link">Course</a>
-    </nav>
-    <div class="flex items-center gap-2 sm:gap-3 ml-auto">
-      <span id="pyodide-status" class="status-badge" data-status="yellow">
-        <span class="status-dot"></span>
-        <span class="status-text">Loading...</span>
-      </span>
-      <button id="theme-toggle" class="theme-toggle" title="Toggle theme"></button>
-    </div>
-  </header>
-
-  <main id="page-playground" class="flex flex-col md:flex-row flex-1 overflow-hidden">
-    <div class="flex flex-col flex-1 min-h-0 overflow-hidden">
-      <div class="examples-toolbar flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
-        <span class="text-muted text-xs shrink-0">Examples:</span>
-        <select id="examples-select" class="theme-select">
-          <option value="">— pick one —</option>
-        </select>
-        <button
-          id="run-btn"
-          class="run-btn ml-auto"
-          data-running="false"
-          title="Run (Shift+Enter)"
-          disabled
-        >
-        </button>
-      </div>
-      <div id="editor-container" class="flex-1 min-h-0 overflow-hidden"></div>
-    </div>
-    <div id="resize-handle" class="resize-handle shrink-0"></div>
-    <div id="output-panel" class="output-panel flex flex-col flex-1 md:flex-none overflow-hidden">
-      <div class="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0">
-        Output
-      </div>
-      <div id="output" class="flex-1 overflow-auto p-4 font-mono text-sm"></div>
-    </div>
-  </main>
-
-  <div id="page-course" class="flex-1 overflow-auto flex items-center justify-center" hidden>
-    <p class="text-muted text-sm">Course coming soon...</p>
-  </div>
-
-  <script type="module" src="/src/main.js"></script>
+  <div id="root" class="h-full flex flex-col overflow-hidden"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
