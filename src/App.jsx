@@ -37,11 +37,11 @@ export default function App() {
   function toggleTheme() {
     const next = monacoTheme === 'vs-dark' ? 'vs' : 'vs-dark'
     setMonacoTheme(next)
+    monaco.editor.setTheme(next)
     clearTimeout(themeSwitchTimer.current)
     document.documentElement.style.backgroundColor = THEME_BG[next]
     document.documentElement.dataset.themeSwitching = ''
     themeSwitchTimer.current = setTimeout(() => {
-      monaco.editor.setTheme(next)
       document.documentElement.dataset.theme = PAGE_THEME[next]
       document.documentElement.style.backgroundColor = ''
       delete document.documentElement.dataset.themeSwitching
@@ -55,7 +55,7 @@ export default function App() {
         <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
         <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
-        <Route path="/docs" element={<DocumentationPage />} />
+        <Route path="/docs" element={<DocumentationPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
       </Routes>
     </HashRouter>
   )
