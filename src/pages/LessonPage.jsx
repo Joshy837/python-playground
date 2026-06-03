@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, CheckCircle } from 'lucide-react'
+import { Play, ChevronLeft, CheckCircle, ChevronRight } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -40,10 +40,16 @@ function stripTestLine(stdout) {
 }
 
 export default function LessonPage({ pyodideReady, monacoTheme }) {
-  const { id } = useParams()
+  const { id, step } = useParams()
   const navigate = useNavigate()
   const node = NODES.find(n => n.id === id)
-  const { isComplete, isUnlocked, markComplete } = useProgress()
+
+  // step param is 1-indexed in URL; default to step 1 if absent
+  const stepIdx = step ? Math.max(0, parseInt(step, 10) - 1) : 0
+  const currentStep = node?.steps[stepIdx]
+  const isLastStep = node ? stepIdx === node.steps.length - 1 : true
+
+  const { isComplete, isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
   const editorContainerRef = useRef(null)
   const editorRef = useRef(null)
@@ -55,14 +61,18 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const [runtimeOutput, setRuntimeOutput] = useState(null)
   const [allPassed, setAllPassed] = useState(false)
 
+  // reset state when step changes
   useEffect(() => {
-    if (node && isComplete(node.id)) setAllPassed(true)
-  }, [node?.id])
+    setTestResults(null)
+    setRuntimeOutput(null)
+    if (node && isStepComplete(node.id, stepIdx)) setAllPassed(true)
+    else setAllPassed(false)
+  }, [node?.id, stepIdx])
 
   useEffect(() => {
-    if (!node) return
+    if (!currentStep) return
     const editor = monaco.editor.create(editorContainerRef.current, {
-      value: node.starter,
+      value: currentStep.starter,
       language: 'python',
       theme: initialThemeRef.current,
       fontSize: 14,
@@ -80,7 +90,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       handleRunRef.current?.()
     })
     return () => { editor.dispose(); editorRef.current = null }
-  }, [node?.id])
+  }, [node?.id, stepIdx])
 
   useEffect(() => {
     if (editorRef.current) {
@@ -95,7 +105,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setRuntimeOutput(null)
     try {
       const code = editorRef.current.getValue()
-      const result = await runCode(buildTestCode(code, node.tests))
+      const result = await runCode(buildTestCode(code, currentStep.tests))
       const userStdout = stripTestLine(result.stdout || '')
       const parsed = parseTestResults(result.stdout || '')
       setRuntimeOutput({
@@ -107,7 +117,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         setTestResults(parsed)
         if (parsed.every(t => t.passed)) {
           setAllPassed(true)
-          markComplete(node.id)
+          markStepComplete(node.id, stepIdx)
         }
       }
     } finally {
@@ -117,7 +127,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
   handleRunRef.current = handleRun
 
-  if (!node) {
+  if (!node || !currentStep) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
@@ -128,11 +138,11 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     )
   }
 
-  if (!isUnlocked(node.id) && !isComplete(node.id)) {
+  if (!isStepUnlocked(node.id, stepIdx) && !isStepComplete(node.id, stepIdx)) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted text-sm mb-3">Complete the prerequisites first.</p>
+          <p className="text-muted text-sm mb-3">Complete the previous step first.</p>
           <Link to="/course" className="nav-link">Back to course</Link>
         </div>
       </div>
@@ -140,7 +150,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   }
 
   const passed = testResults?.filter(t => t.passed).length ?? 0
-  const total = node.tests.length
+  const total = currentStep.tests.length
+  const totalSteps = node.steps.length
 
   return (
     <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden">
@@ -154,11 +165,18 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           >
             <ChevronLeft size={16} />
           </button>
-          <span className="font-semibold text-sm truncate">{node.title}</span>
-          {allPassed && <CheckCircle size={15} className="ml-auto shrink-0" style={{ color: 'var(--status-green)' }} />}
+          <div className="flex flex-col min-w-0">
+            <span className="font-semibold text-sm truncate">{node.title}</span>
+            <span className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+              Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
+            </span>
+          </div>
+          {isComplete(node.id) && (
+            <CheckCircle size={15} className="ml-auto shrink-0" style={{ color: 'var(--status-green)' }} />
+          )}
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4 lesson-prose">
-          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(node.instructions) }} />
+          <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.instructions) }} />
         </div>
       </div>
 
@@ -215,14 +233,23 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
             {allPassed && (
               <div className="px-4 pb-3 pt-1 flex items-center justify-between">
                 <span className="text-xs font-medium" style={{ color: 'var(--status-green)' }}>
-                  All tests pass!
+                  {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
                 </span>
-                <button
-                  className="btn-secondary text-xs px-3 py-1 rounded-md"
-                  onClick={() => navigate('/course')}
-                >
-                  Back to course
-                </button>
+                {isLastStep ? (
+                  <button
+                    className="btn-secondary text-xs px-3 py-1 rounded-md"
+                    onClick={() => navigate('/course')}
+                  >
+                    Back to course
+                  </button>
+                ) : (
+                  <button
+                    className="lesson-next-btn"
+                    onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
+                  >
+                    Next step <ChevronRight size={13} />
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -250,7 +277,7 @@ function renderMarkdown(md) {
     // list items
     .replace(/^- (.+)$/gm, '<li>$1</li>')
     .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul class="lesson-list">${m}</ul>`)
-    // paragraphs (lines separated by blank lines, not already tags)
+    // paragraphs
     .split(/\n\n+/)
     .map(block => {
       block = block.trim()

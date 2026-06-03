@@ -7,17 +7,54 @@ import { NODES, EDGES, NODE_W, NODE_H } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
 
 function CourseNode({ data }) {
-  const { title, icon: Icon, unlocked, done } = data
+  const { title, icon: Icon, unlocked, done, expanded, steps, onStepClick } = data
+  const [popupVisible, setPopupVisible] = useState(false)
+  const [popupExiting, setPopupExiting] = useState(false)
+
+  useEffect(() => {
+    if (expanded) {
+      setPopupVisible(true)
+      setPopupExiting(false)
+    } else if (popupVisible) {
+      setPopupExiting(true)
+      const t = setTimeout(() => {
+        setPopupVisible(false)
+        setPopupExiting(false)
+      }, 200)
+      return () => clearTimeout(t)
+    }
+  }, [expanded])
+
   return (
     <div
       className={`course-node ${done ? 'course-node-done' : unlocked ? 'course-node-unlocked' : 'course-node-locked'}`}
-      style={{ width: NODE_W, height: NODE_H, cursor: unlocked ? 'pointer' : 'default' }}
+      style={{ width: NODE_W, height: NODE_H, cursor: unlocked ? 'pointer' : 'default', overflow: 'visible', position: 'relative' }}
     >
       <Handle type="target" position={Position.Left} style={{ visibility: 'hidden' }} />
       <div className="course-node-icon">
         {done ? <Check size={13} /> : !unlocked ? <Lock size={13} /> : Icon ? <Icon size={13} /> : null}
       </div>
       <span className="course-node-title">{title}</span>
+
+      {popupVisible && (
+        <div
+          className={`course-node-popup${popupExiting ? ' course-node-popup-exit' : ''}`}
+          onClick={e => e.stopPropagation()}
+        >
+          {steps.map((step, i) => (
+            <button
+              key={i}
+              className={`course-step-btn ${step.done ? 'course-step-done' : step.unlocked ? 'course-step-available' : 'course-step-locked'}`}
+              disabled={!step.unlocked && !step.done}
+              title={step.title}
+              onClick={e => { e.stopPropagation(); onStepClick(i) }}
+            >
+              {step.done ? <Check size={11} /> : i + 1}
+            </button>
+          ))}
+        </div>
+      )}
+
       <Handle type="source" position={Position.Right} style={{ visibility: 'hidden' }} />
     </div>
   )
@@ -38,21 +75,33 @@ function useTheme() {
 
 export default function CoursePage() {
   const navigate = useNavigate()
-  const { completed } = useProgress()
+  const { completed, isStepComplete, isStepUnlocked } = useProgress()
   const theme = useTheme()
   const isLight = theme === 'light' || theme === 'hc-light'
+  const [expandedId, setExpandedId] = useState(null)
 
-  const nodes = useMemo(() => NODES.map(node => ({
-    id: node.id,
-    type: 'courseNode',
-    position: { x: node.x, y: node.y },
-    data: {
-      title: node.title,
-      icon: node.icon,
-      done: completed.includes(node.id),
-      unlocked: node.requires.every(req => completed.includes(req)),
-    },
-  })), [completed])
+  const nodes = useMemo(() => NODES.map(node => {
+    const isDone = node.steps.every((_, i) => isStepComplete(node.id, i))
+    const isNodeUnlocked = node.requires.every(req => completed.includes(req))
+    return {
+      id: node.id,
+      type: 'courseNode',
+      position: { x: node.x, y: node.y },
+      data: {
+        title: node.title,
+        icon: node.icon,
+        done: isDone,
+        unlocked: isNodeUnlocked,
+        expanded: expandedId === node.id,
+        steps: node.steps.map((s, i) => ({
+          title: s.title,
+          done: isStepComplete(node.id, i),
+          unlocked: isStepUnlocked(node.id, i),
+        })),
+        onStepClick: stepIdx => navigate(`/learn/${node.id}/${stepIdx + 1}`),
+      },
+    }
+  }), [completed, expandedId])
 
   const edges = useMemo(() => EDGES.map(({ from, to }) => {
     const done = completed.includes(from)
@@ -72,20 +121,21 @@ export default function CoursePage() {
 
   const onNodeClick = useCallback((_, node) => {
     if (!node.data.unlocked && !node.data.done) return
-    navigate(`/learn/${node.id}`)
-  }, [navigate])
+    setExpandedId(prev => prev === node.id ? null : node.id)
+  }, [])
+
+  const onPaneClick = useCallback(() => setExpandedId(null), [])
 
   const done = completed.length
   const total = NODES.length
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header strip */}
       <div className="flex items-center justify-between px-5 py-3 shrink-0 border-b" style={{ borderColor: 'var(--header-border)', background: 'var(--header-bg)' }}>
         <div>
           <h1 className="font-semibold text-sm">Python Fundamentals</h1>
           <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-            Click a node to open the lesson. Complete each topic to unlock the next.
+            Click a node to choose a step, then click the step to begin.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-6">
@@ -96,24 +146,24 @@ export default function CoursePage() {
         </div>
       </div>
 
-      {/* Tree canvas */}
       <div className="flex-1" style={{ background: 'var(--course-bg)' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        nodeOrigin={nodeOrigin}
-        onNodeClick={onNodeClick}
-        fitView
-        fitViewOptions={{ padding: 0.3 }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        panOnScroll
-        zoomOnScroll={false}
-      >
-        <Background variant={isLight ? 'lines' : 'dots'} color="var(--course-dot)" gap={28} size={1} lineWidth={0.75} />
-      </ReactFlow>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          nodeOrigin={nodeOrigin}
+          onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
+          fitView
+          fitViewOptions={{ padding: 0.3 }}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable={false}
+          panOnScroll
+          zoomOnScroll={false}
+        >
+          <Background variant={isLight ? 'lines' : 'dots'} color="var(--course-dot)" gap={28} size={1} lineWidth={0.75} />
+        </ReactFlow>
       </div>
     </div>
   )

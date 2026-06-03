@@ -3,32 +3,48 @@ import { NODES } from '../data/courseTree.js'
 
 function load() {
   try {
-    return JSON.parse(localStorage.getItem('course-progress') || '[]')
+    const raw = localStorage.getItem('course-progress-v2')
+    return raw ? JSON.parse(raw) : {}
   } catch {
-    return []
+    return {}
   }
 }
 
 export function useProgress() {
-  const [completed, setCompleted] = useState(load)
+  const [stepsDone, setStepsDone] = useState(load)
 
-  function markComplete(id) {
-    setCompleted(prev => {
-      if (prev.includes(id)) return prev
-      const next = [...prev, id]
-      localStorage.setItem('course-progress', JSON.stringify(next))
+  function markStepComplete(nodeId, stepIdx) {
+    setStepsDone(prev => {
+      const current = prev[nodeId] ?? []
+      if (current.includes(stepIdx)) return prev
+      const next = { ...prev, [nodeId]: [...current, stepIdx] }
+      localStorage.setItem('course-progress-v2', JSON.stringify(next))
       return next
     })
   }
 
-  function isComplete(id) {
-    return completed.includes(id)
+  function isStepComplete(nodeId, stepIdx) {
+    return (stepsDone[nodeId] ?? []).includes(stepIdx)
   }
 
-  function isUnlocked(id) {
-    const node = NODES.find(n => n.id === id)
-    return node ? node.requires.every(req => completed.includes(req)) : false
+  function isComplete(nodeId) {
+    const node = NODES.find(n => n.id === nodeId)
+    if (!node) return false
+    const done = stepsDone[nodeId] ?? []
+    return node.steps.every((_, i) => done.includes(i))
   }
 
-  return { completed, markComplete, isComplete, isUnlocked }
+  function isUnlocked(nodeId) {
+    const node = NODES.find(n => n.id === nodeId)
+    return node ? node.requires.every(req => isComplete(req)) : false
+  }
+
+  function isStepUnlocked(nodeId, stepIdx) {
+    if (!isUnlocked(nodeId)) return false
+    return stepIdx === 0 || isStepComplete(nodeId, stepIdx - 1)
+  }
+
+  const completed = NODES.filter(n => isComplete(n.id)).map(n => n.id)
+
+  return { completed, stepsDone, markStepComplete, isStepComplete, isStepUnlocked, isComplete, isUnlocked }
 }

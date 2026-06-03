@@ -279,6 +279,98 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 }
 .course-node-locked .course-node-title { color: var(--text-muted); }
 
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes bubble-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.4) translateY(6px);
+  }
+}
+
+.course-node-popup {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+}
+
+.course-node-popup .course-step-btn {
+  animation: bubble-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.course-node-popup .course-step-btn:nth-child(1) { animation-delay: 0ms; }
+.course-node-popup .course-step-btn:nth-child(2) { animation-delay: 60ms; }
+.course-node-popup .course-step-btn:nth-child(3) { animation-delay: 120ms; }
+
+.course-node-popup-exit .course-step-btn {
+  animation: bubble-out 0.18s ease-in both;
+}
+.course-node-popup-exit .course-step-btn:nth-child(1) { animation-delay: 80ms; }
+.course-node-popup-exit .course-step-btn:nth-child(2) { animation-delay: 40ms; }
+.course-node-popup-exit .course-step-btn:nth-child(3) { animation-delay: 0ms; }
+
+.course-step-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+  transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.course-step-done {
+  border-color: var(--status-green);
+  background: color-mix(in srgb, var(--status-green) 10%, var(--header-bg));
+  color: var(--status-green);
+}
+.course-step-done:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-green) 25%, transparent);
+}
+
+.course-step-available {
+  border-color: var(--text-muted);
+  background: var(--header-bg);
+  color: var(--text-primary);
+}
+.course-step-available:hover {
+  border-color: var(--text-primary);
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-primary) 15%, transparent);
+}
+
+.course-step-locked {
+  border-color: var(--header-border);
+  background: var(--header-bg);
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 /* ── Lesson page ─────────────────────────────────────── */
 .lesson-instructions {
   background: var(--header-bg);
@@ -299,6 +391,21 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   flex-shrink: 0;
 }
 .lesson-back-btn:hover { color: var(--text-primary); background: var(--btn-secondary-bg); }
+.lesson-next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0.2rem 0.65rem;
+  border-radius: 6px;
+  border: none;
+  background: var(--status-green);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.lesson-next-btn:hover { opacity: 0.85; }
 .lesson-results { background: var(--output-bg); }
 .lesson-prose { font-size: 0.85rem; line-height: 1.65; color: var(--text-primary); }
 .lesson-h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }

@@ -55,6 +55,7 @@ export default function App() {
         <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
         <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
+        <Route path="/learn/:id/:step" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
         <Route path="/docs" element={<DocumentationPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
       </Routes>
     </HashRouter>
