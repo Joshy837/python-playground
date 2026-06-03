@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, Terminal, GraduationCap } from 'lucide-react'
 
 const navClass = ({ isActive }) => `nav-link${isActive ? ' nav-link-active' : ''}`
 
@@ -14,8 +14,8 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
         <span className="font-semibold hidden sm:inline truncate">Python Playground</span>
       </div>
       <nav className="flex items-center gap-1 ml-4">
-        <NavLink to="/" end className={navClass}>Playground</NavLink>
-        <NavLink to="/course" className={navClass}>Course</NavLink>
+        <NavLink to="/" end className={navClass}><Terminal size={15} />Playground</NavLink>
+        <NavLink to="/course" className={navClass}><GraduationCap size={15} />Course</NavLink>
       </nav>
       <div className="flex items-center gap-3 ml-auto">
         <span className="status-badge" data-status={statusColor}>
