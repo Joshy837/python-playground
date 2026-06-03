@@ -9,6 +9,7 @@
     "postinstall": "node -e \"const fs=require('fs'),f='node_modules/vite-plugin-monaco-editor/dist/workerMiddleware.js';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('fs.rmdirSync','fs.rmSync'))\""
   },
   "dependencies": {
+    "@xyflow/react": "^12.11.0",
     "lucide-react": "^1.17.0",
     "monaco-editor": "^0.52.0",
     "react": "^19.2.7",
