@@ -5,6 +5,7 @@ import Header from './components/Header.jsx'
 import PlaygroundPage from './pages/PlaygroundPage.jsx'
 import CoursePage from './pages/CoursePage.jsx'
 import LessonPage from './pages/LessonPage.jsx'
+import DocumentationPage from './pages/DocumentationPage.jsx'
 import { initPyodide } from './runner.js'
 
 const PAGE_THEME = {
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
         <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
+        <Route path="/docs" element={<DocumentationPage />} />
       </Routes>
     </HashRouter>
   )
