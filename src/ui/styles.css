@@ -75,6 +75,10 @@
   --output-error:     #cc0000;
 }
 
+/* ── Theme-switch fade (whole page) ──────────────────── */
+body { transition: opacity 0.2s ease; }
+[data-theme-switching] body { opacity: 0; }
+
 /* ── Structural theming ──────────────────────────────── */
 body          { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
 .app-header   { background-color: var(--header-bg); border-color: var(--header-border); }
@@ -131,6 +135,7 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   font-size: 0.75rem;
   cursor: pointer;
   outline: none;
+  transition: background-color 0.15s;
 }
 
 .status-badge {

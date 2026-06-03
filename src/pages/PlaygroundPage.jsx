@@ -17,9 +17,10 @@ const DEFAULT_CODE = `# Write your Python code here and press Run (or Ctrl+Enter
 print("Hello, World!")
 `
 
-export default function PlaygroundPage({ pyodideReady, pyodideError }) {
+export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
   const editorContainerRef = useRef(null)
   const editorRef = useRef(null)
+  const initialThemeRef = useRef(monacoTheme)
   const mainRef = useRef(null)
   const outputPanelRef = useRef(null)
   const resizeHandleRef = useRef(null)
@@ -34,7 +35,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError }) {
     const editor = monaco.editor.create(editorContainerRef.current, {
       value: DEFAULT_CODE,
       language: 'python',
-      theme: 'vs-dark',
+      theme: initialThemeRef.current,
       fontSize: 14,
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
       minimap: { enabled: false },

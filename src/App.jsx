@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
 import Header from './components/Header.jsx'
@@ -13,10 +13,18 @@ const PAGE_THEME = {
   'hc-light': 'hc-light',
 }
 
+const THEME_BG = {
+  'vs-dark':  '#111827',
+  'vs':       '#ffffff',
+  'hc-black': '#000000',
+  'hc-light': '#ffffff',
+}
+
 export default function App() {
   const [monacoTheme, setMonacoTheme] = useState('vs-dark')
   const [pyodideReady, setPyodideReady] = useState(false)
   const [pyodideError, setPyodideError] = useState(false)
+  const themeSwitchTimer = useRef(null)
 
   useEffect(() => {
     initPyodide()
@@ -27,15 +35,22 @@ export default function App() {
   function toggleTheme() {
     const next = monacoTheme === 'vs-dark' ? 'vs' : 'vs-dark'
     setMonacoTheme(next)
-    monaco.editor.setTheme(next)
-    document.documentElement.dataset.theme = PAGE_THEME[next]
+    clearTimeout(themeSwitchTimer.current)
+    document.documentElement.style.backgroundColor = THEME_BG[next]
+    document.documentElement.dataset.themeSwitching = ''
+    themeSwitchTimer.current = setTimeout(() => {
+      monaco.editor.setTheme(next)
+      document.documentElement.dataset.theme = PAGE_THEME[next]
+      document.documentElement.style.backgroundColor = ''
+      delete document.documentElement.dataset.themeSwitching
+    }, 200)
   }
 
   return (
     <HashRouter>
       <Header isDark={monacoTheme === 'vs-dark'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
       <Routes>
-        <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} />} />
+        <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
       </Routes>
     </HashRouter>
