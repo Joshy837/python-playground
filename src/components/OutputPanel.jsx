@@ -3,8 +3,15 @@ import { forwardRef } from 'react'
 const OutputPanel = forwardRef(function OutputPanel({ output }, ref) {
   return (
     <div ref={ref} className="output-panel flex flex-col flex-1 md:flex-none overflow-hidden">
-      <div className="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0">
-        Output
+      <div className="output-label px-3 py-2 text-xs font-medium uppercase tracking-wider border-b shrink-0 flex items-center justify-between">
+        <span>Output</span>
+        {output?.elapsed != null && (
+          <span className="text-muted font-normal normal-case tracking-normal">
+            {output.elapsed < 1000
+              ? `${Math.round(output.elapsed)} ms`
+              : `${(output.elapsed / 1000).toFixed(2)} s`}
+          </span>
+        )}
       </div>
       <div className="flex-1 overflow-auto p-4 font-mono text-sm">
         <OutputContent output={output} />

@@ -46,9 +46,11 @@ export function runCode(code) {
       })
     }, TIMEOUT_MS)
 
+    const startTime = performance.now()
+
     pendingResult = (data) => {
       clearTimeout(timer)
-      resolve(data)
+      resolve({ ...data, elapsed: performance.now() - startTime })
     }
 
     worker.postMessage({ type: 'run', code })
