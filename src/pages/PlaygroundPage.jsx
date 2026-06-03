@@ -140,8 +140,6 @@ export default function PlaygroundPage({ pyodideReady, pyodideError }) {
     setSelectedExample('')
   }
 
-  const statusText = pyodideError ? 'Load failed' : pyodideReady ? 'Ready' : 'Loading...'
-  const statusColor = pyodideError ? 'red' : pyodideReady ? 'green' : 'yellow'
   const running = isRunning || isRestarting
   const runBtnDisabled = !pyodideReady || isRestarting
 
@@ -160,12 +158,8 @@ export default function PlaygroundPage({ pyodideReady, pyodideError }) {
               <option key={file} value={file}>{label}</option>
             ))}
           </select>
-          <span className="status-badge ml-auto" data-status={statusColor}>
-            <span className="status-dot" />
-            <span className="status-text">{statusText}</span>
-          </span>
           <button
-            className="run-btn"
+            className="run-btn ml-auto"
             data-running={running ? 'true' : 'false'}
             disabled={runBtnDisabled}
             title={isRunning ? 'Stop' : isRestarting ? 'Restarting…' : 'Run (Ctrl+Enter)'}

@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Header isDark={monacoTheme === 'vs-dark'} onToggleTheme={toggleTheme} />
+      <Header isDark={monacoTheme === 'vs-dark'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
       <Routes>
         <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} />} />
         <Route path="/course" element={<CoursePage />} />
