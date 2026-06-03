@@ -11,7 +11,7 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
     <header className="app-header flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0">
       <div className="flex items-center gap-2 min-w-0 shrink-0">
         <img src="/favicon.svg" alt="" width="24" height="24" className="rounded-md shrink-0" />
-        <span className="font-semibold hidden sm:inline truncate">Python Playground</span>
+        <span className="font-semibold hidden sm:inline truncate">Just Python It</span>
       </div>
       <nav className="flex items-center gap-1 ml-4">
         <NavLink to="/" end className={navClass}><Terminal size={15} />Playground</NavLink>
