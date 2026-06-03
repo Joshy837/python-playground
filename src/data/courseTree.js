@@ -10,61 +10,96 @@ export const NODES = [
     description: 'Learn how to store data in variables and work with Python\'s basic types.',
     steps: [
       {
-        title: 'Strings & Integers',
-        instructions: `# Variables — Strings & Integers
+        title: 'Strings',
+        instructions: `# Variables — Strings
 
 A variable stores a value. You create one by writing a name, then \`=\`, then the value.
 
-- **str** — text wrapped in quotes: \`"hello"\`, \`'world'\`
-- **int** — whole numbers: \`42\`, \`-7\`, \`0\`
+**str** — text wrapped in quotes: \`"hello"\`, \`'world'\`
 
 \`\`\`python
 name = "Alice"
-age = 25
-print(name, age)  # Alice 25
+print(name)   # Alice
+print(type(name))  # <class 'str'>
 \`\`\`
 
 ## Challenge
 
-Create two variables:
-- \`name\` — a string (any name you like)
-- \`age\` — an integer`,
-        starter: `# Create two variables:
+Create a variable \`name\` and assign it any string value.`,
+        starter: `# Create a string variable:
 name =
-age =
 `,
         tests: [
           { name: 'name is a string', check: 'isinstance(name, str)', msg: 'name should be a str — wrap it in quotes' },
-          { name: 'age is an integer', check: 'isinstance(age, int) and not isinstance(age, bool)', msg: 'age should be an int (no quotes, no decimal)' },
         ],
       },
       {
-        title: 'Floats & Booleans',
-        instructions: `# Variables — Floats & Booleans
+        title: 'Integers',
+        instructions: `# Variables — Integers
 
-Two more types you'll use constantly:
+**int** — whole numbers: \`42\`, \`-7\`, \`0\`
 
-- **float** — decimal numbers: \`3.14\`, \`1.75\`
-- **bool** — exactly \`True\` or \`False\` (capital first letter, no quotes)
+\`\`\`python
+age = 25
+print(age)        # 25
+print(type(age))  # <class 'int'>
+\`\`\`
+
+No quotes, no decimal point — just the number.
+
+## Challenge
+
+Create a variable \`age\` and assign it any integer value.`,
+        starter: `# Create an integer variable:
+age =
+`,
+        tests: [
+          { name: 'age is an integer', check: 'isinstance(age, int) and not isinstance(age, bool)', msg: 'age should be an int (no quotes, no decimal point)' },
+        ],
+      },
+      {
+        title: 'Floats',
+        instructions: `# Variables — Floats
+
+**float** — decimal numbers: \`3.14\`, \`1.75\`
 
 \`\`\`python
 height = 1.75
+print(height)        # 1.75
+print(type(height))  # <class 'float'>
+\`\`\`
+
+A float always has a decimal point.
+
+## Challenge
+
+Create a variable \`height\` and assign it any float value (e.g. \`1.75\`).`,
+        starter: `# Create a float variable:
+height =
+`,
+        tests: [
+          { name: 'height is a float', check: 'isinstance(height, float)', msg: 'height should be a float — include a decimal point (e.g. 1.75)' },
+        ],
+      },
+      {
+        title: 'Booleans',
+        instructions: `# Variables — Booleans
+
+**bool** — exactly \`True\` or \`False\` (capital first letter, no quotes)
+
+\`\`\`python
 is_student = True
-print(type(height))      # <class 'float'>
+print(is_student)        # True
 print(type(is_student))  # <class 'bool'>
 \`\`\`
 
 ## Challenge
 
-Create two variables:
-- \`height\` — a float (e.g. \`1.75\`)
-- \`is_student\` — a boolean (\`True\` or \`False\`)`,
-        starter: `# Create two variables:
-height =
+Create a variable \`is_student\` and assign it \`True\` or \`False\`.`,
+        starter: `# Create a boolean variable:
 is_student =
 `,
         tests: [
-          { name: 'height is a float', check: 'isinstance(height, float)', msg: 'height should be a float — include a decimal point (e.g. 1.75)' },
           { name: 'is_student is a bool', check: 'isinstance(is_student, bool)', msg: 'is_student should be True or False (capital T/F, no quotes)' },
         ],
       },
@@ -150,32 +185,52 @@ Write a function \`classify(n)\` that returns:
     description: 'Store and manipulate ordered collections of values.',
     steps: [
       {
-        title: 'Creating & Accessing',
-        instructions: `# Lists — Creating & Accessing
+        title: 'Creating a List',
+        instructions: `# Lists — Creating
 
 A list holds an ordered sequence of values in square brackets.
 
 \`\`\`python
 fruits = ["apple", "banana", "cherry"]
-print(fruits[0])    # "apple"  — indexing starts at 0
-print(fruits[-1])   # "cherry" — last item
+print(fruits)       # ['apple', 'banana', 'cherry']
 print(len(fruits))  # 3
 \`\`\`
 
 ## Challenge
 
-1. Create a list \`numbers\` containing \`[3, 1, 4, 1, 5]\`
-2. Write a function \`first_and_last(lst)\` that returns a **new list** with the first and last elements of \`lst\``,
-        starter: `numbers = [3, 1, 4, 1, 5]
+Create a list \`numbers\` containing exactly \`[3, 1, 4, 1, 5]\`.`,
+        starter: `# Create the list:
+numbers =
+`,
+        tests: [
+          { name: 'numbers == [3, 1, 4, 1, 5]', check: 'numbers == [3, 1, 4, 1, 5]', msg: 'numbers should be [3, 1, 4, 1, 5]' },
+        ],
+      },
+      {
+        title: 'Accessing by Index',
+        instructions: `# Lists — Accessing by Index
 
-def first_and_last(lst):
+Each item in a list has an index. Indexing starts at \`0\`.
+
+\`\`\`python
+fruits = ["apple", "banana", "cherry"]
+print(fruits[0])    # "apple"  — first item
+print(fruits[-1])   # "cherry" — last item
+\`\`\`
+
+## Challenge
+
+Write a function \`first_and_last(lst)\` that returns a **new list** containing the first and last elements of \`lst\`.
+
+Example: \`first_and_last([10, 20, 30])\` → \`[10, 30]\``,
+        starter: `def first_and_last(lst):
     # return a list containing the first and last elements
     pass
 `,
         tests: [
-          { name: 'numbers == [3, 1, 4, 1, 5]', check: 'numbers == [3, 1, 4, 1, 5]', msg: 'numbers should be [3, 1, 4, 1, 5]' },
           { name: 'first_and_last([10, 20, 30]) == [10, 30]', check: 'first_and_last([10, 20, 30]) == [10, 30]', msg: 'first_and_last([10, 20, 30]) should return [10, 30]' },
           { name: 'first_and_last([1, 2]) == [1, 2]', check: 'first_and_last([1, 2]) == [1, 2]', msg: 'first_and_last([1, 2]) should return [1, 2]' },
+          { name: 'first_and_last([5, 3, 8, 1]) == [5, 1]', check: 'first_and_last([5, 3, 8, 1]) == [5, 1]', msg: 'first_and_last([5, 3, 8, 1]) should return [5, 1]' },
         ],
       },
       {
@@ -288,31 +343,48 @@ Example: \`count_down(5)\` → \`[5, 4, 3, 2, 1]\``,
     description: 'Map keys to values for fast lookups.',
     steps: [
       {
-        title: 'Creating & Accessing',
-        instructions: `# Dictionaries — Creating & Accessing
+        title: 'Creating a Dictionary',
+        instructions: `# Dictionaries — Creating
 
 A dictionary maps **keys** to **values**. Use curly braces and colons.
 
 \`\`\`python
 person = {"name": "Alice", "age": 25}
-print(person["name"])   # "Alice"
-person["city"] = "NYC"  # add a new key
+print(person["name"])  # "Alice"
+print(person["age"])   # 25
 \`\`\`
 
 ## Challenge
 
-1. Create a dict \`student\` with a \`"name"\` key (a string) and a \`"grade"\` key (an integer)
-2. Write a function \`get_name(d)\` that returns the value at key \`"name"\``,
-        starter: `student = {}  # add "name" and "grade" keys
+Create a dict \`student\` with a \`"name"\` key set to any string.`,
+        starter: `# Create a dictionary with a "name" key:
+student =
+`,
+        tests: [
+          { name: 'student["name"] is a string', check: 'isinstance(student.get("name"), str)', msg: 'student["name"] should be a string' },
+        ],
+      },
+      {
+        title: 'Accessing Values',
+        instructions: `# Dictionaries — Accessing Values
 
-def get_name(d):
+Use square brackets with the key name to read a value.
+
+\`\`\`python
+person = {"name": "Alice", "age": 25}
+print(person["name"])  # "Alice"
+\`\`\`
+
+## Challenge
+
+Write a function \`get_name(d)\` that returns the value at key \`"name"\` from the dict \`d\`.`,
+        starter: `def get_name(d):
     # return the value at key "name"
     pass
 `,
         tests: [
-          { name: 'student["name"] is a string', check: 'isinstance(student.get("name"), str)', msg: 'student["name"] should be a string' },
-          { name: 'student["grade"] is an integer', check: 'isinstance(student.get("grade"), int) and not isinstance(student.get("grade"), bool)', msg: 'student["grade"] should be an integer' },
-          { name: 'get_name({"name": "Bob"}) == "Bob"', check: 'get_name({"name": "Bob", "age": 20}) == "Bob"', msg: 'get_name should return the value at key "name"' },
+          { name: 'get_name({"name": "Bob"}) == "Bob"', check: 'get_name({"name": "Bob"}) == "Bob"', msg: 'get_name({"name": "Bob"}) should return "Bob"' },
+          { name: 'get_name({"name": "Alice", "age": 20}) == "Alice"', check: 'get_name({"name": "Alice", "age": 20}) == "Alice"', msg: 'get_name should return the value at key "name"' },
         ],
       },
       {
