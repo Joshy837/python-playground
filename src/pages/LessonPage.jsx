@@ -184,6 +184,14 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
   const stepKey = `${node?.id ?? 'none'}-${stepIdx}`
 
+  // Derived-state reset: when the step changes, collapse all sections immediately
+  // so editors never mount with stale initialCode from the previous step.
+  const [prevStepKey, setPrevStepKey] = useState(stepKey)
+  if (prevStepKey !== stepKey) {
+    setPrevStepKey(stepKey)
+    setRevealedUpTo(0)
+  }
+
   function revealSection(section, ref) {
     pendingScrollRef.current = ref
     setRevealedUpTo(section)

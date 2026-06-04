@@ -42,7 +42,12 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
     editorRef.current = editor
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current?.())
     return () => {
-      savedCodeRef.current = editor.getValue()
+      // Only save when toggling visibility on the same step, not when switching steps.
+      // prevStepKeyRef was already updated to the new key during render, so if it
+      // differs from the closure's stepKey, the step changed and we should discard.
+      if (prevStepKeyRef.current === stepKey) {
+        savedCodeRef.current = editor.getValue()
+      }
       editor.dispose()
       editorRef.current = null
     }
