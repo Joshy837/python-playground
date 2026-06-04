@@ -306,6 +306,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     theme: initialThemeRef.current,
     onRun: handleRunChallenge,
     extraOptions: { fontSize: 13, padding: { top: 10, bottom: 10 }, folding: false },
+    autoGrow: true,
   })
 
   if (!node) {

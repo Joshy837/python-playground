@@ -16,7 +16,7 @@ import { BASE_EDITOR_CONFIG, editorHeight } from '../editor.js'
  * @param {function}         opts.onRun         – called when Ctrl/Cmd+Enter is pressed
  * @param {object}           [opts.extraOptions] – extra Monaco options merged last
  */
-export function useMonacoEditor({ active, containerRef, editorRef, initialCode, stepKey, theme, onRun, extraOptions = {} }) {
+export function useMonacoEditor({ active, containerRef, editorRef, initialCode, stepKey, theme, onRun, extraOptions = {}, autoGrow = false }) {
   const savedCodeRef = useRef(null)
   const runRef = useRef(onRun)
   useEffect(() => { runRef.current = onRun })
@@ -32,7 +32,14 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
   useEffect(() => {
     if (!active || !containerRef.current) return
     const code = savedCodeRef.current ?? initialCode
-    containerRef.current.style.height = `${editorHeight(code)}px`
+    const updateHeight = (currentCode) => {
+      if (!containerRef.current) return
+      const h = autoGrow
+        ? editorHeight(currentCode, { min: 200, max: 800 })
+        : editorHeight(currentCode)
+      containerRef.current.style.height = `${h}px`
+    }
+    updateHeight(code)
     const editor = monaco.editor.create(containerRef.current, {
       ...BASE_EDITOR_CONFIG,
       ...extraOptions,
@@ -41,7 +48,11 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
     })
     editorRef.current = editor
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current?.())
+    const contentListener = autoGrow
+      ? editor.onDidChangeModelContent(() => updateHeight(editor.getValue()))
+      : null
     return () => {
+      contentListener?.dispose()
       // Only save when toggling visibility on the same step, not when switching steps.
       // prevStepKeyRef was already updated to the new key during render, so if it
       // differs from the closure's stepKey, the step changed and we should discard.

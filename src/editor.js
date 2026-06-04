@@ -9,6 +9,6 @@ export const BASE_EDITOR_CONFIG = {
   wordWrap: 'on',
 }
 
-export function editorHeight(code) {
-  return Math.min(Math.max(code.split('\n').length * 22 + 20, 100), 300)
+export function editorHeight(code, { min = 100, max = 300 } = {}) {
+  return Math.min(Math.max(code.split('\n').length * 22 + 20, min), max)
 }
