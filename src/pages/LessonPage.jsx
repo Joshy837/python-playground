@@ -4,6 +4,7 @@ import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, Terminal, HelpCirc
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
+import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 
@@ -118,15 +119,16 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const node = NODES.find(n => n.id === id)
 
   const stepIdx = step ? Math.max(0, parseInt(step, 10) - 1) : 0
-  const currentStep = node?.steps[stepIdx]
   const isLastStep = node ? stepIdx === node.steps.length - 1 : true
+
+  const [currentStep, setCurrentStep] = useState(null)
+  const [stepLoading, setStepLoading] = useState(true)
   const hasQuiz = (currentStep?.quiz?.length ?? 0) > 0
 
   // Section indices
-  const SECTION_TRY      = 1
-  const SECTION_QUIZ     = hasQuiz ? 2 : null
+  const SECTION_TRY       = 1
+  const SECTION_QUIZ      = hasQuiz ? 2 : null
   const SECTION_CHALLENGE = hasQuiz ? 3 : 2
-  const SECTION_MAX      = SECTION_CHALLENGE
 
   const { isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
@@ -152,13 +154,21 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const initialThemeRef = useRef(monacoTheme)
 
   useEffect(() => {
+    if (!node) return
+    setCurrentStep(null)
+    setStepLoading(true)
     setTestResults(null)
     setRuntimeOutput(null)
     setTryOutput(null)
     setQuizAnsweredCount(0)
-    const complete = !!(node && isStepComplete(node.id, stepIdx))
-    setAllPassed(complete)
-    setRevealedUpTo(complete ? SECTION_MAX : 0)
+    loadStep(node.id, stepIdx).then(step => {
+      const sectionMax = (step.quiz?.length ?? 0) > 0 ? 3 : 2
+      setCurrentStep(step)
+      const complete = isStepComplete(node.id, stepIdx)
+      setAllPassed(complete)
+      setRevealedUpTo(complete ? sectionMax : 0)
+      setStepLoading(false)
+    }).catch(() => setStepLoading(false))
   }, [node?.id, stepIdx])
 
   useEffect(() => { monaco.editor.setTheme(monacoTheme) }, [monacoTheme])
@@ -239,7 +249,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     extraOptions: { fontSize: 13, padding: { top: 10, bottom: 10 }, folding: false },
   })
 
-  if (!node || !currentStep) {
+  if (!node) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
@@ -248,6 +258,10 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </div>
       </div>
     )
+  }
+
+  if (stepLoading || !currentStep) {
+    return <div className="flex-1 flex items-center justify-center"><span className="text-muted text-sm">Loading…</span></div>
   }
 
   if (!isStepUnlocked(node.id, stepIdx) && !isStepComplete(node.id, stepIdx)) {
