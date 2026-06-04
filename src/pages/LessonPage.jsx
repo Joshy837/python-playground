@@ -343,7 +343,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const progressPct = allPassed ? 100 : revealedUpTo === 0 ? 5 : Math.round(5 + (revealedUpTo / maxSection) * 80)
 
   return (
-    <div className="lesson-page">
+    <div className="lesson-page page-enter">
       {showConfetti && <ConfettiBurst onDone={() => setShowConfetti(false)} />}
 
       {/* Sticky header */}
