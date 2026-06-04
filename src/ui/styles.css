@@ -117,7 +117,24 @@ body { transition: opacity 0.2s ease; }
 [data-theme-switching] body { opacity: 0; }
 
 /* ── Structural theming ──────────────────────────────── */
-body { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
+body {
+  background:
+    radial-gradient(ellipse 70% 55% at 8% 5%,   color-mix(in srgb, var(--accent-quiz)      9%, transparent) 0%, transparent 100%),
+    radial-gradient(ellipse 60% 50% at 92% 95%,  color-mix(in srgb, var(--accent-try)       8%, transparent) 0%, transparent 100%),
+    radial-gradient(ellipse 45% 40% at 85% 8%,   color-mix(in srgb, var(--accent-challenge) 5%, transparent) 0%, transparent 100%),
+    var(--app-bg);
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', sans-serif;
+}
+[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse 70% 55% at 8% 5%,   color-mix(in srgb, var(--accent-quiz)      4%, transparent) 0%, transparent 100%),
+    radial-gradient(ellipse 60% 50% at 92% 95%,  color-mix(in srgb, var(--accent-try)       3%, transparent) 0%, transparent 100%),
+    radial-gradient(ellipse 45% 40% at 85% 8%,   color-mix(in srgb, var(--accent-challenge) 2%, transparent) 0%, transparent 100%),
+    var(--app-bg);
+}
+[data-theme="hc-dark"] body,
+[data-theme="hc-light"] body { background: var(--app-bg); }
 .resize-handle {
   background-color: var(--header-border);
   height: 1px;
@@ -171,6 +188,7 @@ body { background-color: var(--app-bg); color: var(--text-primary); font-family:
 
 
 /* ── React Flow theme overrides ─────────────────────── */
+.react-flow,
 .react-flow__renderer,
 .react-flow__background { background: transparent !important; }
 .react-flow__attribution { display: none; }
@@ -328,7 +346,7 @@ body { background-color: var(--app-bg); color: var(--text-primary); font-family:
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: var(--app-bg);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -346,6 +364,8 @@ body { background-color: var(--app-bg); color: var(--text-primary); font-family:
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 18%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 .lesson-slide-body {
