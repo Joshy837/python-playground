@@ -141,10 +141,10 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   return (
     <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden">
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        <div className="examples-toolbar flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
-          <span className="text-muted text-xs shrink-0">Examples:</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
+          <span className="text-app-muted text-xs shrink-0">Examples:</span>
           <select
-            className="theme-select"
+            className="bg-app-select text-app-fg border border-app-select-border rounded px-2 py-1 text-xs cursor-pointer outline-none transition-colors duration-150"
             value={selectedExample}
             onChange={e => loadExample(e.target.value)}
           >
@@ -154,8 +154,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
             ))}
           </select>
           <button
-            className="run-btn ml-auto"
-            data-running={running ? 'true' : 'false'}
+            className={`flex items-center justify-center size-7 rounded-md border-0 bg-transparent cursor-pointer transition-opacity duration-150 shrink-0 ml-auto disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-75 ${running ? 'text-red-600' : 'text-green-600'}`}
             disabled={runBtnDisabled}
             title={isRunning ? 'Stop' : isRestarting ? 'Restarting…' : 'Run (Ctrl+Enter)'}
             onClick={handleRun}

@@ -43,10 +43,10 @@ function QuizQuestion({ question, onAnswer }) {
   const correct = selected === question.answer
 
   return (
-    <div className="quiz-block">
+    <div className="mb-7">
       <p className="quiz-question-text">{question.question}</p>
-      <div className="quiz-options-wrap">
-        <div className="quiz-options">
+      <div className="relative">
+        <div className="flex flex-col gap-1.5">
           {question.options.map((opt, i) => {
             const isCorrect = i === question.answer
             let cls = 'quiz-option'
@@ -88,7 +88,7 @@ function QuizQuestion({ question, onAnswer }) {
 
 function ContinueArrow({ onClick, preview, disabled }) {
   return (
-    <div className="lesson-continue-wrap">
+    <div className="flex flex-col items-center pt-10 gap-3">
       <button className="lesson-continue-btn" onClick={onClick} disabled={disabled} data-disabled={disabled ? 'true' : undefined}>
         <ChevronDown size={36} />
       </button>
@@ -261,23 +261,23 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted text-sm mb-3">Lesson not found.</p>
-          <Link to="/course" className="nav-link">Back to course</Link>
+          <p className="text-app-muted text-sm mb-3">Lesson not found.</p>
+          <Link to="/course" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.8125rem] font-medium text-app-muted no-underline transition-colors duration-150 hover:text-app-fg hover:bg-app-btn">Back to course</Link>
         </div>
       </div>
     )
   }
 
   if (stepLoading || !currentStep) {
-    return <div className="flex-1 flex items-center justify-center"><span className="text-muted text-sm">Loading…</span></div>
+    return <div className="flex-1 flex items-center justify-center"><span className="text-app-muted text-sm">Loading…</span></div>
   }
 
   if (!isStepUnlocked(node.id, stepIdx) && !isStepComplete(node.id, stepIdx)) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted text-sm mb-3">Complete the previous step first.</p>
-          <Link to="/course" className="nav-link">Back to course</Link>
+          <p className="text-app-muted text-sm mb-3">Complete the previous step first.</p>
+          <Link to="/course" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.8125rem] font-medium text-app-muted no-underline transition-colors duration-150 hover:text-app-fg hover:bg-app-btn">Back to course</Link>
         </div>
       </div>
     )
@@ -297,7 +297,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </button>
         <div className="flex flex-col min-w-0 flex-1">
           <span className="text-sm font-semibold truncate">{node.title}</span>
-          <span className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-xs truncate text-app-muted">
             Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
           </span>
         </div>
@@ -349,7 +349,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 <p className="lesson-section-label"><Terminal size={12} />Try it yourself</p>
                 <div className="lesson-editor-box">
                   <div className="lesson-editor-toolbar">
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Python</span>
+                    <span className="text-xs text-app-muted">Python</span>
                     <button
                       className="lesson-run-btn"
                       disabled={!pyodideReady || isTryRunning}
@@ -365,16 +365,16 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                     <div className="lesson-output-panel">
                       {tryOutput ? (
                         <>
-                          {tryOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
-                          {tryOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
+                          {tryOutput.error && <pre className="text-app-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
+                          {tryOutput.stderr && <pre className="text-app-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
                           {tryOutput.stdout
-                            ? <pre className="output-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
+                            ? <pre className="text-app-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
                             : !tryOutput.error && !tryOutput.stderr && (
-                              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No output</span>
+                              <span className="text-xs text-app-muted">No output</span>
                             )}
                         </>
                       ) : (
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Run code to see output</span>
+                        <span className="text-xs text-app-muted">Run code to see output</span>
                       )}
                     </div>
                   </div>
@@ -426,7 +426,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   </div>
                   <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
                     <div className="lesson-editor-toolbar">
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-xs text-app-muted">
                         {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
                       </span>
                       <button
@@ -444,12 +444,12 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       <div className="lesson-output-panel">
                         {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) ? (
                           <>
-                            {runtimeOutput.error && <pre className="output-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
-                            {runtimeOutput.stderr && <pre className="output-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
-                            {runtimeOutput.stdout && <pre className="output-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
+                            {runtimeOutput.error && <pre className="text-app-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
+                            {runtimeOutput.stderr && <pre className="text-app-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
+                            {runtimeOutput.stdout && <pre className="text-app-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
                           </>
                         ) : (
-                          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Run code to see output</span>
+                          <span className="text-xs text-app-muted">Run code to see output</span>
                         )}
                       </div>
                     </div>
@@ -458,14 +458,14 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   {testResults && (
                     <div className="lesson-test-list">
                       {testResults.map((t, i) => (
-                        <div key={i} className="lesson-test-row">
+                        <div key={i} className="flex items-start gap-[0.6rem] text-[0.84rem]">
                           <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
                             {t.passed ? '✓' : '✗'}
                           </span>
-                          <span className="text-sm" style={{ color: t.passed ? 'var(--text-muted)' : 'var(--text-primary)' }}>
+                          <span className={`text-sm ${t.passed ? 'text-app-muted' : 'text-app-fg'}`}>
                             {t.name}
                             {!t.passed && t.error && (
-                              <span className="output-error block text-xs mt-0.5">{t.error}</span>
+                              <span className="text-app-error block text-xs mt-0.5">{t.error}</span>
                             )}
                           </span>
                         </div>
@@ -479,7 +479,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                         {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
                       </span>
                       {isLastStep ? (
-                        <button className="btn-secondary text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
+                        <button className="bg-app-btn text-app-fg transition-colors duration-150 hover:bg-app-btn-hover text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
                           Back to course
                         </button>
                       ) : (

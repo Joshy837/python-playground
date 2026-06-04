@@ -136,7 +136,7 @@ export default function CoursePage() {
       <div className="flex items-center justify-between px-5 py-3 shrink-0 border-b" style={{ borderColor: 'var(--header-border)', background: 'var(--header-bg)' }}>
         <div>
           <h1 className="font-semibold text-sm">Python Fundamentals</h1>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs mt-0.5 text-app-muted">
             Click a node to choose a step, then click the step to begin.
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function CoursePage() {
           <div className="course-progress-bar">
             <div className="course-progress-fill" style={{ width: `${(done / total) * 100}%` }} />
           </div>
-          <span className="text-xs tabular-nums" style={{ color: 'var(--text-muted)' }}>{done} / {total}</span>
+          <span className="text-xs tabular-nums text-app-muted">{done} / {total}</span>
         </div>
       </div>
 

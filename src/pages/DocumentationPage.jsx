@@ -278,7 +278,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
 
   return (
     <div className="doc-card">
-      <div className="doc-card-inner">
+      <div className="flex flex-col sm:flex-row sm:items-stretch">
         {/* Left: explanation */}
         <div className="doc-card-left">
           <div className="doc-card-name">{item.name}</div>
@@ -314,9 +314,9 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
           />
           {hasOutput && (
             <div className="doc-card-output">
-              {output.error && <pre className="output-error doc-output-pre">{output.error}</pre>}
-              {output.stderr && <pre className="output-stderr doc-output-pre">{output.stderr}</pre>}
-              {output.stdout && <pre className="output-stdout doc-output-pre">{output.stdout}</pre>}
+              {output.error && <pre className="text-app-error doc-output-pre">{output.error}</pre>}
+              {output.stderr && <pre className="text-app-stderr doc-output-pre">{output.stderr}</pre>}
+              {output.stdout && <pre className="text-app-stdout doc-output-pre">{output.stdout}</pre>}
             </div>
           )}
         </div>
@@ -335,7 +335,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
 
       {/* Sidebar */}
       <aside className="doc-sidebar" style={{ width: 176, flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--header-border)', overflowY: 'auto' }}>
-        <div className="px-3 py-2.5 text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--header-border)', flexShrink: 0 }}>
+        <div className="px-3 py-2.5 text-xs font-semibold tracking-wide uppercase text-app-muted border-b border-app-border shrink-0">
           Reference
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 8 }}>

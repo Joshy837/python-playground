@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* ── Tailwind theme tokens (bridge CSS vars → utilities) ── */
+@theme inline {
+  --color-app-bg:             var(--app-bg);
+  --color-app-surface:        var(--header-bg);
+  --color-app-border:         var(--header-border);
+  --color-app-output:         var(--output-bg);
+  --color-app-output-border:  var(--output-border);
+  --color-app-fg:             var(--text-primary);
+  --color-app-muted:          var(--text-muted);
+  --color-app-btn:            var(--btn-secondary-bg);
+  --color-app-btn-hover:      var(--btn-secondary-hover);
+  --color-app-select:         var(--select-bg);
+  --color-app-select-border:  var(--select-border);
+  --color-app-stdout:         var(--output-stdout);
+  --color-app-stderr:         var(--output-stderr);
+  --color-app-error:          var(--output-error);
+  --color-app-yellow:         var(--status-yellow);
+  --color-app-green:          var(--status-green);
+  --color-app-red:            var(--status-red);
+}
+
 /* ── Theme variables ─────────────────────────────────── */
 :root {
   --app-bg:           #111827;
@@ -84,8 +105,7 @@ body { transition: opacity 0.2s ease; }
 [data-theme-switching] body { opacity: 0; }
 
 /* ── Structural theming ──────────────────────────────── */
-body          { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
-.app-header   { background-color: var(--header-bg); border-color: var(--header-border); }
+body { background-color: var(--app-bg); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; }
 .resize-handle {
   background-color: var(--header-border);
   height: 1px;
@@ -120,28 +140,6 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
     background-color: var(--text-muted);
   }
 }
-.output-panel { background-color: var(--output-bg); }
-.output-label { border-color: var(--output-border); color: var(--text-muted); }
-
-.btn-secondary {
-  background-color: var(--btn-secondary-bg);
-  color: var(--text-primary);
-  transition: background-color 0.15s;
-}
-.btn-secondary:hover { background-color: var(--btn-secondary-hover); }
-
-.theme-select {
-  background-color: var(--select-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--select-border);
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  cursor: pointer;
-  outline: none;
-  transition: background-color 0.15s;
-}
-
 .status-badge {
   display: flex; align-items: center; gap: 6px;
   font-size: 0.75rem;
@@ -159,62 +157,6 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 .status-badge[data-status="red"]    { color: var(--status-red); }
 .status-badge[data-status="red"]    .status-dot { background-color: var(--status-red); }
 
-.theme-toggle {
-  display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
-}
-.theme-toggle:hover { opacity: 0.65; }
-
-/* ── Nav links ──────────────────────────────────────── */
-.nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0.625rem;
-  border-radius: 0.375rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.15s, background-color 0.15s;
-}
-.nav-link:hover,
-.nav-link-active {
-  color: var(--text-primary);
-  background-color: var(--btn-secondary-bg);
-}
-
-/* ── Examples toolbar ───────────────────────────────── */
-.examples-toolbar { background-color: var(--header-bg); border-color: var(--header-border); }
-
-.run-btn {
-  display: flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
-}
-.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.run-btn:hover:not(:disabled) { opacity: 0.75; }
-.run-btn[data-running="false"] { color: #16a34a; }
-.run-btn[data-running="true"]  { color: #dc2626; }
-.text-muted       { color: var(--text-muted); }
-
-/* ── Output text colours ─────────────────────────────── */
-.output-stdout { color: var(--output-stdout); }
-.output-stderr { color: var(--output-stderr); }
-.output-error  { color: var(--output-error);  }
-.output-empty  { color: var(--text-muted);    }
 
 /* ── React Flow theme overrides ─────────────────────── */
 .react-flow__renderer,
@@ -539,8 +481,6 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   margin: 2.25rem 0;
 }
 
-.lesson-section { }
-
 .lesson-section-label {
   display: flex;
   align-items: center;
@@ -648,21 +588,7 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   margin-top: 1rem;
 }
 
-.lesson-test-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  font-size: 0.84rem;
-}
-
 /* Continue-to-challenge down arrow */
-.lesson-continue-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2.5rem 0 0;
-  gap: 0.75rem;
-}
 
 .lesson-spoiler {
   width: 100%;
@@ -725,26 +651,12 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
 }
 
 /* ── Quiz ────────────────────────────────────────────── */
-.quiz-block {
-  margin-bottom: 1.75rem;
-}
-
 .quiz-question-text {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
   line-height: 1.5;
-}
-
-.quiz-options-wrap {
-  position: relative;
-}
-
-.quiz-options {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
 }
 
 .quiz-wrong-overlay {
@@ -873,18 +785,6 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   min-width: 0;
 }
 
-.doc-card-inner {
-  display: flex;
-  flex-direction: column;
-}
-
-@media (min-width: 640px) {
-  .doc-card-inner {
-    flex-direction: row;
-    align-items: stretch;
-  }
-}
-
 .doc-card-left {
   padding: 0.85rem 1rem;
   background: var(--header-bg);
@@ -1005,11 +905,3 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   margin: 0;
 }
 
-/* ── Plot images ─────────────────────────────────────── */
-.output-plot {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin-top: 0.5rem;
-  border-radius: 0.25rem;
-}

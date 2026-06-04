@@ -1,14 +1,16 @@
 import { NavLink } from 'react-router-dom'
 import { Sun, Moon, Terminal, GraduationCap, BookOpen } from 'lucide-react'
 
-const navClass = ({ isActive }) => `nav-link${isActive ? ' nav-link-active' : ''}`
+const BASE_NAV = 'inline-flex items-center gap-[0.35rem] px-[0.625rem] py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors duration-150'
+const navClass = ({ isActive }) =>
+  `${BASE_NAV} ${isActive ? 'text-app-fg bg-app-btn' : 'text-app-muted hover:text-app-fg hover:bg-app-btn'}`
 
 export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideError }) {
   const statusText = pyodideError ? 'Load failed' : pyodideReady ? 'Ready' : 'Loading...'
   const statusColor = pyodideError ? 'red' : pyodideReady ? 'green' : 'yellow'
 
   return (
-    <header className="app-header flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0">
+    <header className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0 bg-app-surface border-app-border">
       <div className="flex items-center gap-2 min-w-0 shrink-0">
         <img src="/favicon.svg" alt="" width="24" height="24" className="rounded-md shrink-0" />
         <span className="font-semibold hidden sm:inline truncate">Just Python It</span>
@@ -25,7 +27,7 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
         </span>
         <button
           onClick={onToggleTheme}
-          className="theme-toggle"
+          className="flex items-center justify-center size-7 rounded-[6px] border-0 bg-transparent text-app-fg cursor-pointer transition-opacity duration-150 shrink-0 hover:opacity-65"
           title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
           {isDark ? <Sun size={18} /> : <Moon size={18} />}
