@@ -384,36 +384,34 @@ Example: \`first_and_last([10, 20, 30])\` → \`[10, 30]\``,
         ],
       },
       {
-        title: 'Modifying Lists',
-        description: `# Lists — Modifying
+        title: 'Appending Items',
+        description: `# Lists — Appending Items
 
-Lists are **mutable** — you can change them after creation. Two common ways:
+Lists are **mutable** — you can change them after creation. The simplest way to grow a list is \`.append(x)\`, which adds a single item to the end.
 
-**\`.append(x)\`** adds an item to the end:
-\`\`\`python
-fruits.append("cherry")
-\`\`\`
-
-**Index assignment** replaces an existing item:
-\`\`\`python
-fruits[0] = "mango"
-\`\`\`
-
-Together:
 \`\`\`python
 fruits = ["apple", "banana"]
 fruits.append("cherry")
-fruits[0] = "mango"
-print(fruits)  # ['mango', 'banana', 'cherry']
+print(fruits)  # ['apple', 'banana', 'cherry']
+\`\`\`
+
+Each call to \`.append()\` adds exactly one item at the end. The list grows by one each time.
+
+\`\`\`python
+nums = []
+nums.append(1)
+nums.append(2)
+nums.append(3)
+print(nums)  # [1, 2, 3]
 \`\`\``,
         example: `fruits = ["apple", "banana"]
 print("Before:", fruits)
 
 fruits.append("cherry")
-print("After append:", fruits)
+print("After first append:", fruits)
 
-fruits[0] = "mango"
-print("After replace:", fruits)`,
+fruits.append("date")
+print("After second append:", fruits)`,
         quiz: [
           {
             question: 'Which method adds an item to the END of a list?',
@@ -422,9 +420,65 @@ print("After replace:", fruits)`,
             explanation: '.append(x) adds x to the end. .insert(i, x) adds at a specific position.',
           },
         ],
-        task: `Write a function \`double_list(lst)\` that returns a **new list** where every element is multiplied by 2.
+        task: `Write a function \`build_list(n)\` that returns a list of integers from \`1\` to \`n\` (inclusive), built by appending one item at a time.
 
-Example: \`double_list([1, 2, 3])\` → \`[2, 4, 6]\``,
+Example: \`build_list(4)\` → \`[1, 2, 3, 4]\``,
+        starter: `def build_list(n):
+    # build and return a list [1, 2, ..., n] using .append()
+    pass
+`,
+        tests: [
+          { name: 'build_list(4) == [1, 2, 3, 4]', check: 'build_list(4) == [1, 2, 3, 4]', msg: 'build_list(4) should return [1, 2, 3, 4]' },
+          { name: 'build_list(1) == [1]', check: 'build_list(1) == [1]', msg: 'build_list(1) should return [1]' },
+          { name: 'build_list(0) == []', check: 'build_list(0) == []', msg: 'build_list(0) should return []' },
+        ],
+      },
+      {
+        title: 'Index Assignment',
+        description: `# Lists — Index Assignment
+
+You can **replace** an existing item by assigning to its index:
+
+\`\`\`python
+fruits = ["apple", "banana", "cherry"]
+fruits[0] = "mango"
+print(fruits)  # ['mango', 'banana', 'cherry']
+\`\`\`
+
+This modifies the list in place — the item at that position is overwritten. Negative indexes work here too:
+
+\`\`\`python
+fruits[-1] = "grape"
+print(fruits)  # ['mango', 'banana', 'grape']
+\`\`\`
+
+Note: index assignment can only replace an existing position. Assigning to an index that doesn't exist raises an \`IndexError\` — use \`.append()\` to add new items instead.`,
+        example: `fruits = ["apple", "banana", "cherry"]
+print("Before:", fruits)
+
+fruits[0] = "mango"
+print("After fruits[0] = 'mango':", fruits)
+
+fruits[-1] = "grape"
+print("After fruits[-1] = 'grape':", fruits)`,
+        quiz: [
+          {
+            question: 'What does fruits[1] = "kiwi" do?',
+            options: [
+              'Adds "kiwi" after index 1',
+              'Replaces the item at index 1 with "kiwi"',
+              'Removes the item at index 1',
+              'Raises an error',
+            ],
+            answer: 1,
+            explanation: 'Index assignment replaces the existing item at that position. It does not insert or shift other items.',
+          },
+        ],
+        task: `Write a function \`double_list(lst)\` that returns a **new list** where every element is multiplied by 2, using index assignment to fill in the values.
+
+Example: \`double_list([1, 2, 3])\` → \`[2, 4, 6]\`
+
+**Hint:** Start with a copy of the list, then loop over indexes using \`range(len(lst))\`.`,
         starter: `def double_list(lst):
     # return a new list with each element doubled
     pass

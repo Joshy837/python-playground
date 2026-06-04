@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, Terminal, HelpCircle, Trophy } from 'lucide-react'
+import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, Terminal, HelpCircle, Trophy, RotateCcw } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -39,37 +39,44 @@ function stripTestLine(stdout) {
 function QuizQuestion({ question, onAnswer }) {
   const [selected, setSelected] = useState(null)
   const answered = selected !== null
+  const correct = selected === question.answer
 
   return (
     <div className="quiz-block">
       <p className="quiz-question-text">{question.question}</p>
-      <div className="quiz-options">
-        {question.options.map((opt, i) => {
-          const isSelected = selected === i
-          const isCorrect = i === question.answer
-          let cls = 'quiz-option'
-          if (answered) {
-            if (isSelected && isCorrect) cls += ' quiz-option-correct'
-            else if (isSelected) cls += ' quiz-option-wrong'
-            else if (isCorrect) cls += ' quiz-option-reveal'
-          }
-          return (
-            <button key={i} className={cls} onClick={() => { if (!answered) { setSelected(i); onAnswer?.() } }}>
-              <span className="quiz-marker">
-                {answered && isCorrect ? '✓' : answered && isSelected ? '✗' : String.fromCharCode(65 + i)}
-              </span>
-              {opt}
+      <div className="quiz-options-wrap">
+        <div className="quiz-options">
+          {question.options.map((opt, i) => {
+            const isCorrect = i === question.answer
+            let cls = 'quiz-option'
+            if (answered && correct && isCorrect) cls += ' quiz-option-correct'
+            return (
+              <button key={i} className={cls} disabled={answered} onClick={() => {
+                setSelected(i)
+                if (i === question.answer) onAnswer?.()
+              }}>
+                <span className="quiz-marker">
+                  {answered && correct && isCorrect ? '✓' : String.fromCharCode(65 + i)}
+                </span>
+                {opt}
+              </button>
+            )
+          })}
+        </div>
+        {answered && !correct && (
+          <div className="quiz-wrong-overlay">
+            <span className="quiz-overlay-text">Not quite — give it another go.</span>
+            <button className="quiz-try-again-btn" onClick={() => setSelected(null)}>
+              <RotateCcw size={13} />
+              Try again
             </button>
-          )
-        })}
+          </div>
+        )}
       </div>
-      {answered && (
-        <p className={`quiz-feedback ${selected === question.answer ? 'quiz-fb-correct' : 'quiz-fb-wrong'}`}>
-          {selected === question.answer
-            ? '✓ Correct!'
-            : `✗ The answer is: ${question.options[question.answer]}.`}
-          {question.explanation && ` ${question.explanation}`}
-        </p>
+      {answered && correct && (
+        <div className="quiz-feedback quiz-fb-correct">
+          ✓ Correct!{question.explanation && ` ${question.explanation}`}
+        </div>
       )}
     </div>
   )
