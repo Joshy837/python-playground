@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository
+
+- Git remote: `https://github.com/Joshy837/python-playground.git`
+- Default branch: `main`
+
 ## Commands
 
 ```bash
