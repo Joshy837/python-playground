@@ -42,6 +42,9 @@
   --status-red:       #f87171;
   --course-bg:        #111827;
   --course-dot:       #374151;
+  --accent-try:       #38bdf8;
+  --accent-quiz:      #a78bfa;
+  --accent-challenge: #fbbf24;
 }
 
 [data-theme="light"] {
@@ -64,9 +67,15 @@
   --status-red:       #dc2626;
   --course-bg:        #fefce8;
   --course-dot:       #d1d5db;
+  --accent-try:       #0369a1;
+  --accent-quiz:      #7c3aed;
+  --accent-challenge: #b45309;
 }
 
 [data-theme="hc-dark"] {
+  --accent-try:       #7dd3fc;
+  --accent-quiz:      #c4b5fd;
+  --accent-challenge: #fde68a;
   --app-bg:           #000000;
   --header-bg:        #000000;
   --header-border:    #ffffff;
@@ -84,6 +93,9 @@
 }
 
 [data-theme="hc-light"] {
+  --accent-try:       #0369a1;
+  --accent-quiz:      #6d28d9;
+  --accent-challenge: #92400e;
   --app-bg:           #ffffff;
   --header-bg:        #ffffff;
   --header-border:    #000000;
@@ -647,6 +659,69 @@ body { background-color: var(--app-bg); color: var(--text-primary); font-family:
   border-radius: 10px;
   background: color-mix(in srgb, var(--status-green) 10%, var(--header-bg));
   border: 1px solid color-mix(in srgb, var(--status-green) 30%, transparent);
+}
+
+/* ── Section reveal pop animation ───────────────────── */
+@keyframes lesson-section-pop {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.98); }
+  65%  { opacity: 1; transform: translateY(-2px) scale(1.004); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.lesson-section-pop {
+  animation: lesson-section-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Lesson progress bar ─────────────────────────────── */
+.lesson-progress-track {
+  height: 3px;
+  background: var(--header-border);
+  flex-shrink: 0;
+  position: relative;
+}
+.lesson-progress-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-try), var(--accent-challenge));
+  transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-try) 50%, transparent);
+}
+
+/* ── Section accent theming ──────────────────────────── */
+.lesson-section--try       { --section-accent: var(--accent-try); }
+.lesson-section--quiz      { --section-accent: var(--accent-quiz); }
+.lesson-section--challenge { --section-accent: var(--accent-challenge); }
+
+.lesson-section--try .lesson-section-label,
+.lesson-section--quiz .lesson-section-label,
+.lesson-section--challenge .lesson-section-label {
+  color: var(--section-accent);
+}
+
+.lesson-section--try .lesson-section-divider,
+.lesson-section--quiz .lesson-section-divider,
+.lesson-section--challenge .lesson-section-divider {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--section-accent) 55%, transparent) 0%,
+    var(--header-border) 35%,
+    transparent 100%
+  );
+}
+
+.lesson-section--try .lesson-editor-box,
+.lesson-section--challenge .lesson-editor-box {
+  border-color: color-mix(in srgb, var(--section-accent) 28%, var(--header-border));
+}
+
+.lesson-section--try .lesson-editor-toolbar,
+.lesson-section--challenge .lesson-editor-toolbar {
+  border-bottom-color: color-mix(in srgb, var(--section-accent) 28%, var(--header-border));
+}
+
+.lesson-section--quiz .quiz-option:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--section-accent) 55%, transparent);
 }
 
 /* ── Quiz ────────────────────────────────────────────── */

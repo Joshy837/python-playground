@@ -37,6 +37,54 @@ function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
 }
 
+function ConfettiBurst({ onDone }) {
+  const canvasRef = useRef(null)
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const COLORS = ['#38bdf8', '#a78bfa', '#fbbf24', '#4ade80', '#f472b6', '#fb923c']
+    const particles = Array.from({ length: 90 }, () => ({
+      x: canvas.width * (0.2 + Math.random() * 0.6),
+      y: -10 - Math.random() * 40,
+      vx: (Math.random() - 0.5) * 7,
+      vy: Math.random() * 3 + 2,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.25,
+      w: Math.random() * 9 + 4,
+      h: Math.random() * 5 + 3,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 1,
+    }))
+    let raf, t = 0
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      t++
+      let alive = false
+      for (const p of particles) {
+        p.x += p.vx; p.vy += 0.15; p.y += p.vy; p.rot += p.rotV
+        if (t > 55) p.alpha = Math.max(0, p.alpha - 0.018)
+        if (p.alpha > 0 && p.y < canvas.height + 20) {
+          alive = true
+          ctx.save()
+          ctx.globalAlpha = p.alpha
+          ctx.translate(p.x, p.y)
+          ctx.rotate(p.rot)
+          ctx.fillStyle = p.color
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+          ctx.restore()
+        }
+      }
+      if (alive) { raf = requestAnimationFrame(draw) } else { onDone?.() }
+    }
+    raf = requestAnimationFrame(draw)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
+}
+
 function QuizQuestion({ question, onAnswer }) {
   const [selected, setSelected] = useState(null)
   const answered = selected !== null
@@ -133,6 +181,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const { isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
   const [revealedUpTo, setRevealedUpTo] = useState(0)
+  const [showConfetti, setShowConfetti] = useState(false)
   const [isTryRunning, setIsTryRunning] = useState(false)
   const [tryOutput, setTryOutput] = useState(null)
   const [isTestRunning, setIsTestRunning] = useState(false)
@@ -161,6 +210,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setRuntimeOutput(null)
     setTryOutput(null)
     setQuizAnsweredCount(0)
+    setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
       const sectionMax = (step.quiz?.length ?? 0) > 0 ? 3 : 2
       setCurrentStep(step)
@@ -228,6 +278,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         if (parsed.every(t => t.passed)) {
           setAllPassed(true)
           markStepComplete(node.id, stepIdx)
+          setShowConfetti(true)
         }
       }
     } finally {
@@ -287,8 +338,12 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const total = currentStep.tests.length
   const totalSteps = node.steps.length
 
+  const maxSection = hasQuiz ? 3 : 2
+  const progressPct = allPassed ? 100 : revealedUpTo === 0 ? 5 : Math.round(5 + (revealedUpTo / maxSection) * 80)
+
   return (
     <div className="lesson-page">
+      {showConfetti && <ConfettiBurst onDone={() => setShowConfetti(false)} />}
 
       {/* Sticky header */}
       <div className="lesson-slide-header">
@@ -327,6 +382,11 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </div>
       </div>
 
+      {/* Progress bar */}
+      <div className="lesson-progress-track">
+        <div className="lesson-progress-fill" style={{ width: `${progressPct}%` }} />
+      </div>
+
       {/* Scrollable content */}
       <div className="lesson-slide-content" ref={scrollContainerRef}>
         <div className="lesson-slide-body">
@@ -344,7 +404,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           ) : (
             <>
               {/* Section 2: Try it */}
-              <div ref={trySectionRef} style={{ marginTop: '2.5rem' }}>
+              <div ref={trySectionRef} className="lesson-section--try lesson-section-pop" style={{ marginTop: '2.5rem' }}>
                 <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                 <p className="lesson-section-label"><Terminal size={12} />Try it yourself</p>
                 <div className="lesson-editor-box">
@@ -390,7 +450,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 ) : (
                   <>
                     {/* Section 3: Quiz */}
-                    <div ref={quizSectionRef} style={{ marginTop: '2.5rem' }}>
+                    <div ref={quizSectionRef} className="lesson-section--quiz lesson-section-pop" style={{ marginTop: '2.5rem' }}>
                       <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                       <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
                       {currentStep.quiz.map((q, i) => (
@@ -418,7 +478,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
               {/* Section 4: Challenge */}
               {revealedUpTo >= SECTION_CHALLENGE && (
-                <div ref={challengeSectionRef} style={{ marginTop: '2.5rem' }}>
+                <div ref={challengeSectionRef} className="lesson-section--challenge lesson-section-pop" style={{ marginTop: '2.5rem' }}>
                   <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                   <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
                   <div className="lesson-task-text lesson-prose">
