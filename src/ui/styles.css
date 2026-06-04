@@ -518,7 +518,6 @@ body { background-color: var(--app-bg); color: var(--text-primary); font-family:
   margin: 0.75rem 0 1rem;
   color: var(--output-stdout);
 }
-
 /* Editor box (try-it + challenge) */
 .lesson-editor-box {
   border: 1px solid var(--header-border);

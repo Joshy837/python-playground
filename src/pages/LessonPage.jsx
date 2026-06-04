@@ -333,7 +333,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
           {/* Section 1: Description */}
           <div className="lesson-prose">
-            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description) }} />
+            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description, monacoTheme) }} />
           </div>
 
           {revealedUpTo < SECTION_TRY ? (
@@ -422,7 +422,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                   <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
                   <div className="lesson-task-text lesson-prose">
-                    <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task) }} />
+                    <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task, monacoTheme) }} />
                   </div>
                   <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
                     <div className="lesson-editor-toolbar">
@@ -501,12 +501,38 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   )
 }
 
-function renderMarkdown(md) {
+const TOKEN_COLORS = {
+  'vs-dark':  { keyword: '#569cd6', string: '#ce9178', number: '#b5cea8', comment: '#6a9955', default: '#d4d4d4' },
+  'vs':       { keyword: '#0000ff', string: '#a31515', number: '#098658', comment: '#008000', default: '#000000' },
+  'hc-black': { keyword: '#c586c0', string: '#ce9178', number: '#b5cea8', comment: '#608b4e', default: '#ffffff' },
+  'hc-light': { keyword: '#0f4a85', string: '#b94824', number: '#005000', comment: '#4d7a00', default: '#000000' },
+}
+
+function highlightWithMonaco(code, monacoTheme) {
+  const colors = TOKEN_COLORS[monacoTheme] ?? TOKEN_COLORS['vs-dark']
+  const lines = code.split('\n')
+  const tokenizedLines = monaco.editor.tokenize(code, 'python')
+  return lines.map((line, li) => {
+    const tokens = tokenizedLines[li] ?? []
+    if (tokens.length === 0) return escHtml(line)
+    return tokens.map((tok, i) => {
+      const text = line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
+      const base = tok.type.split('.')[0]
+      const color = colors[base] ?? null
+      const style = color
+        ? `color:${color}${base === 'comment' ? ';font-style:italic' : ''}`
+        : null
+      return style ? `<span style="${style}">${escHtml(text)}</span>` : escHtml(text)
+    }).join('')
+  }).join('\n')
+}
+
+function renderMarkdown(md, monacoTheme) {
   let html = md
     .replace(/```python\n([\s\S]*?)```/g, (_, code) =>
-      `<pre class="lesson-code-block"><code>${escHtml(code.trimEnd())}</code></pre>`)
+      `<pre class="lesson-code-block"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
     .replace(/```\n?([\s\S]*?)```/g, (_, code) =>
-      `<pre class="lesson-code-block"><code>${escHtml(code.trimEnd())}</code></pre>`)
+      `<pre class="lesson-code-block"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
     .replace(/^## (.+)$/gm, '<h2 class="lesson-h2">$1</h2>')
     .replace(/^# (.+)$/gm, '<h1 class="lesson-h1">$1</h1>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
