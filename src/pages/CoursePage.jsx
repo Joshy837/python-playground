@@ -17,10 +17,11 @@ function CourseNode({ data }) {
       setPopupExiting(false)
     } else if (popupVisible) {
       setPopupExiting(true)
+      const exitMs = (steps.length - 1) * 30 + 200
       const t = setTimeout(() => {
         setPopupVisible(false)
         setPopupExiting(false)
-      }, 200)
+      }, exitMs)
       return () => clearTimeout(t)
     }
   }, [expanded])
@@ -45,6 +46,7 @@ function CourseNode({ data }) {
             <button
               key={i}
               className={`course-step-btn ${step.done ? 'course-step-done' : step.unlocked ? 'course-step-available' : 'course-step-locked'}`}
+              style={{ animationDelay: popupExiting ? `${(steps.length - 1 - i) * 30}ms` : `${i * 60}ms` }}
               disabled={!step.unlocked && !step.done}
               title={step.title}
               onClick={e => { e.stopPropagation(); onStepClick(i) }}
