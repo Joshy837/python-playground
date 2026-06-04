@@ -308,7 +308,10 @@ body          { background-color: var(--app-bg); color: var(--text-primary); fon
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+  width: 130px;
+  justify-content: center;
 }
 
 .course-node-popup .course-step-btn {
