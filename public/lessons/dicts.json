@@ -20,7 +20,7 @@
           "msg": "pet[\"name\"] should be a non-empty string"
         }
       ],
-      "description": "# Dictionaries\n\nA **dictionary** stores labelled values. Each label is called a **key**.\n\n```python\npet = {\"name\": \"Fluffy\", \"age\": 3}\nprint(pet)\n```\n\nThink of it like a pet profile — each key is a label, and each value is what's written next to it."
+      "description": "# Dictionaries\n\nLists store items in order using index numbers. But sometimes you want to label your data with **names** instead of numbers.\n\nImagine filling in a form: Name: Fluffy, Age: 3, Colour: orange. Each field has a label and a value. That's exactly what a **dictionary** is!\n\n```python\npet = {\"name\": \"Fluffy\", \"age\": 3}\nprint(pet)\n```\n\nDictionaries use curly braces `{}` and store **key-value pairs**:\n- The part before `:` is the **key** (the label)\n- The part after `:` is the **value** (what it stores)\n\nYou can have as many key-value pairs as you like, separated by commas:\n```python\nperson = {\n    \"name\": \"Maya\",\n    \"age\": 12,\n    \"city\": \"London\"\n}\n```\n\nKeys are usually strings (in quotes), and values can be anything — strings, numbers, booleans, even lists!"
     },
     {
       "title": "Reading Values",
@@ -42,7 +42,7 @@
           "msg": "pet_name should be \"Fluffy\" — read it with pet[\"name\"]"
         }
       ],
-      "description": "# Reading Values\n\nUse square brackets with the key to read its value:\n\n```python\npet = {\"name\": \"Fluffy\", \"age\": 3}\nprint(pet[\"name\"])  # \"Fluffy\"\nprint(pet[\"age\"])   # 3\n```"
+      "description": "# Reading Values\n\nOnce you have a dictionary, you'll want to look things up in it — like searching a contact book for someone's phone number.\n\nTo read a value, use square brackets `[]` with the **key** name inside:\n\n```python\npet = {\"name\": \"Fluffy\", \"age\": 3}\nprint(pet[\"name\"])  # Fluffy\nprint(pet[\"age\"])   # 3\n```\n\nThis is similar to how we read from lists, but instead of a number index, we use the key name in quotes.\n\nWhat happens if you use a key that doesn't exist?\n```python\nprint(pet[\"colour\"])  # KeyError! \"colour\" is not in the dictionary\n```\n\nPython will crash with a `KeyError`. To avoid this, you can use `.get()` which returns `None` (or a default you choose) instead of crashing:\n```python\nprint(pet.get(\"colour\"))          # None\nprint(pet.get(\"colour\", \"unknown\"))  # \"unknown\"\n```\n\n`.get()` is the safer choice when you're not sure if a key exists!"
     },
     {
       "title": "Adding Values",
@@ -64,7 +64,7 @@
           "msg": "pet[\"age\"] should be 3"
         }
       ],
-      "description": "# Adding New Values\n\nAdd new keys to a dictionary by assigning to them:\n\n```python\npet = {\"name\": \"Fluffy\"}\npet[\"colour\"] = \"orange\"\nprint(pet)\n```"
+      "description": "# Adding New Values\n\nYou don't have to fill in all the details when you first create a dictionary. You can add new keys later at any time!\n\nJust assign a value to a new key — if the key doesn't exist, Python creates it automatically:\n\n```python\npet = {\"name\": \"Fluffy\"}\npet[\"colour\"] = \"orange\"\npet[\"age\"] = 3\nprint(pet)\n# {\"name\": \"Fluffy\", \"colour\": \"orange\", \"age\": 3}\n```\n\nThe same syntax also **updates** an existing key:\n```python\npet[\"name\"] = \"Max\"   # changes the name from \"Fluffy\" to \"Max\"\n```\n\nSo `dict[key] = value` does two things:\n- If the key **already exists** → it updates the value\n- If the key **doesn't exist** → it adds a brand new key-value pair\n\nThis makes dictionaries very flexible — you can build them up piece by piece!"
     },
     {
       "title": "Iterating",
@@ -86,7 +86,7 @@
           "msg": "10+8+9 = 27, so total should be 27"
         }
       ],
-      "description": "# Looping Through a Dictionary\n\nUse `.items()` to loop through both keys and values at the same time:\n\n```python\nscores = {\"Alice\": 10, \"Bob\": 8}\nfor name, score in scores.items():\n    print(name, \"scored\", score)\n# Alice scored 10\n# Bob scored 8\n```"
+      "description": "# Looping Through a Dictionary\n\nJust like we can loop through a list with `for`, we can loop through a dictionary too! The special method `.items()` gives us both the **key** and the **value** for each pair.\n\n```python\nscores = {\"Alice\": 10, \"Bob\": 8, \"Carol\": 9}\n\nfor name, score in scores.items():\n    print(name, \"scored\", score)\n# Alice scored 10\n# Bob scored 8\n# Carol scored 9\n```\n\nNotice the loop variable has **two names**: `name, score`. Python automatically unpacks each key-value pair into those two variables.\n\nYou can choose any names you like:\n```python\nfor player, points in scores.items():\n    print(player, \"→\", points)\n```\n\nIf you only need the keys:\n```python\nfor name in scores:           # loops over keys only\n    print(name)\n```\n\nIf you only need the values:\n```python\nfor score in scores.values():  # loops over values only\n    print(score)\n```"
     },
     {
       "title": "Counting",
@@ -118,7 +118,7 @@
           "msg": "\"fish\" appears 1 time"
         }
       ],
-      "description": "# Counting Things\n\nDictionaries are great for counting how many times something appears:\n\n```python\ncounts = {}\nfor item in items:\n    counts[item] = counts.get(item, 0) + 1\n```\n\n`counts.get(item, 0)` returns the current count, or `0` if it's the first time. Then we add `1` and save it back."
+      "description": "# Counting Things\n\nOne of the most useful tricks with dictionaries is **counting**. Imagine you have a list of words and want to know how many times each one appears — a dictionary is perfect for this!\n\nHere's the pattern:\n```python\nwords = [\"cat\", \"dog\", \"cat\", \"fish\", \"cat\"]\ncounts = {}\n\nfor word in words:\n    counts[word] = counts.get(word, 0) + 1\n\nprint(counts)  # {\"cat\": 3, \"dog\": 1, \"fish\": 1}\n```\n\nThe key line is `counts.get(word, 0) + 1`. Let's break it apart:\n\n| Part | What it does |\n|------|--------------|\n| `counts.get(word, 0)` | look up the current count — returns `0` if word not seen yet |\n| `+ 1` | add 1 to the count |\n| `counts[word] = ...` | save the updated count back into the dictionary |\n\nLet's trace through the first two `\"cat\"` entries:\n- First `\"cat\"`: `counts.get(\"cat\", 0)` → `0` (not seen yet), so `0 + 1 = 1` → `counts[\"cat\"] = 1`\n- Second `\"cat\"`: `counts.get(\"cat\", 0)` → `1` (already there!), so `1 + 1 = 2` → `counts[\"cat\"] = 2`\n\nThis pattern — start at 0 and keep adding 1 — is used everywhere in real programs!"
     }
   ]
 }

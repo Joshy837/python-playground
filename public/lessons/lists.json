@@ -20,7 +20,7 @@
           "msg": "colours should be [\"red\", \"green\", \"blue\"]"
         }
       ],
-      "description": "# Lists\n\nA **list** holds many values in one variable, inside square brackets `[]`.\n\n```python\nfruits = [\"apple\", \"banana\", \"cherry\"]\nprint(fruits)\n```\n\nUse `len()` to count how many items are in the list:\n\n```python\nprint(len(fruits))  # 3\n```"
+      "description": "# Lists\n\nSo far, each variable has stored just one value. But what if you want to store a whole collection of things — like a shopping list, or the names of your friends?\n\nThat's where a **list** comes in! A list holds many values in one variable, wrapped in square brackets `[]`, with commas between each item.\n\n```python\nfruits = [\"apple\", \"banana\", \"cherry\"]\nprint(fruits)\n```\n\nYou can mix types in a list (though it's usually better to keep them the same):\n```python\nmixed = [\"hello\", 42, True]\n```\n\nUse `len()` to count how many items are in the list:\n```python\nprint(len(fruits))  # 3\n```\n\nLists can be empty too — you can start with nothing and add items later:\n```python\ncart = []\n```\n\nLists are one of the most useful tools in Python. You'll be using them all the time!"
     },
     {
       "title": "Getting Items",
@@ -47,7 +47,7 @@
           "msg": "last should be \"fish\" — use index -1"
         }
       ],
-      "description": "# Getting Items — Indexes\n\nEach item has a number called an **index**. The first item is always index `0`.\n\n```python\nfruits = [\"apple\", \"banana\", \"cherry\"]\nprint(fruits[0])  # \"apple\"\nprint(fruits[1])  # \"banana\"\n```\n\nUse `-1` to get the last item:\n\n```python\nprint(fruits[-1])  # \"cherry\"\n```"
+      "description": "# Getting Items — Indexes\n\nEvery item in a list has a position number called an **index**. You use it to pick out a specific item.\n\nHere's the tricky part: **Python starts counting from 0, not 1!**\n\n```python\nfruits = [\"apple\", \"banana\", \"cherry\"]\n#          index 0   index 1   index 2\n\nprint(fruits[0])  # \"apple\"\nprint(fruits[1])  # \"banana\"\nprint(fruits[2])  # \"cherry\"\n```\n\nThink of it like a building — the ground floor is floor 0, not floor 1.\n\nYou can also count backwards from the end using **negative indexes**:\n\n| Index | Item | Notes |\n|-------|------|-------|\n| `0` | `\"apple\"` | first item |\n| `1` | `\"banana\"` | second item |\n| `2` | `\"cherry\"` | third item |\n| `-1` | `\"cherry\"` | last item |\n| `-2` | `\"banana\"` | second to last |\n\n```python\nprint(fruits[-1])  # \"cherry\" — the last item\nprint(fruits[-2])  # \"banana\" — second to last\n```\n\nThis is really handy when you don't know how long the list is but you always want the last item!\n\nIf you use an index that doesn't exist, Python will give you an error — so make sure your index is within range."
     },
     {
       "title": "Adding Items",
@@ -69,7 +69,7 @@
           "msg": "cart should be [\"bread\", \"milk\", \"eggs\"]"
         }
       ],
-      "description": "# Adding Items — append\n\nUse `.append()` to add one item to the end of a list.\n\n```python\nanimals = [\"cat\", \"dog\"]\nanimals.append(\"fish\")\nprint(animals)  # [\"cat\", \"dog\", \"fish\"]\n```"
+      "description": "# Adding Items — append\n\nLists aren't fixed — you can grow them by adding new items! The most common way is `.append()`, which adds one item to the **end** of the list.\n\n```python\nanimals = [\"cat\", \"dog\"]\nanimals.append(\"fish\")\nprint(animals)  # [\"cat\", \"dog\", \"fish\"]\n```\n\nNotice how we write it: `animals.append(\"fish\")` — the dot `.` means we're calling a **method** on the list. Think of it like saying \"hey animals list, append fish to yourself!\"\n\nYou can keep calling `.append()` to add more and more items:\n```python\ncart = []\ncart.append(\"bread\")\ncart.append(\"milk\")\ncart.append(\"eggs\")\nprint(cart)  # [\"bread\", \"milk\", \"eggs\"]\n```\n\n`.append()` always adds to the **end** — there's no way to accidentally put something in the middle with it. That's what makes it safe and predictable to use."
     },
     {
       "title": "Changing Items",
@@ -91,7 +91,7 @@
           "msg": "pets should be [\"cat\", \"hamster\", \"fish\"]"
         }
       ],
-      "description": "# Changing Items\n\nReplace any item by assigning to its index:\n\n```python\npets = [\"cat\", \"dog\", \"fish\"]\npets[1] = \"hamster\"\nprint(pets)  # [\"cat\", \"hamster\", \"fish\"]\n```"
+      "description": "# Changing Items\n\nJust like you can read an item using its index, you can also **replace** an item by assigning a new value to that index.\n\nThink of it like a whiteboard — you erase what's there and write something new in the same spot.\n\n```python\npets = [\"cat\", \"dog\", \"fish\"]\npets[1] = \"hamster\"\nprint(pets)  # [\"cat\", \"hamster\", \"fish\"]\n```\n\n`pets[1]` was `\"dog\"`. After the assignment, it's now `\"hamster\"`. The rest of the list stays the same.\n\nRemember: the index still starts at 0!\n\n| Index | Before | After |\n|-------|--------|-------|\n| `0` | `\"cat\"` | `\"cat\"` (unchanged) |\n| `1` | `\"dog\"` | `\"hamster\"` (replaced!) |\n| `2` | `\"fish\"` | `\"fish\"` (unchanged) |\n\nYou can change any item in the list this way — just use the right index number."
     }
   ]
 }

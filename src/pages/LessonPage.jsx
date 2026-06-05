@@ -606,6 +606,16 @@ function renderMarkdown(md, monacoTheme) {
       block = block.trim()
       if (!block) return ''
       if (/^<(h[12]|ul|pre|li)/.test(block)) return block
+      if (/^\|/.test(block)) {
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean)
+        const isSep = l => /^\|[\s\-:|]+\|$/.test(l)
+        const parseRow = l => l.split('|').slice(1, -1).map(c => c.trim())
+        const [header, ...rest] = lines
+        const thead = `<tr>${parseRow(header).map(h => `<th class="lesson-th">${h}</th>`).join('')}</tr>`
+        const tbody = rest.filter(l => !isSep(l))
+          .map(l => `<tr>${parseRow(l).map(c => `<td class="lesson-td">${c}</td>`).join('')}</tr>`).join('')
+        return `<table class="lesson-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`
+      }
       return `<p class="lesson-p">${block.replace(/\n/g, '<br>')}</p>`
     })
     .join('\n')

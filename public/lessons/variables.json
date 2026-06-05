@@ -20,7 +20,7 @@
           "msg": "name should be a string with at least one character — wrap it in quotes"
         }
       ],
-      "description": "# Your First Variable\n\nA **variable** is like a labelled box — you give it a name, and it holds a value.\n\n```python\nname = \"Maya\"\nprint(name)\n```\n\n`name` is the label. `\"Maya\"` is what's inside. `print` shows it on screen."
+      "description": "# Your First Variable\n\nImagine you have a box with a label on it that says **\"name\"**. You put the word **\"Maya\"** inside the box.\n\nIn Python, that's exactly what a **variable** is — a labelled box that stores a value!\n\n```python\nname = \"Maya\"\nprint(name)\n```\n\n| Part | What it means |\n|------|---------------|\n| `name` | The label on the box — you choose this name! |\n| `=` | \"Put this value inside the box\" — an instruction, not a question |\n| `\"Maya\"` | The value stored inside — quote marks mean it's text |\n| `print(name)` | \"Open the box called `name` and show me what's inside!\" |\n\nTry changing `\"Maya\"` to your own name and press Run — you should see your name appear!"
     },
     {
       "title": "Strings",
@@ -42,7 +42,7 @@
           "msg": "favourite_food should be a string — wrap it in quotes"
         }
       ],
-      "description": "# Text Values — Strings\n\nText in Python is called a **string**. Strings always have quote marks around them.\n\n```python\npet = \"Fluffy\"\n```\n\nSingle quotes work too — they mean the same thing:\n\n```python\ncity = 'London'\n```"
+      "description": "# Text Values — Strings\n\nWhenever you want to store words or sentences in Python, you use something called a **string**.\n\nThe rule is simple: **always wrap your text in quote marks**.\n\n```python\npet = \"Fluffy\"\ncity = 'London'\n```\n\nYou can use double quotes `\"\"` or single quotes `''` — they both do the same thing!\n\nWhy do we need the quotes? Without them, Python would think `Fluffy` is the name of a variable, not a piece of text. The quotes say: \"hey Python, this is just text!\"\n\nStrings can hold names, sentences, emojis — anything made of characters:\n```python\nmessage = \"Hello, world!\"\nanimal = \"🐶\"\n```\n\nTry creating your own string and printing it!"
     },
     {
       "title": "Joining Strings",
@@ -64,7 +64,7 @@
           "msg": "greeting should be \"Hello Maya\" — join first, a space \" \", and name with +"
         }
       ],
-      "description": "# Joining Strings\n\nYou can stick two strings together using `+`.\n\n```python\nfirst = \"Hello, \"\nsecond = \"Maya!\"\nmessage = first + second\nprint(message)\n```\n\nOutput: `Hello, Maya!`"
+      "description": "# Joining Strings\n\nImagine you have two pieces of paper, each with a word written on it. You can glue them together to make one longer piece. In Python, we do the same thing with `+`!\n\n```python\nfirst = \"Hello, \"\nsecond = \"Maya!\"\nmessage = first + second\nprint(message)\n```\n\nOutput: `Hello, Maya!`\n\nImportant thing to notice: there's a space inside `\"Hello, \"` at the end. If we left it out:\n```python\n\"Hello,\" + \"Maya!\"  # gives \"Hello,Maya!\" — no space!\n```\n\nSo if you want a gap between words, you need to add it yourself — either at the end of one string, or by joining a space in between:\n```python\nfull_name = \"Maya\" + \" \" + \"Smith\"  # \"Maya Smith\"\n```\n\nTry joining your first name and last name together!"
     },
     {
       "title": "Integers",
@@ -86,7 +86,7 @@
           "msg": "age should be a whole number — no quotes, no decimal point"
         }
       ],
-      "description": "# Whole Numbers — Integers\n\nNumbers in Python don't need quote marks.\n\n```python\nage = 10\nprint(age)\n```\n\nThese are called **integers** — whole numbers with no decimal point."
+      "description": "# Whole Numbers — Integers\n\nNot everything we store is text! Sometimes we want to store a **number** — like someone's age, a score, or how many coins you have.\n\nNumbers in Python don't need quote marks. Just write the number directly:\n\n```python\nage = 10\ncoins = 25\nprint(age)\nprint(coins)\n```\n\nThese are called **integers** — whole numbers with no decimal point (no `.5` or `.99`).\n\nWatch out: if you put quotes around a number, Python treats it as text, not a number!\n```python\nage = \"10\"   # this is text — you can't do maths with it\nage = 10     # this is a number — you can!\n```\n\nIntegers can be negative too:\n```python\ntemperature = -5\n```"
     },
     {
       "title": "Maths",
@@ -108,7 +108,7 @@
           "msg": "5 * 3 = 15, so total should be 15"
         }
       ],
-      "description": "# Maths with Numbers\n\nPython can do maths. Use `+`, `-`, and `*`.\n\n```python\napples = 5\noranges = 3\ntotal = apples + oranges\nprint(total)\n```"
+      "description": "# Maths with Numbers\n\nPython is like a super-powered calculator! You can do all kinds of maths using variables.\n\n| Operator | Means | Example |\n|----------|-------|---------|\n| `+` | add | `5 + 3` → `8` |\n| `-` | subtract | `5 - 3` → `2` |\n| `*` | multiply | `5 * 3` → `15` |\n| `/` | divide | `6 / 2` → `3.0` |\n\n```python\napples = 5\noranges = 3\n\nprint(apples + oranges)   # 8\nprint(apples - oranges)   # 2\nprint(apples * 2)         # 10\n```\n\nYou can also store the result in a new variable:\n```python\ntotal = apples + oranges\nprint(total)  # 8\n```\n\nNote: `*` is multiply (not `x`), and `/` is divide (not `÷`). Python uses these symbols because they're on every keyboard!\n\nTry changing the numbers and see how the results change."
     },
     {
       "title": "Floats",
@@ -130,7 +130,7 @@
           "msg": "height should be a float greater than 0 — include a decimal point (e.g. 1.5)"
         }
       ],
-      "description": "# Decimal Numbers — Floats\n\nWhen a number has a decimal point, Python calls it a **float**.\n\n```python\nprice = 1.99\nprint(price)\n```\n\nEven `1.0` is a float — the decimal point is what matters."
+      "description": "# Decimal Numbers — Floats\n\nSometimes whole numbers aren't enough. A price like `£1.99`, a height like `1.75 m`, or a temperature like `36.6°C` all need a decimal point.\n\nIn Python, numbers with a decimal point are called **floats** (short for \"floating point number\"):\n\n```python\nprice = 1.99\nheight = 1.75\ntemperature = 36.6\n```\n\nYou can do maths with floats just like integers:\n```python\nprice = 1.99\ndiscount = 0.50\nfinal = price - discount\nprint(final)  # 1.49\n```\n\nEven `1.0` is a float — the decimal point is what tells Python it's a float, not an integer.\n\nFloats and integers can work together:\n```python\nprint(5 + 1.5)  # 6.5\n```"
     },
     {
       "title": "Booleans",
@@ -152,7 +152,7 @@
           "msg": "is_raining should be True or False (capital T/F, no quotes)"
         }
       ],
-      "description": "# Yes and No — Booleans\n\nA **boolean** is either `True` or `False`. It's used for yes/no values.\n\n```python\nis_sunny = True\nhas_pet = False\nprint(is_sunny)\n```\n\nCapital T and F — lowercase `true` and `false` won't work."
+      "description": "# Yes and No — Booleans\n\nSometimes we just need to answer a yes/no question: Is it raining? Does the player have a key? Is the game over?\n\nFor that, Python has a special type called a **boolean**. It can only ever be one of two values:\n- `True` — yes!\n- `False` — no!\n\n```python\nis_sunny = True\nhas_pet = False\nprint(is_sunny)   # True\nprint(has_pet)    # False\n```\n\nTwo things to remember:\n1. The first letter is **capital** — `True` not `true`, `False` not `false`\n2. No quote marks — `True` is a special keyword, `\"True\"` is just the text \"True\"\n\nBooleans might seem simple now, but they're really powerful! When we get to `if` statements, we'll use them to make decisions in our code:\n```python\nif is_sunny:\n    print(\"Let's go outside!\")\n```"
     }
   ]
 }

@@ -20,7 +20,7 @@
           "msg": "80 > 60 is True, so passed should be True"
         }
       ],
-      "description": "# Comparing Things\n\nYou can compare two values. The result is always `True` or `False`.\n\n```python\nprint(5 > 3)   # True\nprint(5 < 3)   # False\nprint(5 == 5)  # True\n```\n\nCommon comparisons:\n- `>` greater than\n- `<` less than\n- `==` equal to (two equals signs!)\n- `!=` not equal to"
+      "description": "# Comparing Things\n\nBefore we can make decisions in code, we need to be able to ask questions — like \"is this number bigger than that one?\" or \"are these two things equal?\"\n\nIn Python, comparisons always give you back either `True` or `False`:\n\n```python\nprint(5 > 3)   # True  — 5 is greater than 3\nprint(5 < 3)   # False — 5 is not less than 3\nprint(5 == 5)  # True  — 5 equals 5\nprint(5 != 3)  # True  — 5 is not equal to 3\n```\n\n| Operator | Meaning | Example |\n|----------|---------|---------|\n| `>` | greater than | `5 > 3` → `True` |\n| `<` | less than | `5 < 3` → `False` |\n| `>=` | greater than or equal to | `5 >= 5` → `True` |\n| `<=` | less than or equal to | `3 <= 5` → `True` |\n| `==` | equal to (two signs!) | `5 == 5` → `True` |\n| `!=` | not equal to | `5 != 3` → `True` |\n\nThe `==` vs `=` difference trips up almost every beginner — don't worry, it will feel natural with practice!\n\nYou can compare variables too:\n```python\nscore = 85\nprint(score > 50)  # True\n```"
     },
     {
       "title": "if",
@@ -42,7 +42,7 @@
           "msg": "temperature is 30, which is greater than 25, so message should be \"hot\""
         }
       ],
-      "description": "# Making a Decision — if\n\nUse `if` to run code only when something is true.\n\n```python\nscore = 90\n\nif score > 80:\n    print(\"Great score!\")\n```\n\nThe 4 spaces before `print` are called **indentation**. They tell Python this line is *inside* the `if`. If the condition is false, the indented code is skipped."
+      "description": "# Making a Decision — if\n\nNow that we can compare things, we can make **decisions**! An `if` statement says: \"only run this code **if** the condition is true.\"\n\nThink of it like a bouncer at a door: \"If you're tall enough, you can go on the ride!\"\n\n```python\nscore = 90\n\nif score > 80:\n    print(\"Great score!\")\n```\n\nSince `90 > 80` is `True`, the print runs. If score were `70`, nothing would happen.\n\nThe most important part: **indentation**. The 4 spaces before `print` tell Python that line is **inside** the `if` block. Without the spaces, Python won't know which code belongs to the `if`!\n\n```python\nif score > 80:\n    print(\"This runs only if score > 80\")  # indented — inside the if\nprint(\"This always runs\")                  # no indent — always runs\n```\n\nYou can put multiple lines inside an `if` — just make sure they're all indented:\n```python\nif score > 80:\n    print(\"Well done!\")\n    print(\"You passed!\")\n```"
     },
     {
       "title": "if / else",
@@ -64,7 +64,7 @@
           "msg": "score is 45, which is less than 50, so grade should be \"fail\""
         }
       ],
-      "description": "# if / else\n\nAdd `else` for what happens when the condition is false.\n\n```python\ntemperature = 20\n\nif temperature > 25:\n    message = \"hot\"\nelse:\n    message = \"cool\"\n\nprint(message)\n```"
+      "description": "# if / else — Two Paths\n\nAn `if` on its own only does something when the condition is true. But what if you want something to happen in **both cases** — one thing if true, a different thing if false?\n\nThat's what `else` is for!\n\nThink of it like a fork in the road:\n- Take the left path **if** it's sunny\n- Take the right path **otherwise** (else)\n\n```python\nweather = \"sunny\"\n\nif weather == \"sunny\":\n    print(\"Let's go outside!\")\nelse:\n    print(\"Stay inside.\")\n```\n\nPython checks the condition:\n- If it's `True` → runs the `if` block, skips `else`\n- If it's `False` → skips the `if` block, runs `else`\n\nExactly **one** of the two blocks will always run — never both, never neither.\n\n```python\ntemperature = 20\n\nif temperature > 25:\n    message = \"hot\"\nelse:\n    message = \"cool\"\n\nprint(message)  # cool\n```\n\nTry changing `temperature` to `30` and see how the output changes!"
     },
     {
       "title": "elif",
@@ -86,7 +86,7 @@
           "msg": "score is 75 — that's 70 or more but less than 90, so grade should be \"B\""
         }
       ],
-      "description": "# More Choices — elif\n\n`elif` means \"else if\" — it lets you check more conditions. Only the **first** match runs.\n\n```python\nscore = 75\n\nif score >= 90:\n    grade = \"A\"\nelif score >= 70:\n    grade = \"B\"\nelse:\n    grade = \"C\"\n```"
+      "description": "# More Choices — elif\n\nSometimes two choices aren't enough. Imagine grading a test — there's not just pass/fail, there's A, B, C, D, F!\n\n`elif` (short for \"else if\") lets you check **more conditions** in a chain. Python goes through them in order and runs only the **first one that matches**.\n\n```python\nscore = 75\n\nif score >= 90:\n    grade = \"A\"\nelif score >= 70:\n    grade = \"B\"\nelif score >= 50:\n    grade = \"C\"\nelse:\n    grade = \"F\"\n\nprint(grade)  # B\n```\n\nLet's trace through with `score = 75`:\n- `75 >= 90`? No → skip\n- `75 >= 70`? **Yes** → grade = \"B\", stop checking!\n- (The rest are ignored — we already found a match)\n\nThis is why order matters! If we put `score >= 50` first, a score of 75 would get \"C\" instead of \"B\", because 75 is also >= 50.\n\nYou can have as many `elif` branches as you like. The `else` at the end is optional — it's the catch-all for when nothing else matched."
     }
   ]
 }

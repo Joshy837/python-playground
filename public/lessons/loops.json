@@ -20,7 +20,7 @@
           "msg": "1+2+3+4+5 = 15, so total should be 15"
         }
       ],
-      "description": "# Looping Over a List — for\n\nA `for` loop runs code once for each item in a list.\n\n```python\nanimals = [\"cat\", \"dog\", \"fish\"]\nfor animal in animals:\n    print(animal)\n# cat\n# dog\n# fish\n```"
+      "description": "# Looping Over a List — for\n\nImagine you have a bag of sweets and you want to look at each one. You'd pull them out one by one, right? A `for` loop does exactly that with a list!\n\nA `for` loop runs your code once for **each item** in the list, automatically moving to the next one each time.\n\n```python\nanimals = [\"cat\", \"dog\", \"fish\"]\nfor animal in animals:\n    print(animal)\n# cat\n# dog\n# fish\n```\n\nLet's read it like a sentence: **\"For each animal in the animals list, print that animal.\"**\n\n| Part | What it does |\n|------|--------------|\n| `for` | starts the loop |\n| `animal` | a temporary variable holding the current item — you can name this anything! |\n| `in animals` | the list we're going through |\n| indented code | what to do for each item |\n\nThe loop runs 3 times here because there are 3 animals. If you added a 4th animal, it would run 4 times automatically!"
     },
     {
       "title": "for — range",
@@ -42,7 +42,7 @@
           "msg": "0+1+2+3+4 = 10, so total should be 10"
         }
       ],
-      "description": "# Repeating a Set Number of Times — range\n\nUse `range(n)` to repeat code exactly `n` times.\n\n```python\nfor i in range(3):\n    print(\"Hello!\")\n# Hello!\n# Hello!\n# Hello!\n```\n\n`range(5)` counts `0, 1, 2, 3, 4` — it starts at 0."
+      "description": "# Repeating a Set Number of Times — range\n\nWhat if you don't have a list, but you just want to repeat something a certain number of times? That's where `range()` comes in!\n\n`range(n)` gives you a sequence of numbers from `0` up to (but not including) `n`.\n\n```python\nfor i in range(3):\n    print(\"Hello!\")\n# Hello!\n# Hello!\n# Hello!\n```\n\n`range(3)` counts `0, 1, 2` — so the loop runs **3 times**.\n\nHere's what `i` is on each step:\n- First loop: `i = 0`\n- Second loop: `i = 1`\n- Third loop: `i = 2`\n\nYou can use `i` in your code:\n```python\nfor i in range(5):\n    print(i)   # prints 0, then 1, then 2, then 3, then 4\n```\n\nRemember: `range(5)` gives `0, 1, 2, 3, 4` — it stops **before** 5! This surprises a lot of beginners, so keep it in mind."
     },
     {
       "title": "while loops",
@@ -69,7 +69,7 @@
           "msg": "the loop should stop when n is greater than 5"
         }
       ],
-      "description": "# Looping While True — while\n\nA `while` loop keeps repeating as long as its condition is `True`.\n\n```python\ncount = 3\nwhile count > 0:\n    print(count)\n    count = count - 1\n# 3\n# 2\n# 1\n```\n\nMake sure the condition eventually becomes `False` — otherwise it loops forever!"
+      "description": "# Looping While True — while\n\nA `for` loop is great when you know exactly how many times to repeat. But sometimes you want to keep going **until something changes** — like keep asking for a password until the user gets it right.\n\nThat's what a `while` loop is for! It keeps repeating as long as its condition is `True`.\n\n```python\ncount = 3\nwhile count > 0:\n    print(count)\n    count = count - 1\n# 3\n# 2\n# 1\n```\n\nLet's trace through it step by step:\n- Start: `count = 3`, condition `3 > 0` is True → print 3, count becomes 2\n- Step 2: `count = 2`, condition `2 > 0` is True → print 2, count becomes 1\n- Step 3: `count = 1`, condition `1 > 0` is True → print 1, count becomes 0\n- Step 4: `count = 0`, condition `0 > 0` is **False** → loop stops!\n\n**Important warning:** if the condition never becomes `False`, the loop runs forever! This is called an **infinite loop**. Always make sure something inside the loop moves you closer to stopping.\n\nFor example, `count = count - 1` shrinks the number each time until the condition fails."
     }
   ]
 }
