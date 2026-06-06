@@ -1,12 +1,34 @@
-import { Tag, GitBranch, List, Repeat, BookOpen } from 'lucide-react'
+import { Tag, GitBranch, List, Repeat, BookOpen, Code2, Lightbulb } from 'lucide-react'
+
+// Snake/serpentine layout: 3 columns, rows alternate L→R then R→L.
+// Positions are centers (nodeOrigin=[0.5, 0.5]).
+const C1 = 150  // left column
+const C2 = 340  // middle column
+const C3 = 530  // right column
+const R1 = 80   // row 1
+const R2 = 220  // row 2
+const R3 = 360  // row 3
 
 export const NODES = [
+  // Row 1: left → right
+  {
+    id: 'basics',
+    title: 'Getting Started',
+    icon: Lightbulb,
+    x: C1, y: R1,
+    requires: [],
+    description: 'Learn to show output and leave notes in your code.',
+    steps: [
+      { title: 'print()' },
+      { title: 'Comments' },
+    ],
+  },
   {
     id: 'variables',
     title: 'Variables & Types',
     icon: Tag,
-    x: 100, y: 200,
-    requires: [],
+    x: C2, y: R1,
+    requires: ['basics'],
     description: 'Learn how to store data in variables.',
     steps: [
       { title: 'Your First Variable' },
@@ -22,7 +44,7 @@ export const NODES = [
     id: 'conditionals',
     title: 'Conditionals',
     icon: GitBranch,
-    x: 320, y: 120,
+    x: C3, y: R1,
     requires: ['variables'],
     description: 'Make decisions in your code with if, elif, and else.',
     steps: [
@@ -32,12 +54,13 @@ export const NODES = [
       { title: 'elif' },
     ],
   },
+  // Row 2: right → left (snake turn at C3)
   {
     id: 'lists',
     title: 'Lists',
     icon: List,
-    x: 320, y: 280,
-    requires: ['variables'],
+    x: C3, y: R2,
+    requires: ['conditionals'],
     description: 'Store and work with collections of values.',
     steps: [
       { title: 'Creating a List' },
@@ -50,8 +73,8 @@ export const NODES = [
     id: 'loops',
     title: 'Loops',
     icon: Repeat,
-    x: 540, y: 120,
-    requires: ['conditionals'],
+    x: C2, y: R2,
+    requires: ['lists'],
     description: 'Repeat actions with for and while loops.',
     steps: [
       { title: 'for — lists' },
@@ -63,8 +86,8 @@ export const NODES = [
     id: 'dicts',
     title: 'Dictionaries',
     icon: BookOpen,
-    x: 540, y: 280,
-    requires: ['lists'],
+    x: C1, y: R2,
+    requires: ['loops'],
     description: 'Store labelled information with keys and values.',
     steps: [
       { title: 'Creating a Dictionary' },
@@ -72,6 +95,20 @@ export const NODES = [
       { title: 'Adding Values' },
       { title: 'Iterating' },
       { title: 'Counting' },
+    ],
+  },
+  // Row 3: left → right (snake turn at C1)
+  {
+    id: 'functions',
+    title: 'Functions',
+    icon: Code2,
+    x: C1, y: R3,
+    requires: ['dicts'],
+    description: 'Write reusable blocks of code with def.',
+    steps: [
+      { title: 'Defining a Function' },
+      { title: 'Parameters' },
+      { title: 'Return Values' },
     ],
   },
 ]
@@ -83,4 +120,4 @@ export const EDGES = NODES.flatMap(node =>
 export const NODE_W = 140
 export const NODE_H = 52
 export const CANVAS_W = 680
-export const CANVAS_H = 400
+export const CANVAS_H = 440

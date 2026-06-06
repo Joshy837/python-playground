@@ -31,7 +31,12 @@ function CourseNode({ data }) {
       className={`course-node ${done ? 'course-node-done' : unlocked ? 'course-node-unlocked' : 'course-node-locked'}`}
       style={{ width: NODE_W, height: NODE_H, cursor: unlocked ? 'pointer' : 'default', overflow: 'visible', position: 'relative' }}
     >
-      <Handle type="target" position={Position.Left} style={{ visibility: 'hidden' }} />
+      <Handle id="t"   type="target" position={Position.Top}    style={{ visibility: 'hidden' }} />
+      <Handle id="b"   type="source" position={Position.Bottom} style={{ visibility: 'hidden' }} />
+      <Handle id="l-s" type="source" position={Position.Left}   style={{ visibility: 'hidden' }} />
+      <Handle id="l-t" type="target" position={Position.Left}   style={{ visibility: 'hidden' }} />
+      <Handle id="r-s" type="source" position={Position.Right}  style={{ visibility: 'hidden' }} />
+      <Handle id="r-t" type="target" position={Position.Right}  style={{ visibility: 'hidden' }} />
       <div className="course-node-icon">
         {done ? <Check size={13} /> : !unlocked ? <Lock size={13} /> : Icon ? <Icon size={13} /> : null}
       </div>
@@ -57,7 +62,6 @@ function CourseNode({ data }) {
         </div>
       )}
 
-      <Handle type="source" position={Position.Right} style={{ visibility: 'hidden' }} />
     </div>
   )
 }
@@ -106,12 +110,28 @@ export default function CoursePage() {
   }), [completed, expandedId])
 
   const edges = useMemo(() => EDGES.map(({ from, to }) => {
+    const fromNode = NODES.find(n => n.id === from)
+    const toNode = NODES.find(n => n.id === to)
+    const dx = toNode.x - fromNode.x
+    const dy = toNode.y - fromNode.y
+    // Pick handles based on dominant direction of the edge
+    let sourceHandle, targetHandle
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      sourceHandle = dx >= 0 ? 'r-s' : 'l-s'
+      targetHandle = dx >= 0 ? 'l-t' : 'r-t'
+    } else {
+      sourceHandle = 'b'
+      targetHandle = 't'
+    }
     const done = completed.includes(from)
     const unlocked = NODES.find(n => n.id === to)?.requires.every(req => completed.includes(req))
     return {
       id: `${from}-${to}`,
       source: from,
       target: to,
+      sourceHandle,
+      targetHandle,
+      type: 'default',
       animated: unlocked,
       style: {
         stroke: done ? 'var(--status-green)' : unlocked ? 'var(--text-muted)' : 'var(--header-border)',

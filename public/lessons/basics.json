@@ -1,0 +1,94 @@
+{
+  "steps": [
+    {
+      "title": "print()",
+      "example": "print(\"Hello, world!\")\nprint(42)\nname = \"Maya\"\nprint(\"Welcome,\", name)",
+      "task": "Use `print()` to display `\"Hello, Python!\"` on the screen.",
+      "starter": "# Use print() to display \"Hello, Python!\"\n",
+      "quiz": [
+        {
+          "question": "What does print() do?",
+          "options": ["Saves a value into a variable", "Displays output on the screen", "Creates a new file", "Deletes a variable"],
+          "answer": 1,
+          "explanation": "print() is Python's built-in function for showing output on the screen."
+        },
+        {
+          "question": "What will print(\"Hello\") display?",
+          "options": ["\"Hello\" (with the quote marks)", "Hello", "hello", "Nothing — it needs a variable"],
+          "answer": 1,
+          "explanation": "print() displays the value without the surrounding quote marks."
+        },
+        {
+          "question": "Which of these is correct Python?",
+          "options": ["print \"Hello\"", "Print(\"Hello\")", "PRINT(\"Hello\")", "print(\"Hello\")"],
+          "answer": 3,
+          "explanation": "print is lowercase, and the text goes inside parentheses."
+        },
+        {
+          "question": "What does print(\"Score:\", 10) display?",
+          "options": ["Score:", "10", "Score: 10", "\"Score:\", 10"],
+          "answer": 2,
+          "explanation": "When you give print() multiple values separated by commas, it puts a space between them."
+        },
+        {
+          "question": "To show output on the screen in Python, you use the _____ function.",
+          "answer": ["print"],
+          "explanation": "print() is Python's built-in function for displaying output."
+        }
+      ],
+      "tests": [
+        {
+          "name": "\"Hello, Python!\" is printed",
+          "check": "\"Hello, Python!\" in __import__('sys').stdout.getvalue()",
+          "msg": "Call print(\"Hello, Python!\") to display that message"
+        }
+      ],
+      "description": "# Showing Output — print()\n\nWhenever we want to see a value or show a message, we use **`print()`**.\n\n```python\nprint(\"Hello, world!\")\n```\n\nOutput: `Hello, world!`\n\nThe value you want to show goes inside the parentheses `()`. You can print text, numbers, or variables:\n\n```python\nprint(\"Hello, world!\")   # text\nprint(42)                  # a number\n\nname = \"Maya\"\nprint(name)                # a variable\n```\n\nYou can also print multiple things at once by separating them with commas — Python adds a space between them automatically:\n\n```python\nprint(\"Welcome,\", name)   # Welcome, Maya\nprint(\"Score:\", 10)       # Score: 10\n```\n\nTwo things to always remember:\n- `print` is always **lowercase**\n- Everything goes inside **parentheses** `()`\n\nYou'll use `print()` in almost every program you write — it's the first tool in your Python toolkit!"
+    },
+    {
+      "title": "Comments",
+      "example": "# This is a comment — Python ignores it\nname = \"Maya\"   # comment at end of a line\nprint(name)\n# print(\"This line won't run\")",
+      "task": "The second line is broken! Add a `#` at the start of it to comment it out so only `\"Hello!\"` is printed.",
+      "starter": "print(\"Hello!\")\nthis is broken code\n",
+      "quiz": [
+        {
+          "question": "How do you start a comment in Python?",
+          "options": ["//", "<!-- -->", "#", "**"],
+          "answer": 2,
+          "explanation": "In Python, the # symbol starts a comment. Everything after it on that line is ignored."
+        },
+        {
+          "question": "What does Python do with a comment?",
+          "options": ["Runs it as code", "Prints it to the screen", "Completely ignores it", "Saves it as a variable"],
+          "answer": 2,
+          "explanation": "Python skips over comments entirely — they are only for humans reading the code."
+        },
+        {
+          "question": "Which line is a comment?",
+          "options": ["name = \"Maya\"", "print(name)", "# this stores a name", "name"],
+          "answer": 2,
+          "explanation": "Any line starting with # is a comment."
+        },
+        {
+          "question": "Can you put a comment at the end of a line of code?",
+          "options": ["No, comments must be on their own line", "Yes, using # after the code", "Yes, using // after the code", "No, comments must come first in the file"],
+          "answer": 1,
+          "explanation": "You can put # anywhere on a line — everything after it becomes a comment."
+        },
+        {
+          "question": "In Python, a comment starts with the _____ symbol.",
+          "answer": ["#"],
+          "explanation": "# tells Python to ignore everything that follows on that line."
+        }
+      ],
+      "tests": [
+        {
+          "name": "\"Hello!\" is printed without errors",
+          "check": "\"Hello!\" in __import__('sys').stdout.getvalue()",
+          "msg": "Comment out the broken line by adding # at the start of it"
+        }
+      ],
+      "description": "# Comments\n\nSometimes you want to leave a note in your code — to explain what it does, or to remind yourself why you wrote something a certain way.\n\nIn Python, you do that with a **comment**. Just add a `#` and write whatever you like after it:\n\n```python\n# This is a comment — Python ignores it\nname = \"Maya\"\nprint(name)  # prints the name\n```\n\nPython completely **ignores** everything after the `#`. Comments are only for humans!\n\nYou can use them in two ways:\n\n**On their own line** — to explain what comes next:\n```python\n# Store the player's name\nplayer = \"Alex\"\n```\n\n**At the end of a line** — for a quick note:\n```python\nscore = 0   # start at zero\n```\n\nYou can also \"comment out\" a line to stop it from running — useful for testing:\n```python\n# print(\"This won't appear\")\nprint(\"This will appear\")\n```\n\nClear comments are one of the best habits in coding — they make your code much easier to understand later!"
+    }
+  ]
+}

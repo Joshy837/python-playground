@@ -1,0 +1,154 @@
+{
+  "steps": [
+    {
+      "title": "Defining a Function",
+      "example": "def say_hello():\n    print(\"Hello!\")\n\nsay_hello()\nsay_hello()  # call it as many times as you like!",
+      "task": "Define a function called `greet` that prints `\"Hi there!\"`. Then call it once.",
+      "starter": "def greet():\n    # write your print here\n    pass\n\n# call greet() below\n",
+      "quiz": [
+        {
+          "question": "What keyword do you use to define a function in Python?",
+          "options": ["function", "fun", "def", "define"],
+          "answer": 2,
+          "explanation": "def is short for 'define' — it tells Python you're creating a function."
+        },
+        {
+          "question": "What goes at the end of the def line?",
+          "options": ["A semicolon ;", "A colon :", "A full stop .", "Nothing"],
+          "answer": 1,
+          "explanation": "The colon : tells Python that the indented block below is the function's body."
+        },
+        {
+          "question": "How do you run (call) a function called greet?",
+          "options": ["def greet", "run greet", "greet()", "call greet"],
+          "answer": 2,
+          "explanation": "To call a function, write its name followed by parentheses ()."
+        },
+        {
+          "question": "What is the main benefit of putting code inside a function?",
+          "options": ["It runs faster", "You can reuse it by calling it multiple times", "It uses less memory", "Python requires it"],
+          "answer": 1,
+          "explanation": "Functions let you write code once and run it as many times as you need."
+        },
+        {
+          "question": "To define a function in Python, you start the line with the _____ keyword.",
+          "answer": ["def"],
+          "explanation": "def is the keyword that tells Python you are defining a new function."
+        }
+      ],
+      "tests": [
+        {
+          "name": "greet is defined as a function",
+          "check": "callable(greet)",
+          "msg": "Define a function called greet using: def greet():"
+        },
+        {
+          "name": "calling greet() prints something",
+          "check": "len(__import__('sys').stdout.getvalue().strip()) > 0",
+          "msg": "Make sure greet() contains a print() call"
+        }
+      ],
+      "description": "# Defining a Function\n\nImagine you write a set of instructions once and then can follow them any time you need. That's exactly what a **function** is!\n\nIn Python, you define a function using the `def` keyword:\n\n```python\ndef say_hello():\n    print(\"Hello!\")\n```\n\n| Part | What it means |\n|------|---------------|\n| `def` | \"I'm defining a function\" |\n| `say_hello` | The name you give to the function |\n| `()` | The parentheses — we'll fill these in later |\n| `:` | Start of the function's body |\n| `    print(...)` | Indented code that runs when called |\n\nDefining a function doesn't run it — you have to **call** it:\n\n```python\nsay_hello()   # runs the function\nsay_hello()   # runs it again!\n```\n\nThe code inside is indented (4 spaces or one tab). Python uses this indentation to know which lines belong to the function.\n\nTry running the example to see `say_hello()` called twice!"
+    },
+    {
+      "title": "Parameters",
+      "example": "def greet(name):\n    print(\"Hello, \" + name + \"!\")\n\ngreet(\"Maya\")   # Hello, Maya!\ngreet(\"Alex\")   # Hello, Alex!",
+      "task": "Define a function `double(n)` that **returns** `n * 2`. For example, `double(3)` should give back `6`.",
+      "starter": "def double(n):\n    # return n multiplied by 2\n    pass\n\nprint(double(3))   # should print 6\nprint(double(5))   # should print 10\n",
+      "quiz": [
+        {
+          "question": "What is a parameter?",
+          "options": ["The name of the function", "A value you pass into a function", "The colon after def", "The indented code inside a function"],
+          "answer": 1,
+          "explanation": "A parameter is a variable that receives the value you pass when calling the function."
+        },
+        {
+          "question": "In def greet(name):, what is name?",
+          "options": ["The function name", "A parameter", "A string", "A keyword"],
+          "answer": 1,
+          "explanation": "name is the parameter — it holds whatever value you pass when calling greet()."
+        },
+        {
+          "question": "What does greet(\"Maya\") do?",
+          "options": ["Defines a new function", "Calls greet with \"Maya\" as the name parameter", "Prints \"Maya\" directly", "Creates a variable called greet"],
+          "answer": 1,
+          "explanation": "greet(\"Maya\") calls the function and passes \"Maya\" as the value for name."
+        },
+        {
+          "question": "Can you call the same function with different values?",
+          "options": ["No — a function can only be called once", "No — the parameter is fixed when defined", "Yes — each call can pass a different value", "Only if you redefine the function each time"],
+          "answer": 2,
+          "explanation": "You can call a function many times with different arguments — that's what makes them powerful!"
+        },
+        {
+          "question": "The values you pass into a function when calling it are called _____s.",
+          "answer": ["argument", "parameter"],
+          "explanation": "Arguments (or parameters) are the values you pass into a function."
+        }
+      ],
+      "tests": [
+        {
+          "name": "double(3) == 6",
+          "check": "double(3) == 6",
+          "msg": "double(3) should return 6 — use return n * 2"
+        },
+        {
+          "name": "double(5) == 10",
+          "check": "double(5) == 10",
+          "msg": "double(5) should return 10"
+        }
+      ],
+      "description": "# Parameters — Passing Values In\n\nSo far our function does the same thing every time. What if we want it to work with different values?\n\nThat's where **parameters** come in. You add them inside the parentheses:\n\n```python\ndef greet(name):\n    print(\"Hello, \" + name + \"!\")\n\ngreet(\"Maya\")   # Hello, Maya!\ngreet(\"Alex\")   # Hello, Alex!\n```\n\nThe `name` inside `def greet(name):` is the parameter — it's like a variable that gets filled in each time you call the function.\n\nYou can have multiple parameters too:\n\n```python\ndef add(a, b):\n    print(a + b)\n\nadd(3, 4)   # 7\nadd(10, 5)  # 15\n```\n\nParameters make functions flexible — write the logic once, use it with any values!\n\nFor this challenge, your function needs to **return** a value (send it back to the caller) rather than just print it. We'll cover `return` in depth next, but for now: use `return n * 2` inside your function."
+    },
+    {
+      "title": "Return Values",
+      "example": "def add(a, b):\n    return a + b\n\nresult = add(3, 4)\nprint(result)   # 7\n\nprint(add(10, 5))   # 15",
+      "task": "Define a function `multiply(a, b)` that returns `a * b`.",
+      "starter": "def multiply(a, b):\n    # return the product of a and b\n    pass\n\nprint(multiply(3, 4))   # should print 12\nprint(multiply(2, 5))   # should print 10\n",
+      "quiz": [
+        {
+          "question": "What does the return keyword do?",
+          "options": ["Prints a value to the screen", "Sends a value back to whoever called the function", "Ends the program", "Defines a new variable"],
+          "answer": 1,
+          "explanation": "return sends a value back to the caller so it can be stored or used in an expression."
+        },
+        {
+          "question": "What is the difference between print() and return?",
+          "options": ["There is no difference", "print() shows output on screen; return sends a value back to the caller", "return shows output; print() sends a value back", "print() only works inside functions"],
+          "answer": 1,
+          "explanation": "print() displays something for the human to see. return gives a value back to the code that called the function."
+        },
+        {
+          "question": "Given def double(n): return n * 2, what does double(4) evaluate to?",
+          "options": ["4", "2", "8", "Nothing — it just prints"],
+          "answer": 2,
+          "explanation": "double(4) returns 4 * 2, which is 8."
+        },
+        {
+          "question": "What can you do with a returned value that you cannot do with a printed value?",
+          "options": ["See it on screen", "Store it in a variable or use it in a calculation", "Make it larger", "Share it with other programs"],
+          "answer": 1,
+          "explanation": "A returned value can be stored (result = add(3, 4)) or used in further calculations. A printed value just appears on screen."
+        },
+        {
+          "question": "To send a value back from a function, you use the _____ keyword.",
+          "answer": ["return"],
+          "explanation": "return sends the value back to whoever called the function."
+        }
+      ],
+      "tests": [
+        {
+          "name": "multiply(3, 4) == 12",
+          "check": "multiply(3, 4) == 12",
+          "msg": "multiply(3, 4) should return 12 — use return a * b"
+        },
+        {
+          "name": "multiply(2, 5) == 10",
+          "check": "multiply(2, 5) == 10",
+          "msg": "multiply(2, 5) should return 10"
+        }
+      ],
+      "description": "# Return Values\n\nSo far we've used `print()` to show results. But sometimes we don't want to *display* a value — we want to *get it back* so we can use it somewhere else.\n\nThat's what `return` does:\n\n```python\ndef add(a, b):\n    return a + b\n\nresult = add(3, 4)   # result is now 7\nprint(result)        # 7\n```\n\n**print vs return — what's the difference?**\n\n```python\ndef show_double(n):\n    print(n * 2)    # displays it, but gives nothing back\n\ndef get_double(n):\n    return n * 2    # gives the value back to use\n\nshow_double(5)             # prints 10, but you can't store it\nx = get_double(5)          # x is now 10\nprint(get_double(3) + 1)   # 7 — you can use it in calculations!\n```\n\nOnce a function hits `return`, it stops immediately — anything after `return` won't run.\n\nThink of `return` as the function's answer — it hands the result back to whoever asked!"
+    }
+  ]
+}
