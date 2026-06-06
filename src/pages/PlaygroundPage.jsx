@@ -180,6 +180,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
         snippet={modalSnippet}
         onClose={() => setModalSnippet(null)}
         onLoad={code => editorRef.current?.setValue(code)}
+        monacoTheme={monacoTheme}
       />
     </main>
   )
