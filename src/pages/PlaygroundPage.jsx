@@ -4,14 +4,17 @@ import * as monaco from 'monaco-editor'
 import { runCode, cancelRun } from '../runner.js'
 import { BASE_EDITOR_CONFIG } from '../editor.js'
 import OutputPanel from '../components/OutputPanel.jsx'
+import SnippetDrawer from '../components/SnippetDrawer.jsx'
+import SnippetModal from '../components/SnippetModal.jsx'
+import ExamplesDropdown from '../components/ExamplesDropdown.jsx'
 
 const EXAMPLES = [
-  { label: 'Hello World',         file: 'hello_world.py'         },
-  { label: 'Fibonacci',           file: 'fibonacci.py'           },
-  { label: 'FizzBuzz',            file: 'fizzbuzz.py'            },
-  { label: 'List Comprehensions', file: 'list_comprehensions.py' },
-  { label: 'Classes',             file: 'classes.py'             },
-  { label: 'Matplotlib',          file: 'matplotlib_plot.py'     },
+  { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },
+  { label: 'Fibonacci',           file: 'fibonacci.py',           description: 'Classic number sequence'           },
+  { label: 'FizzBuzz',            file: 'fizzbuzz.py',            description: 'Divisibility with conditionals'    },
+  { label: 'List Comprehensions', file: 'list_comprehensions.py', description: 'Concise list transformations'      },
+  { label: 'Classes',             file: 'classes.py',             description: 'OOP with classes & inheritance'    },
+  { label: 'Matplotlib',          file: 'matplotlib_plot.py',     description: 'Plot charts in the browser'        },
 ]
 
 const DEFAULT_CODE = `# Write your Python code here and press Run (or Ctrl+Enter / Cmd+Enter)
@@ -28,8 +31,8 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
 
   const [isRunning, setIsRunning] = useState(false)
   const [isRestarting, setIsRestarting] = useState(false)
-  const [selectedExample, setSelectedExample] = useState('')
   const [output, setOutput] = useState(null)
+  const [modalSnippet, setModalSnippet] = useState(null)
 
   // Monaco setup
   useEffect(() => {
@@ -132,7 +135,13 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     const res = await fetch(`/examples/${file}`)
     const code = await res.text()
     editorRef.current?.setValue(code)
-    setSelectedExample('')
+  }
+
+  async function handleSnippetSelect({ label, file }) {
+    setModalSnippet('loading')
+    const res = await fetch(`/examples/${file}`)
+    const code = await res.text()
+    setModalSnippet({ label, code })
   }
 
   const running = isRunning || isRestarting
@@ -143,17 +152,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden page-enter">
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden border-t-2 border-t-green-500/30">
         <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
-          <span className="text-app-muted text-xs shrink-0">Examples:</span>
-          <select
-            className="bg-app-select text-app-fg border border-app-select-border rounded px-2 py-1 text-xs cursor-pointer outline-none transition-colors duration-150"
-            value={selectedExample}
-            onChange={e => loadExample(e.target.value)}
-          >
-            <option value="">— pick one —</option>
-            {EXAMPLES.map(({ label, file }) => (
-              <option key={file} value={file}>{label}</option>
-            ))}
-          </select>
+          <ExamplesDropdown examples={EXAMPLES} onSelect={loadExample} />
           <button
             className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-semibold cursor-pointer transition-all duration-150 shrink-0 ml-auto disabled:opacity-40 disabled:cursor-not-allowed ${
               running
@@ -170,10 +169,18 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
             <span>{isRestarting ? 'Restarting…' : running ? 'Stop' : 'Run'}</span>
           </button>
         </div>
-        <div ref={editorContainerRef} className="flex-1 min-h-0 overflow-hidden" />
+        <div className="relative flex-1 min-h-0">
+          <div ref={editorContainerRef} className="absolute inset-0" />
+          <SnippetDrawer examples={EXAMPLES.slice(0, 1)} onSelect={handleSnippetSelect} />
+        </div>
       </div>
       <div ref={resizeHandleRef} className="resize-handle shrink-0" />
       <OutputPanel ref={outputPanelRef} output={output} />
+      <SnippetModal
+        snippet={modalSnippet}
+        onClose={() => setModalSnippet(null)}
+        onLoad={code => editorRef.current?.setValue(code)}
+      />
     </main>
   )
 }
