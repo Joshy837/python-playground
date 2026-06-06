@@ -4,7 +4,7 @@ import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 
 const DOCS = {
-  'Variables & Types': [
+  'Variables': [
     {
       name: 'Variables',
       desc: 'Give a value a name so you can use it later.',

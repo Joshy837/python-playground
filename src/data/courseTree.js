@@ -17,7 +17,7 @@ export const NODES = [
   },
   {
     id: 'variables',
-    title: 'Variables & Types',
+    title: 'Variables',
     icon: Tag,
     x: 220, y: 250,
     requires: ['basics'],
