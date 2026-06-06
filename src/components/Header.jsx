@@ -6,7 +6,7 @@ const navClass = ({ isActive }) =>
   `${BASE_NAV} ${isActive ? 'text-app-fg bg-app-btn' : 'text-app-muted hover:text-app-fg hover:bg-app-btn'}`
 
 export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideError }) {
-  const statusText = pyodideError ? 'Load failed' : pyodideReady ? 'Ready' : 'Loading...'
+  const statusText = pyodideError ? 'Connection failed' : pyodideReady ? 'Connected' : 'Connecting...'
   const statusColor = pyodideError ? 'red' : pyodideReady ? 'green' : 'yellow'
   const { pathname } = useLocation()
   const onLesson = pathname.startsWith('/learn/')

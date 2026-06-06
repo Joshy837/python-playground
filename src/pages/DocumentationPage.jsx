@@ -302,7 +302,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
               className="doc-run-btn"
               onClick={handleRun}
               disabled={!pyodideReady || isRunning}
-              title={isRunning ? 'Running…' : pyodideReady ? 'Run (click)' : 'Python loading…'}
+              title={isRunning ? 'Running…' : pyodideReady ? 'Run (click)' : 'Connecting to Python…'}
             >
               <Play size={11} fill="currentColor" stroke="none" />
               <span>{isRunning ? 'Running…' : 'Run'}</span>
