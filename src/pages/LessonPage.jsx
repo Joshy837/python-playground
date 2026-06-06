@@ -85,27 +85,50 @@ function ConfettiBurst({ onDone }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
 }
 
-function QuizQuestion({ question, onAnswer }) {
+function QuizQuestion({ question, number, onAnswer, isLast }) {
   const isFitb = !question.options
   const [selected, setSelected] = useState(null)
   const [fitbInput, setFitbInput] = useState('')
   const [fitbSubmitted, setFitbSubmitted] = useState(false)
 
+  const [shuffledOptions] = useState(() => {
+    if (!question.options) return null
+    const opts = question.options.map((text, i) => ({ text, i }))
+    for (let i = opts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [opts[i], opts[j]] = [opts[j], opts[i]]
+    }
+    return opts
+  })
+  const shuffledAnswer = shuffledOptions ? shuffledOptions.findIndex(o => o.i === question.answer) : -1
+
   const answered = selected !== null
-  const mcqCorrect = selected === question.answer
+  const mcqCorrect = selected === shuffledAnswer
 
   const accepted = Array.isArray(question.answer) ? question.answer : [question.answer]
   const fitbCorrect = accepted.some(a => String(a).toLowerCase() === fitbInput.trim().toLowerCase())
 
   function submitFitb() {
     setFitbSubmitted(true)
-    if (fitbCorrect) onAnswer?.()
   }
+
+  const isCorrect = mcqCorrect || (fitbSubmitted && fitbCorrect)
+
+  const feedbackRow = (
+    <div className="quiz-feedback-row" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
+      <div className="quiz-feedback quiz-fb-correct">
+        ✓ Correct!{question.explanation && ` ${question.explanation}`}
+      </div>
+      <button className="quiz-next-btn" onClick={onAnswer}>
+        {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
+      </button>
+    </div>
+  )
 
   if (isFitb) {
     return (
       <div className="mb-7">
-        <p className="quiz-question-text">{question.question}</p>
+        <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
         <div className="flex gap-2 items-center">
           <input
             type="text"
@@ -129,33 +152,26 @@ function QuizQuestion({ question, onAnswer }) {
         {fitbSubmitted && !fitbCorrect && (
           <p className="quiz-fitb-wrong">Not quite — give it another try.</p>
         )}
-        {fitbSubmitted && fitbCorrect && (
-          <div className="quiz-feedback quiz-fb-correct">
-            ✓ Correct!{question.explanation && ` ${question.explanation}`}
-          </div>
-        )}
+        {feedbackRow}
       </div>
     )
   }
 
   return (
     <div className="mb-7">
-      <p className="quiz-question-text">{question.question}</p>
+      <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
       <div className="relative">
         <div className="flex flex-col gap-1.5">
-          {question.options.map((opt, i) => {
-            const isCorrect = i === question.answer
+          {shuffledOptions.map(({ text }, i) => {
+            const optCorrect = i === shuffledAnswer
             let cls = 'quiz-option'
-            if (answered && mcqCorrect && isCorrect) cls += ' quiz-option-correct'
+            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct'
             return (
-              <button key={i} className={cls} disabled={answered} onClick={() => {
-                setSelected(i)
-                if (i === question.answer) onAnswer?.()
-              }}>
+              <button key={i} className={cls} disabled={answered} onClick={() => setSelected(i)}>
                 <span className="quiz-marker">
-                  {answered && mcqCorrect && isCorrect ? '✓' : String.fromCharCode(65 + i)}
+                  {answered && mcqCorrect && optCorrect ? '✓' : String.fromCharCode(65 + i)}
                 </span>
-                {opt}
+                {text}
               </button>
             )
           })}
@@ -170,11 +186,7 @@ function QuizQuestion({ question, onAnswer }) {
           </div>
         )}
       </div>
-      {answered && mcqCorrect && (
-        <div className="quiz-feedback quiz-fb-correct">
-          ✓ Correct!{question.explanation && ` ${question.explanation}`}
-        </div>
-      )}
+      {feedbackRow}
     </div>
   )
 }
@@ -234,15 +246,32 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const [runtimeOutput, setRuntimeOutput] = useState(null)
   const [allPassed, setAllPassed] = useState(false)
   const [quizAnsweredCount, setQuizAnsweredCount] = useState(0)
+  const [activeQuizIndex, setActiveQuizIndex] = useState(0)
+  const [exitingQuizIndex, setExitingQuizIndex] = useState(null)
   const quizAllAnswered = quizAnsweredCount >= (currentStep?.quiz?.length ?? 0)
 
   const challengeContainerRef = useRef(null)
   const challengeEditorRef = useRef(null)
   const quizSectionRef = useRef(null)
+  const quizContainerRef = useRef(null)
+  const quizLockedHeightRef = useRef(0)
   const challengeSectionRef = useRef(null)
   const scrollContainerRef = useRef(null)
   const pendingScrollRef = useRef(null)
   const initialThemeRef = useRef(monacoTheme)
+
+  function handleQuizAnswer() {
+    setQuizAnsweredCount(c => c + 1)
+    const container = quizContainerRef.current
+    if (container) {
+      const h = container.offsetHeight
+      quizLockedHeightRef.current = Math.max(quizLockedHeightRef.current, h)
+      container.style.minHeight = quizLockedHeightRef.current + 'px'
+    }
+    setExitingQuizIndex(activeQuizIndex)
+    setActiveQuizIndex(i => i + 1)
+    setTimeout(() => setExitingQuizIndex(null), 300)
+  }
 
   useEffect(() => {
     if (!node) return
@@ -251,6 +280,9 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setTestResults(null)
     setRuntimeOutput(null)
     setQuizAnsweredCount(0)
+    setActiveQuizIndex(0)
+    setExitingQuizIndex(null)
+    quizLockedHeightRef.current = 0
     setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
       const sectionMax = (step.quiz?.length ?? 0) > 0 ? 2 : 1
@@ -425,9 +457,35 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 <div ref={quizSectionRef} className="lesson-section--quiz lesson-section-pop" style={{ marginTop: '2.5rem' }}>
                   <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                   <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
-                  {currentStep.quiz.map((q, i) => (
-                    <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} onAnswer={() => setQuizAnsweredCount(c => c + 1)} />
-                  ))}
+                  <div className="quiz-progress-bar-track">
+                    <div
+                      className="quiz-progress-bar-fill"
+                      style={{ width: `${(quizAnsweredCount / currentStep.quiz.length) * 100}%` }}
+                    />
+                  </div>
+                  <p className="quiz-progress-label">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
+                  <div className="quiz-slide-container" ref={quizContainerRef}>
+                    {exitingQuizIndex !== null && (
+                      <div className="quiz-slide-card quiz-slide-exit">
+                        <QuizQuestion
+                          question={currentStep.quiz[exitingQuizIndex]}
+                          number={exitingQuizIndex + 1}
+                          isLast={exitingQuizIndex === currentStep.quiz.length - 1}
+                          onAnswer={() => {}}
+                        />
+                      </div>
+                    )}
+                    {activeQuizIndex < currentStep.quiz.length && (
+                      <div key={`${node.id}-${stepIdx}-${activeQuizIndex}`} className="quiz-slide-card quiz-slide-enter">
+                        <QuizQuestion
+                          question={currentStep.quiz[activeQuizIndex]}
+                          number={activeQuizIndex + 1}
+                          isLast={activeQuizIndex === currentStep.quiz.length - 1}
+                          onAnswer={handleQuizAnswer}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {revealedUpTo < SECTION_CHALLENGE && (

@@ -778,6 +778,68 @@ body {
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
+.quiz-question-number {
+  color: var(--text-muted);
+  margin-right: 0.15rem;
+}
+.quiz-progress-bar-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+.quiz-progress-bar-fill {
+  height: 100%;
+  background: var(--accent-quiz);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+.quiz-progress-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.quiz-next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--accent-quiz);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.quiz-next-btn:hover { opacity: 0.85; }
+.quiz-slide-container {
+  overflow: hidden;
+  position: relative;
+}
+@keyframes quiz-in {
+  from { transform: translateX(56px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes quiz-out {
+  from { transform: translateX(0);     opacity: 1; }
+  to   { transform: translateX(-56px); opacity: 0; }
+}
+.quiz-slide-enter {
+  animation: quiz-in 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.quiz-slide-exit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: quiz-out 0.28s cubic-bezier(0.55, 0, 0.1, 1) both;
+  pointer-events: none;
+}
 
 .quiz-wrong-overlay {
   position: absolute;
@@ -790,6 +852,13 @@ body {
   border-radius: 10px;
   background: color-mix(in srgb, var(--bg) 75%, transparent);
   backdrop-filter: blur(2px);
+}
+.quiz-feedback-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
 
 .quiz-overlay-text {
