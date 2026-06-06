@@ -33,6 +33,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const [isRestarting, setIsRestarting] = useState(false)
   const [output, setOutput] = useState(null)
   const [modalSnippet, setModalSnippet] = useState(null)
+  const animationRef = useRef(null)
 
   // Monaco setup
   useEffect(() => {
@@ -130,11 +131,32 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const handleRunRef = useRef(handleRun)
   useEffect(() => { handleRunRef.current = handleRun })
 
+  function loadCodeAnimated(code) {
+    if (animationRef.current) animationRef.current.cancelled = true
+    const editor = editorRef.current
+    if (!editor) return
+    const lines = code.split('\n')
+    const delay = Math.max(8, Math.min(30, 600 / lines.length))
+    const ctx = { cancelled: false }
+    animationRef.current = ctx
+    editor.setValue('')
+    let i = 0
+    function tick() {
+      if (ctx.cancelled || !editorRef.current) return
+      i++
+      editorRef.current.setValue(lines.slice(0, i).join('\n'))
+      editorRef.current.revealLine(i)
+      if (i < lines.length) setTimeout(tick, delay)
+      else animationRef.current = null
+    }
+    setTimeout(tick, 0)
+  }
+
   async function loadExample(file) {
     if (!file) return
     const res = await fetch(`/examples/${file}`)
     const code = await res.text()
-    editorRef.current?.setValue(code)
+    loadCodeAnimated(code)
   }
 
   async function handleSnippetSelect({ label, file }) {
@@ -179,7 +201,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
       <SnippetModal
         snippet={modalSnippet}
         onClose={() => setModalSnippet(null)}
-        onLoad={code => editorRef.current?.setValue(code)}
+        onLoad={loadCodeAnimated}
         monacoTheme={monacoTheme}
       />
     </main>
