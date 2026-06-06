@@ -138,9 +138,10 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const running = isRunning || isRestarting
   const runBtnDisabled = !pyodideReady || isRestarting
 
+
   return (
     <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden page-enter">
-      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden border-t-2 border-t-green-500/30">
         <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
           <span className="text-app-muted text-xs shrink-0">Examples:</span>
           <select
@@ -154,14 +155,19 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
             ))}
           </select>
           <button
-            className={`flex items-center justify-center size-7 rounded-md border-0 bg-transparent cursor-pointer transition-opacity duration-150 shrink-0 ml-auto disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-75 ${running ? 'text-red-600' : 'text-green-600'}`}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-semibold cursor-pointer transition-all duration-150 shrink-0 ml-auto disabled:opacity-40 disabled:cursor-not-allowed ${
+              running
+                ? 'text-red-500 border-red-500/30 bg-red-500/10 hover:bg-red-500/20'
+                : 'text-green-500 border-green-500/30 bg-green-500/10 hover:bg-green-500/20'
+            }`}
             disabled={runBtnDisabled}
             title={isRunning ? 'Stop' : isRestarting ? 'Restarting…' : 'Run (Ctrl+Enter)'}
             onClick={handleRun}
           >
             {running
-              ? <Square size={18} fill="currentColor" stroke="none" />
-              : <Play size={18} fill="currentColor" stroke="none" />}
+              ? <Square size={13} fill="currentColor" stroke="none" />
+              : <Play size={13} fill="currentColor" stroke="none" />}
+            <span>{isRestarting ? 'Restarting…' : running ? 'Stop' : 'Run'}</span>
           </button>
         </div>
         <div ref={editorContainerRef} className="flex-1 min-h-0 overflow-hidden" />
