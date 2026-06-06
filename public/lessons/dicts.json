@@ -11,6 +11,29 @@
           "options": ["[\"name\": \"Fluffy\"]", "(\"name\", \"Fluffy\")", "{\"name\": \"Fluffy\"}", "{\"Fluffy\"}"],
           "answer": 2,
           "explanation": "Dictionaries use curly braces {} with key: value pairs."
+        },
+        {
+          "question": "What are the two parts of each dictionary entry?",
+          "options": ["index and value", "key and value", "name and data", "label and item"],
+          "answer": 1,
+          "explanation": "Each entry in a dictionary has a key (the label) and a value (what it stores)."
+        },
+        {
+          "question": "What brackets does a dictionary use?",
+          "options": ["()", "[]", "{}", "<>"],
+          "answer": 2,
+          "explanation": "Dictionaries use curly braces {}."
+        },
+        {
+          "question": "Can dictionary values be different types (strings, numbers, booleans)?",
+          "options": ["No, all values must be the same type", "Yes, each value can be any type", "Only strings", "Only numbers"],
+          "answer": 1,
+          "explanation": "Dictionary values can be any Python type — strings, numbers, booleans, lists, even other dictionaries."
+        },
+        {
+          "question": "In a dictionary, each entry has a _____ and a value.",
+          "answer": ["key"],
+          "explanation": "The key is the label you use to look up the value."
         }
       ],
       "tests": [
@@ -33,6 +56,29 @@
           "options": ["pet.age", "pet(\"age\")", "pet[\"age\"]", "pet{age}"],
           "answer": 2,
           "explanation": "Use square brackets with the key in quotes: pet[\"age\"]."
+        },
+        {
+          "question": "What error does Python raise if you look up a key that doesn't exist?",
+          "options": ["ValueError", "KeyError", "IndexError", "TypeError"],
+          "answer": 1,
+          "explanation": "Accessing a missing key raises a KeyError."
+        },
+        {
+          "question": "Which is the safer way to look up a key that might not exist?",
+          "options": ["pet[\"colour\"]", "pet.get(\"colour\")", "pet(\"colour\")", "pet.find(\"colour\")"],
+          "answer": 1,
+          "explanation": ".get() returns None instead of crashing if the key is missing."
+        },
+        {
+          "question": "What does pet.get(\"colour\", \"unknown\") return if \"colour\" is not in pet?",
+          "options": ["None", "An error", "\"colour\"", "\"unknown\""],
+          "answer": 3,
+          "explanation": "The second argument to .get() is the default value returned when the key is missing."
+        },
+        {
+          "question": "To safely read a value that might not exist, use the ._____ () method.",
+          "answer": ["get"],
+          "explanation": ".get() returns a default instead of raising a KeyError for missing keys."
         }
       ],
       "tests": [
@@ -55,6 +101,29 @@
           "options": ["Raises an error", "Does nothing", "Adds a new \"colour\" key with value \"orange\"", "Removes \"colour\""],
           "answer": 2,
           "explanation": "Assigning to a new key adds it to the dictionary."
+        },
+        {
+          "question": "What does pet[\"name\"] = \"Max\" do if \"name\" already exists?",
+          "options": ["Adds a duplicate \"name\" key", "Raises an error", "Does nothing", "Updates the existing value to \"Max\""],
+          "answer": 3,
+          "explanation": "Assigning to an existing key replaces its value."
+        },
+        {
+          "question": "After pet = {\"name\": \"Fluffy\"} and pet[\"age\"] = 3, how many keys does pet have?",
+          "options": ["1", "2", "3", "0"],
+          "answer": 1,
+          "explanation": "pet starts with 1 key (\"name\") and we add a second (\"age\")."
+        },
+        {
+          "question": "Which is the correct way to add a key \"speed\" with value 5 to a dict called car?",
+          "options": ["car.add(\"speed\", 5)", "car[\"speed\"] = 5", "car + {\"speed\": 5}", "car.speed = 5"],
+          "answer": 1,
+          "explanation": "Use bracket assignment: dict[key] = value."
+        },
+        {
+          "question": "After pet = {} and pet[\"name\"] = \"Fluffy\", how many keys does pet have?",
+          "answer": ["1"],
+          "explanation": "We added one key-value pair to the empty dictionary."
         }
       ],
       "tests": [
@@ -77,6 +146,29 @@
           "options": [".keys()", ".values()", ".items()", ".pairs()"],
           "answer": 2,
           "explanation": ".items() gives you (key, value) pairs you can unpack in a for loop."
+        },
+        {
+          "question": "In \"for name, score in scores.items():\", what does score hold?",
+          "options": ["The key", "The value", "Both key and value", "The index"],
+          "answer": 1,
+          "explanation": ".items() gives key-value pairs — the second variable gets the value."
+        },
+        {
+          "question": "Which method gives you only the values of a dictionary?",
+          "options": [".keys()", ".values()", ".items()", ".data()"],
+          "answer": 1,
+          "explanation": ".values() returns just the values, without the keys."
+        },
+        {
+          "question": "What does \"for key in scores:\" give you on each iteration?",
+          "options": ["Both key and value", "Only values", "Only keys", "Pairs of (index, key)"],
+          "answer": 2,
+          "explanation": "Looping directly over a dictionary gives you the keys only."
+        },
+        {
+          "question": "To loop over both keys and values of a dictionary, call ._____ ().",
+          "answer": ["items"],
+          "explanation": ".items() returns (key, value) pairs that you can unpack with two loop variables."
         }
       ],
       "tests": [
@@ -99,6 +191,29 @@
           "options": ["Counts from 0 upwards", "Starts the count at 0 for a new item", "Sets the maximum count", "Resets the count each loop"],
           "answer": 1,
           "explanation": "If the word is new, .get() returns 0, so we correctly start counting from 1."
+        },
+        {
+          "question": "Why do we use counts.get(word, 0) instead of counts[word]?",
+          "options": ["get() is faster", "counts[word] would crash if word is not yet in counts", "get() adds 1 automatically", "counts[word] only works for strings"],
+          "answer": 1,
+          "explanation": "counts[word] raises a KeyError if the word hasn't been seen yet."
+        },
+        {
+          "question": "After counting [\"a\", \"b\", \"a\"], what is counts[\"a\"]?",
+          "options": ["1", "2", "3", "\"a\""],
+          "answer": 1,
+          "explanation": "\"a\" appears twice, so its count is 2."
+        },
+        {
+          "question": "Why do we write counts[word] = ... after get(word, 0) + 1?",
+          "options": ["To print the count", ".get() reads the value but doesn't update the dictionary", "To delete the old count", "get() returns the wrong type"],
+          "answer": 1,
+          "explanation": ".get() only reads the current value. You must assign back to actually store the updated count."
+        },
+        {
+          "question": "counts.get(word, _____) returns 0 when word is not yet in the dictionary.",
+          "answer": ["0"],
+          "explanation": "The second argument to .get() is the default — 0 means we start counting from zero."
         }
       ],
       "tests": [

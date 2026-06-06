@@ -11,6 +11,29 @@
           "options": ["(1, 2, 3)", "{1, 2, 3}", "[1, 2, 3]", "1, 2, 3"],
           "answer": 2,
           "explanation": "Lists use square brackets []."
+        },
+        {
+          "question": "What does len([\"a\", \"b\", \"c\"]) return?",
+          "options": ["2", "3", "4", "\"abc\""],
+          "answer": 1,
+          "explanation": "len() counts the number of items. There are 3 items in this list."
+        },
+        {
+          "question": "How do you create an empty list?",
+          "options": ["list()", "[]", "Both list() and [] work", "{}"],
+          "answer": 2,
+          "explanation": "Both [] and list() create an empty list — [] is the most common."
+        },
+        {
+          "question": "Can a list hold different types together, like [\"hello\", 42, True]?",
+          "options": ["No, all items must be the same type", "Yes, lists can mix any types", "Only strings and integers", "Only if you declare the types first"],
+          "answer": 1,
+          "explanation": "Lists can hold any mix of types, though keeping them consistent is usually clearer."
+        },
+        {
+          "question": "The built-in function that counts items in a list is _____().",
+          "answer": ["len"],
+          "explanation": "len() returns the number of items in a list (or any sequence)."
         }
       ],
       "tests": [
@@ -33,6 +56,29 @@
           "options": ["\"dog\"", "\"fish\"", "\"cat\"", "An error"],
           "answer": 2,
           "explanation": "Index 0 is always the first item in the list."
+        },
+        {
+          "question": "What index gets the last item from any list?",
+          "options": ["0", "last", "-1", "len"],
+          "answer": 2,
+          "explanation": "-1 always refers to the last item, regardless of list length."
+        },
+        {
+          "question": "For a list with 4 items, what are the valid positive indexes?",
+          "options": ["1, 2, 3, 4", "0, 1, 2, 3", "0, 1, 2, 3, 4", "1, 2, 3"],
+          "answer": 1,
+          "explanation": "Indexes run from 0 to len-1. For 4 items that's 0, 1, 2, 3."
+        },
+        {
+          "question": "What does Python do if you try to access an index that doesn't exist?",
+          "options": ["Returns None", "Returns the last item", "Crashes with an IndexError", "Returns 0"],
+          "answer": 2,
+          "explanation": "Accessing an out-of-range index raises an IndexError."
+        },
+        {
+          "question": "Python starts counting list indexes from _____.",
+          "answer": ["0"],
+          "explanation": "The first item is always at index 0, not 1."
         }
       ],
       "tests": [
@@ -60,6 +106,29 @@
           "options": ["Adds \"rabbit\" to the start", "Replaces the last item", "Adds \"rabbit\" to the end", "Removes \"rabbit\""],
           "answer": 2,
           "explanation": ".append(x) always adds x to the end of the list."
+        },
+        {
+          "question": "After animals = [\"cat\", \"dog\"] and animals.append(\"fish\"), what is animals?",
+          "options": ["[\"fish\", \"cat\", \"dog\"]", "[\"cat\", \"fish\", \"dog\"]", "[\"cat\", \"dog\", \"fish\"]", "[\"cat\", \"dog\"]"],
+          "answer": 2,
+          "explanation": ".append() always adds to the end."
+        },
+        {
+          "question": "How do you call append on a list called cart?",
+          "options": ["append(cart, \"item\")", "cart.append(\"item\")", "cart + \"item\"", "cart[append] = \"item\""],
+          "answer": 1,
+          "explanation": "Methods are called using dot notation: list.method()."
+        },
+        {
+          "question": "How many items can you add with a single .append() call?",
+          "options": ["As many as you like", "Only 1", "Only 2", "Up to 10"],
+          "answer": 1,
+          "explanation": ".append() adds exactly one item at a time."
+        },
+        {
+          "question": "To add an item to the end of a list, use ._____ ().",
+          "answer": ["append"],
+          "explanation": ".append() is the standard method for adding items to a list."
         }
       ],
       "tests": [
@@ -82,6 +151,29 @@
           "options": ["Adds \"yellow\" to the start", "Replaces the item at index 0 with \"yellow\"", "Removes index 0", "Adds \"yellow\" to the end"],
           "answer": 1,
           "explanation": "Index assignment replaces the item at that position."
+        },
+        {
+          "question": "After pets = [\"cat\", \"dog\", \"fish\"] and pets[2] = \"bird\", what is pets?",
+          "options": ["[\"cat\", \"dog\", \"fish\", \"bird\"]", "[\"bird\", \"dog\", \"fish\"]", "[\"cat\", \"dog\", \"bird\"]", "[\"cat\", \"bird\", \"fish\"]"],
+          "answer": 2,
+          "explanation": "Index 2 is the third item — it changes from \"fish\" to \"bird\"."
+        },
+        {
+          "question": "What happens to the old value when you reassign a list index?",
+          "options": ["It moves to the end", "It is permanently replaced", "It moves to index 0", "It is stored in a backup"],
+          "answer": 1,
+          "explanation": "Reassigning an index permanently replaces and removes the old value."
+        },
+        {
+          "question": "After nums = [10, 20, 30] and nums[0] = 99, what is nums[0]?",
+          "options": ["10", "20", "99", "An error"],
+          "answer": 2,
+          "explanation": "nums[0] = 99 replaces 10 with 99 at the first position."
+        },
+        {
+          "question": "To change the first item of a list called data, write: data[_____] = new_value.",
+          "answer": ["0"],
+          "explanation": "The first item is always at index 0."
         }
       ],
       "tests": [

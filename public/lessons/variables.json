@@ -11,6 +11,29 @@
           "options": ["print(name)", "name = \"Maya\"", "\"Maya\"", "name"],
           "answer": 1,
           "explanation": "The = sign stores the value on the right into the label on the left."
+        },
+        {
+          "question": "What does the = sign do in: name = \"Maya\"?",
+          "options": ["Checks if name equals \"Maya\"", "Stores \"Maya\" into the variable name", "Prints \"Maya\" to the screen", "Deletes the variable name"],
+          "answer": 1,
+          "explanation": "= is the assignment operator — it stores a value into a variable."
+        },
+        {
+          "question": "After running name = \"Alex\", what is stored in name?",
+          "options": ["name", "=", "\"Alex\"", "Nothing"],
+          "answer": 2,
+          "explanation": "The value on the right of = is what gets stored in the variable."
+        },
+        {
+          "question": "To display a variable's value on screen, we use:",
+          "options": ["display(name)", "show(name)", "print(name)", "output(name)"],
+          "answer": 2,
+          "explanation": "print() is Python's built-in function for showing output."
+        },
+        {
+          "question": "Complete the line: _____(name) shows the value of name on screen.",
+          "answer": ["print"],
+          "explanation": "print() is Python's built-in function for displaying output."
         }
       ],
       "tests": [
@@ -33,6 +56,29 @@
           "options": ["42", "True", "\"hello\"", "3.14"],
           "answer": 2,
           "explanation": "Strings are text values wrapped in quote marks."
+        },
+        {
+          "question": "Which is also a valid way to write a string in Python?",
+          "options": ["Both \"hello\" and 'hello' work", "Only \"hello\" works", "Only 'hello' works", "Neither — strings need backticks"],
+          "answer": 0,
+          "explanation": "Python accepts both single and double quotes for strings."
+        },
+        {
+          "question": "What happens if you write pet = Fluffy without any quote marks?",
+          "options": ["Python treats Fluffy as text", "Python looks for a variable called Fluffy", "Python creates the string automatically", "Nothing changes"],
+          "answer": 1,
+          "explanation": "Without quotes, Python thinks Fluffy is the name of another variable."
+        },
+        {
+          "question": "Which of these is NOT a string?",
+          "options": ["\"42\"", "'hello'", "42", "\"True\""],
+          "answer": 2,
+          "explanation": "42 without quotes is an integer, not a string."
+        },
+        {
+          "question": "A piece of text stored in Python is called a _____.",
+          "answer": ["string"],
+          "explanation": "Any value wrapped in quote marks is called a string."
         }
       ],
       "tests": [
@@ -55,6 +101,29 @@
           "options": ["An error", "\"Hello, \" (just the first part)", "\"Hello, world\"", "\"Helloworld\""],
           "answer": 2,
           "explanation": "+ joins two strings together into one."
+        },
+        {
+          "question": "What does \"abc\" + \"def\" equal?",
+          "options": ["\"abcdef\"", "\"abc def\"", "\"def abc\"", "An error"],
+          "answer": 0,
+          "explanation": "+ joins the strings directly, with no space added automatically."
+        },
+        {
+          "question": "What is \"Hi\" + \" \" + \"there\"?",
+          "options": ["\"Hi there\"", "\"Hithere\"", "\"Hi  there\"", "An error"],
+          "answer": 0,
+          "explanation": "The middle \" \" adds the space between \"Hi\" and \"there\"."
+        },
+        {
+          "question": "How would you join first = \"Hello\" and name = \"Maya\" with a space between?",
+          "options": ["first name", "first + name", "first + \" \" + name", "first, name"],
+          "answer": 2,
+          "explanation": "You must include the space explicitly as its own string between the two."
+        },
+        {
+          "question": "The symbol used to join two strings together is _____.",
+          "answer": ["+"],
+          "explanation": "+ combines two strings into one longer string."
         }
       ],
       "tests": [
@@ -77,6 +146,29 @@
           "options": ["age = \"10\"", "age = 10", "age = 10.0", "age = True"],
           "answer": 1,
           "explanation": "Integers are whole numbers — no quotes and no decimal point."
+        },
+        {
+          "question": "Which of these is NOT an integer?",
+          "options": ["0", "-5", "100", "3.5"],
+          "answer": 3,
+          "explanation": "3.5 has a decimal point, so it's a float, not an integer."
+        },
+        {
+          "question": "What does Python treat age = \"10\" as?",
+          "options": ["An integer", "A float", "A string", "A boolean"],
+          "answer": 2,
+          "explanation": "The quotes make it a string — Python would not treat it as a number."
+        },
+        {
+          "question": "Can integers be negative?",
+          "options": ["No, integers are always positive", "Yes, like -7 or -100", "Only if you use abs()", "Only floats can be negative"],
+          "answer": 1,
+          "explanation": "Integers can be negative — just add a minus sign in front."
+        },
+        {
+          "question": "Whole numbers with no decimal point are called _____s in Python.",
+          "answer": ["integer", "int"],
+          "explanation": "The full name is 'integer', and Python's short name is 'int'."
         }
       ],
       "tests": [
@@ -99,6 +191,29 @@
           "options": ["7", "12", "43", "1"],
           "answer": 1,
           "explanation": "* is the multiplication operator in Python."
+        },
+        {
+          "question": "Which symbol means multiply in Python?",
+          "options": ["x", "×", "*", "·"],
+          "answer": 2,
+          "explanation": "Python uses * for multiplication because × isn't on standard keyboards."
+        },
+        {
+          "question": "What does 10 / 2 give in Python?",
+          "options": ["5", "5.0", "2", "10"],
+          "answer": 1,
+          "explanation": "/ always produces a float in Python 3 — even when the result is a whole number."
+        },
+        {
+          "question": "What does 7 - 3 + 2 equal?",
+          "options": ["6", "2", "12", "8"],
+          "answer": 0,
+          "explanation": "7 - 3 = 4, then 4 + 2 = 6."
+        },
+        {
+          "question": "In Python, the symbol for multiplication is _____.",
+          "answer": ["*"],
+          "explanation": "* is used for multiplication (not x or ×)."
         }
       ],
       "tests": [
@@ -121,6 +236,29 @@
           "options": ["5", "\"5.0\"", "5.0", "True"],
           "answer": 2,
           "explanation": "Any number written with a decimal point — like 5.0 or 1.99 — is a float."
+        },
+        {
+          "question": "What makes a float different from an integer?",
+          "options": ["It's always negative", "It has a decimal point", "It's in quotes", "It starts with f"],
+          "answer": 1,
+          "explanation": "The decimal point is what distinguishes a float from an integer."
+        },
+        {
+          "question": "What is the result of 5 + 1.5 in Python?",
+          "options": ["6", "6.5", "\"6.5\"", "An error"],
+          "answer": 1,
+          "explanation": "Python can add integers and floats together — the result is a float."
+        },
+        {
+          "question": "Is 1.0 a float or an integer?",
+          "options": ["Integer, because the decimal part is 0", "Float, because it has a decimal point", "Both", "Neither — it's invalid"],
+          "answer": 1,
+          "explanation": "Any number with a decimal point is a float, even if the decimal part is zero."
+        },
+        {
+          "question": "Numbers with a decimal point in Python are called _____s.",
+          "answer": ["float"],
+          "explanation": "Float is short for 'floating point number'."
         }
       ],
       "tests": [
@@ -143,6 +281,29 @@
           "options": ["\"True\"", "true", "True", "1"],
           "answer": 2,
           "explanation": "Python booleans are True or False — capital first letter, no quotes."
+        },
+        {
+          "question": "What are the only two values a boolean can have?",
+          "options": ["Yes / No", "1 / 0", "True / False", "On / Off"],
+          "answer": 2,
+          "explanation": "Booleans are always either True or False."
+        },
+        {
+          "question": "What is wrong with: is_raining = true?",
+          "options": ["Nothing is wrong", "true should be True (capital T)", "true should be in quotes", "Booleans need == not ="],
+          "answer": 1,
+          "explanation": "Python booleans must start with a capital letter: True or False."
+        },
+        {
+          "question": "What type does Python return when you compare two values, like 5 > 3?",
+          "options": ["integer", "string", "float", "boolean"],
+          "answer": 3,
+          "explanation": "Comparisons always return True or False — both are booleans."
+        },
+        {
+          "question": "The two boolean values in Python are True and _____.",
+          "answer": ["False"],
+          "explanation": "Booleans are always either True or False — both need a capital first letter."
         }
       ],
       "tests": [

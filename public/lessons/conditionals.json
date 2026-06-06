@@ -11,6 +11,29 @@
           "options": ["3", "False", "True", "An error"],
           "answer": 2,
           "explanation": "== checks if two values are equal. 3 equals 3, so it returns True."
+        },
+        {
+          "question": "Which operator checks if two values are NOT equal?",
+          "options": ["!=", "!==", "<>", "=/="],
+          "answer": 0,
+          "explanation": "!= means 'not equal to'."
+        },
+        {
+          "question": "What does 5 >= 5 return?",
+          "options": ["False", "True", "5", "An error"],
+          "answer": 1,
+          "explanation": ">= means 'greater than or equal to', and 5 equals 5, so it's True."
+        },
+        {
+          "question": "What is the difference between = and == in Python?",
+          "options": ["There is no difference", "= assigns a value; == compares two values", "== assigns a value; = compares two values", "= is for numbers; == is for strings"],
+          "answer": 1,
+          "explanation": "= stores a value into a variable. == checks if two values are equal."
+        },
+        {
+          "question": "To check if two values are equal in Python, use _____.",
+          "answer": ["=="],
+          "explanation": "== is the equality operator. A single = would assign instead of compare."
         }
       ],
       "tests": [
@@ -33,6 +56,29 @@
           "options": ["They are decoration", "They mark the line as inside the if block", "They make the line run always", "They are required at the start of every line"],
           "answer": 1,
           "explanation": "Indentation (the spaces) tells Python which lines belong inside the if block."
+        },
+        {
+          "question": "What happens if the if condition is False?",
+          "options": ["The indented code runs anyway", "Python raises an error", "The indented code is skipped", "The program stops"],
+          "answer": 2,
+          "explanation": "When the condition is False, Python skips everything indented under the if."
+        },
+        {
+          "question": "What symbol goes at the end of the if line?",
+          "options": [";", ".", "{", ":"],
+          "answer": 3,
+          "explanation": "A colon : marks the start of the if block in Python."
+        },
+        {
+          "question": "Which line correctly starts an if statement?",
+          "options": ["if (x > 5) {", "if x > 5 then", "if x > 5:", "if: x > 5"],
+          "answer": 2,
+          "explanation": "Python's if syntax is: if condition: — no parentheses or curly braces needed."
+        },
+        {
+          "question": "Code inside an if block must be _____.",
+          "answer": ["indented"],
+          "explanation": "Indentation tells Python which lines belong inside the if block."
         }
       ],
       "tests": [
@@ -55,6 +101,29 @@
           "options": ["The if block still runs", "Python raises an error", "The else block runs", "Nothing runs"],
           "answer": 2,
           "explanation": "When the condition is False, Python skips the if block and runs the else block instead."
+        },
+        {
+          "question": "How many of the two blocks (if or else) runs?",
+          "options": ["Both always run", "Neither runs if condition is False", "Exactly one always runs", "It depends on indentation"],
+          "answer": 2,
+          "explanation": "Exactly one branch always runs — the if block or the else block, never both."
+        },
+        {
+          "question": "What is the correct syntax for the else clause?",
+          "options": ["else x > 5:", "else:", "else()", "or else:"],
+          "answer": 1,
+          "explanation": "else: has no condition — it runs whenever the if condition is False."
+        },
+        {
+          "question": "If temperature = 20 and we check if temperature > 25, which branch runs?",
+          "options": ["The if block", "The else block", "Both blocks", "Neither block"],
+          "answer": 1,
+          "explanation": "20 > 25 is False, so Python skips the if block and runs the else block."
+        },
+        {
+          "question": "The keyword for the fallback branch (when if is False) is _____.",
+          "answer": ["else"],
+          "explanation": "else runs automatically when the if condition is False."
         }
       ],
       "tests": [
@@ -77,6 +146,29 @@
           "options": ["All of them", "None of them", "Exactly one", "Two at most"],
           "answer": 2,
           "explanation": "Python checks each condition in order and runs only the first one that is True."
+        },
+        {
+          "question": "What does elif stand for?",
+          "options": ["else if", "else in loop", "exception if", "extended if"],
+          "answer": 0,
+          "explanation": "elif is short for 'else if' — it adds another condition to check."
+        },
+        {
+          "question": "Why does the order of elif conditions matter?",
+          "options": ["It doesn't matter at all", "Python runs them in reverse order", "Python stops at the first True condition, so order changes results", "Only the last elif can match"],
+          "answer": 2,
+          "explanation": "Python runs the first branch that matches and skips the rest — a later condition might also be true but never gets checked."
+        },
+        {
+          "question": "Is the final else required when using elif?",
+          "options": ["Yes, always", "No, it's optional", "Only if there are 3 or more elif branches", "Only for strings"],
+          "answer": 1,
+          "explanation": "else is optional — without it, nothing runs if no condition matches."
+        },
+        {
+          "question": "elif is short for _____.",
+          "answer": ["else if"],
+          "explanation": "elif lets you chain more conditions after the initial if."
         }
       ],
       "tests": [

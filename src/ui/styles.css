@@ -877,6 +877,27 @@ body {
 }
 .quiz-try-again-btn:hover { border-color: var(--text-muted); background: var(--bg); }
 
+.quiz-fitb-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--header-border);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.86rem;
+  outline: none;
+  transition: border-color 0.12s;
+  font-family: inherit;
+}
+.quiz-fitb-input:focus { border-color: var(--text-muted); }
+.quiz-fitb-input:disabled { opacity: 0.6; cursor: default; }
+
+.quiz-fitb-wrong {
+  margin-top: 0.5rem;
+  font-size: 0.83rem;
+  color: var(--status-red);
+}
+
 /* ── Documentation page ─────────────────────────────── */
 .doc-sidebar { background: var(--header-bg); }
 

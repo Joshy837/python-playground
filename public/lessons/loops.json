@@ -11,6 +11,29 @@
           "options": ["3", "4", "5", "It depends"],
           "answer": 1,
           "explanation": "The loop runs once for each item in the list. [1, 2, 3, 4] has 4 items."
+        },
+        {
+          "question": "In \"for animal in animals:\", what is animal?",
+          "options": ["The whole list", "The number of items", "A temporary variable holding the current item", "The list's name"],
+          "answer": 2,
+          "explanation": "The loop variable holds one item at a time as the loop moves through the list."
+        },
+        {
+          "question": "Can you name the loop variable anything you like?",
+          "options": ["No, it must match the list name", "No, it must be called item", "Yes, any valid variable name works", "Only single letters like i or x"],
+          "answer": 2,
+          "explanation": "The loop variable is just a temporary name — you choose it."
+        },
+        {
+          "question": "What is the purpose of indenting the code inside a for loop?",
+          "options": ["It's just style — no effect", "It tells Python which lines run on each iteration", "It makes the loop faster", "It's required only for lists"],
+          "answer": 1,
+          "explanation": "Like if statements, indentation tells Python what belongs inside the loop."
+        },
+        {
+          "question": "A for loop runs once for each _____ in the list.",
+          "answer": ["item", "element", "value"],
+          "explanation": "The loop visits each item in the list one at a time."
         }
       ],
       "tests": [
@@ -33,6 +56,29 @@
           "options": ["1, 2, 3, 4", "0, 1, 2, 3", "0, 1, 2, 3, 4", "1, 2, 3"],
           "answer": 1,
           "explanation": "range(n) starts at 0 and stops before n. range(4) gives 0, 1, 2, 3."
+        },
+        {
+          "question": "How many times does \"for i in range(5):\" run?",
+          "options": ["4", "5", "6", "0"],
+          "answer": 1,
+          "explanation": "range(5) produces 5 numbers (0 through 4), so the loop runs 5 times."
+        },
+        {
+          "question": "What number does range() always start from?",
+          "options": ["1", "-1", "0", "It depends"],
+          "answer": 2,
+          "explanation": "range(n) always starts from 0 unless you give it a start value."
+        },
+        {
+          "question": "What does range(3) give you?",
+          "options": ["[1, 2, 3]", "[0, 1, 2, 3]", "[0, 1, 2]", "[3]"],
+          "answer": 2,
+          "explanation": "range(3) gives 0, 1, 2 — it stops before 3."
+        },
+        {
+          "question": "range(5) produces the numbers 0, 1, 2, 3, and _____.",
+          "answer": ["4"],
+          "explanation": "range(n) goes up to but doesn't include n. range(5) ends at 4."
         }
       ],
       "tests": [
@@ -55,6 +101,29 @@
           "options": ["It runs once", "It runs forever", "Python automatically stops after 10 steps", "It skips to the next line"],
           "answer": 1,
           "explanation": "A loop that never stops is called an infinite loop. Always make sure your while loop has a way to end."
+        },
+        {
+          "question": "When does a while loop stop running?",
+          "options": ["After exactly 10 iterations", "When its condition becomes False", "When you press a key", "When it reaches the end of a list"],
+          "answer": 1,
+          "explanation": "The while loop checks its condition before each iteration. When it's False, the loop ends."
+        },
+        {
+          "question": "In a while loop that counts down with count = count - 1, why is the subtraction important?",
+          "options": ["It's just style", "It makes the program faster", "It changes count so the condition eventually becomes False", "It resets count each loop"],
+          "answer": 2,
+          "explanation": "Without changing count, the condition would always be True and the loop would never end."
+        },
+        {
+          "question": "A while loop is best when…",
+          "options": ["You always want exactly 10 iterations", "You want to loop until a condition changes", "You're looping over a list", "You want to loop backwards"],
+          "answer": 1,
+          "explanation": "while loops are ideal when you don't know in advance how many times you'll need to repeat."
+        },
+        {
+          "question": "A while loop keeps running as long as its condition is _____.",
+          "answer": ["True", "true"],
+          "explanation": "The loop body runs repeatedly until the condition evaluates to False."
         }
       ],
       "tests": [

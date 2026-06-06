@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, Terminal, HelpCircle, Trophy, RotateCcw } from 'lucide-react'
+import { Play, ChevronLeft, Check, ChevronRight, ChevronDown, HelpCircle, Trophy, RotateCcw } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -86,9 +86,57 @@ function ConfettiBurst({ onDone }) {
 }
 
 function QuizQuestion({ question, onAnswer }) {
+  const isFitb = !question.options
   const [selected, setSelected] = useState(null)
+  const [fitbInput, setFitbInput] = useState('')
+  const [fitbSubmitted, setFitbSubmitted] = useState(false)
+
   const answered = selected !== null
-  const correct = selected === question.answer
+  const mcqCorrect = selected === question.answer
+
+  const accepted = Array.isArray(question.answer) ? question.answer : [question.answer]
+  const fitbCorrect = accepted.some(a => String(a).toLowerCase() === fitbInput.trim().toLowerCase())
+
+  function submitFitb() {
+    setFitbSubmitted(true)
+    if (fitbCorrect) onAnswer?.()
+  }
+
+  if (isFitb) {
+    return (
+      <div className="mb-7">
+        <p className="quiz-question-text">{question.question}</p>
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            className="quiz-fitb-input"
+            value={fitbInput}
+            onChange={e => { setFitbInput(e.target.value); setFitbSubmitted(false) }}
+            disabled={fitbSubmitted && fitbCorrect}
+            onKeyDown={e => { if (e.key === 'Enter' && fitbInput.trim()) submitFitb() }}
+            placeholder="Type your answer…"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          <button
+            className="lesson-run-btn"
+            disabled={(fitbSubmitted && fitbCorrect) || !fitbInput.trim()}
+            onClick={submitFitb}
+          >
+            Check
+          </button>
+        </div>
+        {fitbSubmitted && !fitbCorrect && (
+          <p className="quiz-fitb-wrong">Not quite — give it another try.</p>
+        )}
+        {fitbSubmitted && fitbCorrect && (
+          <div className="quiz-feedback quiz-fb-correct">
+            ✓ Correct!{question.explanation && ` ${question.explanation}`}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="mb-7">
@@ -98,21 +146,21 @@ function QuizQuestion({ question, onAnswer }) {
           {question.options.map((opt, i) => {
             const isCorrect = i === question.answer
             let cls = 'quiz-option'
-            if (answered && correct && isCorrect) cls += ' quiz-option-correct'
+            if (answered && mcqCorrect && isCorrect) cls += ' quiz-option-correct'
             return (
               <button key={i} className={cls} disabled={answered} onClick={() => {
                 setSelected(i)
                 if (i === question.answer) onAnswer?.()
               }}>
                 <span className="quiz-marker">
-                  {answered && correct && isCorrect ? '✓' : String.fromCharCode(65 + i)}
+                  {answered && mcqCorrect && isCorrect ? '✓' : String.fromCharCode(65 + i)}
                 </span>
                 {opt}
               </button>
             )
           })}
         </div>
-        {answered && !correct && (
+        {answered && !mcqCorrect && (
           <div className="quiz-wrong-overlay">
             <span className="quiz-overlay-text">Not quite — give it another go.</span>
             <button className="quiz-try-again-btn" onClick={() => setSelected(null)}>
@@ -122,7 +170,7 @@ function QuizQuestion({ question, onAnswer }) {
           </div>
         )}
       </div>
-      {answered && correct && (
+      {answered && mcqCorrect && (
         <div className="quiz-feedback quiz-fb-correct">
           ✓ Correct!{question.explanation && ` ${question.explanation}`}
         </div>
@@ -174,16 +222,13 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const hasQuiz = (currentStep?.quiz?.length ?? 0) > 0
 
   // Section indices
-  const SECTION_TRY       = 1
-  const SECTION_QUIZ      = hasQuiz ? 2 : null
-  const SECTION_CHALLENGE = hasQuiz ? 3 : 2
+  const SECTION_QUIZ      = hasQuiz ? 1 : null
+  const SECTION_CHALLENGE = hasQuiz ? 2 : 1
 
   const { isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
 
   const [revealedUpTo, setRevealedUpTo] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [isTryRunning, setIsTryRunning] = useState(false)
-  const [tryOutput, setTryOutput] = useState(null)
   const [isTestRunning, setIsTestRunning] = useState(false)
   const [testResults, setTestResults] = useState(null)
   const [runtimeOutput, setRuntimeOutput] = useState(null)
@@ -191,11 +236,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const [quizAnsweredCount, setQuizAnsweredCount] = useState(0)
   const quizAllAnswered = quizAnsweredCount >= (currentStep?.quiz?.length ?? 0)
 
-  const tryContainerRef = useRef(null)
-  const tryEditorRef = useRef(null)
   const challengeContainerRef = useRef(null)
   const challengeEditorRef = useRef(null)
-  const trySectionRef = useRef(null)
   const quizSectionRef = useRef(null)
   const challengeSectionRef = useRef(null)
   const scrollContainerRef = useRef(null)
@@ -208,11 +250,10 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setStepLoading(true)
     setTestResults(null)
     setRuntimeOutput(null)
-    setTryOutput(null)
     setQuizAnsweredCount(0)
     setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
-      const sectionMax = (step.quiz?.length ?? 0) > 0 ? 3 : 2
+      const sectionMax = (step.quiz?.length ?? 0) > 0 ? 2 : 1
       setCurrentStep(step)
       const complete = isStepComplete(node.id, stepIdx)
       setAllPassed(complete)
@@ -247,20 +288,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setRevealedUpTo(section)
   }
 
-  async function handleRunTry() {
-    if (isTryRunning || !pyodideReady) return
-    setIsTryRunning(true)
-    setTryOutput(null)
-    try {
-      const code = tryEditorRef.current?.getValue()
-      if (!code) return
-      const result = await runCode(code)
-      setTryOutput({ stdout: result.stdout || '', stderr: result.stderr || '', error: result.error || '' })
-    } finally {
-      setIsTryRunning(false)
-    }
-  }
-
   async function handleRunChallenge() {
     if (isTestRunning || !pyodideReady) return
     setIsTestRunning(true)
@@ -285,17 +312,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       setIsTestRunning(false)
     }
   }
-
-  useMonacoEditor({
-    active: revealedUpTo >= SECTION_TRY,
-    containerRef: tryContainerRef,
-    editorRef: tryEditorRef,
-    initialCode: currentStep?.example ?? '',
-    stepKey,
-    theme: initialThemeRef.current,
-    onRun: handleRunTry,
-    extraOptions: { fontSize: 13, padding: { top: 10, bottom: 10 }, lineNumbers: 'off', folding: false, renderLineHighlight: 'none' },
-  })
 
   useMonacoEditor({
     active: revealedUpTo >= SECTION_CHALLENGE,
@@ -339,7 +355,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const total = currentStep.tests.length
   const totalSteps = node.steps.length
 
-  const maxSection = hasQuiz ? 3 : 2
+  const maxSection = hasQuiz ? 2 : 1
   const progressPct = allPassed ? 100 : revealedUpTo === 0 ? 5 : Math.round(5 + (revealedUpTo / maxSection) * 80)
 
   return (
@@ -397,88 +413,43 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
             <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description, monacoTheme) }} />
           </div>
 
-          {revealedUpTo < SECTION_TRY ? (
-            <ContinueArrow
-              onClick={() => revealSection(SECTION_TRY, trySectionRef)}
-              preview={<pre className="lesson-code-block" style={{ margin: 0 }}>{currentStep.example}</pre>}
-            />
-          ) : (
-            <>
-              {/* Section 2: Try it */}
-              <div ref={trySectionRef} className="lesson-section--try lesson-section-pop" style={{ marginTop: '2.5rem' }}>
-                <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
-                <p className="lesson-section-label"><Terminal size={12} />Try it yourself</p>
-                <div className="lesson-editor-box">
-                  <div className="lesson-editor-toolbar">
-                    <span className="text-xs text-app-muted">Python</span>
-                    <button
-                      className="lesson-run-btn"
-                      disabled={!pyodideReady || isTryRunning}
-                      onClick={handleRunTry}
-                      title="Run (Ctrl+Enter)"
-                    >
-                      <Play size={12} fill="currentColor" stroke="none" />
-                      {isTryRunning ? 'Running…' : 'Run'}
-                    </button>
-                  </div>
-                  <div className="lesson-editor-body">
-                    <div ref={tryContainerRef} className="lesson-editor-pane" />
-                    <div className="lesson-output-panel">
-                      {tryOutput ? (
-                        <>
-                          {tryOutput.error && <pre className="text-app-error text-xs whitespace-pre-wrap">{tryOutput.error}</pre>}
-                          {tryOutput.stderr && <pre className="text-app-stderr text-xs whitespace-pre-wrap">{tryOutput.stderr}</pre>}
-                          {tryOutput.stdout
-                            ? <pre className="text-app-stdout text-xs whitespace-pre-wrap">{tryOutput.stdout}</pre>
-                            : !tryOutput.error && !tryOutput.stderr && (
-                              <span className="text-xs text-app-muted">No output</span>
-                            )}
-                        </>
-                      ) : (
-                        <span className="text-xs text-app-muted">Run code to see output</span>
-                      )}
-                    </div>
-                  </div>
+          {hasQuiz ? (
+            revealedUpTo < SECTION_QUIZ ? (
+              <ContinueArrow
+                onClick={() => revealSection(SECTION_QUIZ, quizSectionRef)}
+                preview={<p className="lesson-prose">{currentStep.quiz[0]?.question}</p>}
+              />
+            ) : (
+              <>
+                {/* Section 2: Quiz */}
+                <div ref={quizSectionRef} className="lesson-section--quiz lesson-section-pop" style={{ marginTop: '2.5rem' }}>
+                  <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
+                  <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
+                  {currentStep.quiz.map((q, i) => (
+                    <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} onAnswer={() => setQuizAnsweredCount(c => c + 1)} />
+                  ))}
                 </div>
-              </div>
 
-              {hasQuiz ? (
-                revealedUpTo < SECTION_QUIZ ? (
-                  <ContinueArrow
-                    onClick={() => revealSection(SECTION_QUIZ, quizSectionRef)}
-                    preview={<p className="lesson-prose">{currentStep.quiz[0]?.question}</p>}
-                  />
-                ) : (
-                  <>
-                    {/* Section 3: Quiz */}
-                    <div ref={quizSectionRef} className="lesson-section--quiz lesson-section-pop" style={{ marginTop: '2.5rem' }}>
-                      <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
-                      <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
-                      {currentStep.quiz.map((q, i) => (
-                        <QuizQuestion key={`${node.id}-${stepIdx}-${i}`} question={q} onAnswer={() => setQuizAnsweredCount(c => c + 1)} />
-                      ))}
-                    </div>
-
-                    {revealedUpTo < SECTION_CHALLENGE && (
-                      <ContinueArrow
-                        onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
-                        preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
-                        disabled={!quizAllAnswered}
-                      />
-                    )}
-                  </>
-                )
-              ) : (
-                revealedUpTo < SECTION_CHALLENGE && (
+                {revealedUpTo < SECTION_CHALLENGE && (
                   <ContinueArrow
                     onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
                     preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
+                    disabled={!quizAllAnswered}
                   />
-                )
-              )}
+                )}
+              </>
+            )
+          ) : (
+            revealedUpTo < SECTION_CHALLENGE && (
+              <ContinueArrow
+                onClick={() => revealSection(SECTION_CHALLENGE, challengeSectionRef)}
+                preview={<p className="lesson-prose">{stripMarkdown(currentStep.task)}</p>}
+              />
+            )
+          )}
 
-              {/* Section 4: Challenge */}
-              {revealedUpTo >= SECTION_CHALLENGE && (
+          {/* Section 3: Challenge */}
+          {revealedUpTo >= SECTION_CHALLENGE && (
                 <div ref={challengeSectionRef} className="lesson-section--challenge lesson-section-pop" style={{ marginTop: '2.5rem' }}>
                   <div className="lesson-section-divider" style={{ marginBottom: '2.25rem' }} />
                   <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
@@ -552,8 +523,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   )}
                 </div>
               )}
-            </>
-          )}
 
         </div>
       </div>
