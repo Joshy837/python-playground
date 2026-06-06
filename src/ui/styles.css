@@ -970,6 +970,14 @@ body {
 /* ── Documentation page ─────────────────────────────── */
 .doc-sidebar { background: var(--header-bg); }
 
+.doc-main {
+  flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 18%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
 .doc-category-btn {
   display: block;
   width: 100%;

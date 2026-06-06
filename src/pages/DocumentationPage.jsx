@@ -345,7 +345,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
       </aside>
 
       {/* Main content */}
-      <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
+      <div className="doc-main">
         <div className="flex flex-col gap-4 p-6">
           <h1 className="font-semibold text-base">{activeCategory}</h1>
           {items.map(item => (
