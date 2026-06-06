@@ -331,7 +331,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
   const items = DOCS[activeCategory] ?? []
 
   return (
-    <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+    <div className="page-enter" style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
 
       {/* Sidebar */}
       <aside className="doc-sidebar" style={{ width: 176, flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--header-border)', overflowY: 'auto' }}>

@@ -139,7 +139,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const runBtnDisabled = !pyodideReady || isRestarting
 
   return (
-    <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden">
+    <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden page-enter">
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
           <span className="text-app-muted text-xs shrink-0">Examples:</span>
