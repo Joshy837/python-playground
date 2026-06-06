@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Play, RotateCcw } from 'lucide-react'
+import { Play } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 
@@ -270,10 +270,6 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
     }
   }
 
-  function handleClear() {
-    setOutput(null)
-  }
-
   const hasOutput = output && (output.stdout || output.stderr || output.error)
 
   return (
@@ -289,15 +285,6 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
         {/* Right: code + run button + output */}
         <div className="doc-card-right">
           <div className="doc-card-toolbar">
-            {hasOutput && (
-              <button
-                className="doc-clear-btn"
-                onClick={handleClear}
-                title="Clear output"
-              >
-                <RotateCcw size={11} />
-              </button>
-            )}
             <button
               className="doc-run-btn"
               onClick={handleRun}
@@ -308,17 +295,23 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
               <span>{isRunning ? 'Running…' : 'Run'}</span>
             </button>
           </div>
-          <pre
-            className="doc-card-example"
-            dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
-          />
-          {hasOutput && (
+          <div className="doc-card-body">
+            <pre
+              className="doc-card-example"
+              dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
+            />
             <div className="doc-card-output">
-              {output.error && <pre className="text-app-error doc-output-pre">{output.error}</pre>}
-              {output.stderr && <pre className="text-app-stderr doc-output-pre">{output.stderr}</pre>}
-              {output.stdout && <pre className="text-app-stdout doc-output-pre">{output.stdout}</pre>}
+              {hasOutput ? (
+                <>
+                  {output.error && <pre className="text-app-error doc-output-pre">{output.error}</pre>}
+                  {output.stderr && <pre className="text-app-stderr doc-output-pre">{output.stderr}</pre>}
+                  {output.stdout && <pre className="text-app-stdout doc-output-pre">{output.stdout}</pre>}
+                </>
+              ) : (
+                <span className="doc-output-placeholder">Run to see output</span>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
