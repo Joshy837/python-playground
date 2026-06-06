@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { Sun, Moon, Terminal, GraduationCap, BookOpen } from 'lucide-react'
 
 const BASE_NAV = 'inline-flex items-center gap-[0.35rem] px-[0.625rem] py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors duration-150'
@@ -8,6 +8,9 @@ const navClass = ({ isActive }) =>
 export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideError }) {
   const statusText = pyodideError ? 'Load failed' : pyodideReady ? 'Ready' : 'Loading...'
   const statusColor = pyodideError ? 'red' : pyodideReady ? 'green' : 'yellow'
+  const { pathname } = useLocation()
+  const onLesson = pathname.startsWith('/learn/')
+  const courseClass = `${BASE_NAV} ${onLesson ? 'text-app-fg bg-app-btn' : ''}`
 
   return (
     <header className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0 bg-app-surface border-app-border">
@@ -17,7 +20,7 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
       </div>
       <nav className="flex items-center gap-1 ml-4">
         <NavLink to="/" end className={navClass}><Terminal size={15} />Playground</NavLink>
-        <NavLink to="/course" className={navClass}><GraduationCap size={15} />Course</NavLink>
+        <NavLink to="/course" className={onLesson ? () => courseClass : navClass}><GraduationCap size={15} />Course</NavLink>
         <NavLink to="/docs" className={navClass}><BookOpen size={15} />Docs</NavLink>
       </nav>
       <div className="flex items-center gap-3 ml-auto">
