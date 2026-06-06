@@ -20,6 +20,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, monacoTheme }) 
   useEffect(() => {
     if (!snippet || snippet === 'loading') return
     setClosing(false)
+    setColorizedHtml('')
     monaco.editor.colorize(snippet.code, 'python', {}).then(setColorizedHtml)
   }, [snippet?.code, monacoTheme])
 
@@ -49,7 +50,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, monacoTheme }) 
       <div
         className={`modal${closing ? ' modal-closing' : ''}`}
         onClick={e => e.stopPropagation()}
-        onAnimationEnd={closing ? onClose : undefined}
+        onAnimationEnd={closing ? (e => { if (e.animationName === 'modal-out') onClose() }) : undefined}
       >
         <div className="modal-header">
           <div className="modal-header-left">
