@@ -7,6 +7,7 @@ export const BASE_EDITOR_CONFIG = {
   tabSize: 4,
   insertSpaces: true,
   wordWrap: 'on',
+  accessibilitySupport: 'off',
 }
 
 export function editorHeight(code, { min = 100, max = 300 } = {}) {
