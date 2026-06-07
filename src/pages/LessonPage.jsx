@@ -262,24 +262,15 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
       const hasQ = (step.quiz?.length ?? 0) > 0
-      const sectionMax = hasQ ? 2 : 1
       setCurrentStep(step)
       const complete = isStepComplete(node.id, stepIdx)
       const savedCount = hasQ ? getQuizAnsweredCount(node.id, stepIdx) : 0
       setAllPassed(complete)
-      if (complete) {
-        setCurrentSection(sectionMax)
-      } else if (hasQ && savedCount >= step.quiz.length) {
-        setQuizAnsweredCount(step.quiz.length)
-        setActiveQuizIndex(step.quiz.length)
-        setCurrentSection(sectionMax)
-      } else if (savedCount > 0) {
+      if (hasQ && savedCount > 0) {
         setQuizAnsweredCount(savedCount)
         setActiveQuizIndex(savedCount)
-        setCurrentSection(1)
-      } else {
-        setCurrentSection(0)
       }
+      setCurrentSection(0)
       setStepLoading(false)
     }).catch(() => setStepLoading(false))
   }, [node?.id, stepIdx])
