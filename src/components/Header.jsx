@@ -18,15 +18,15 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
         <img src="/favicon.svg" alt="" width="24" height="24" className="rounded-md shrink-0" />
         <span className="font-semibold hidden sm:inline truncate">Just Python It</span>
       </div>
-      <nav className="flex items-center gap-1 ml-4">
-        <NavLink to="/" end className={navClass}><Terminal size={15} />Playground</NavLink>
-        <NavLink to="/course" className={onLesson ? () => courseClass : navClass}><GraduationCap size={15} />Course</NavLink>
-        <NavLink to="/docs" className={navClass}><BookOpen size={15} />Docs</NavLink>
+      <nav className="flex items-center gap-0.5 sm:gap-1 ml-2 sm:ml-4">
+        <NavLink to="/" end className={navClass}><Terminal size={15} /><span className="hidden sm:inline">Playground</span></NavLink>
+        <NavLink to="/course" className={onLesson ? () => courseClass : navClass}><GraduationCap size={15} /><span className="hidden sm:inline">Course</span></NavLink>
+        <NavLink to="/docs" className={navClass}><BookOpen size={15} /><span className="hidden sm:inline">Docs</span></NavLink>
       </nav>
-      <div className="flex items-center gap-3 ml-auto">
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
         <span className="status-badge" data-status={statusColor}>
           <span className="status-dot" />
-          <span className="status-text">{statusText}</span>
+          <span className="status-text hidden sm:inline">{statusText}</span>
         </span>
         <button
           onClick={onToggleTheme}
