@@ -69,6 +69,17 @@ function CourseNode({ data }) {
 const nodeTypes = { courseNode: CourseNode }
 const nodeOrigin = [0.5, 0.5]
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint)
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+    const handler = e => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [breakpoint])
+  return isMobile
+}
+
 function useTheme() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? '')
   useEffect(() => {
@@ -84,6 +95,7 @@ export default function CoursePage() {
   const { completed, isStepComplete, isStepUnlocked } = useProgress()
   const theme = useTheme()
   const isLight = theme === 'light' || theme === 'hc-light'
+  const isMobile = useIsMobile()
   const [expandedId, setExpandedId] = useState(null)
 
   const nodes = useMemo(() => NODES.map(node => {
@@ -92,7 +104,7 @@ export default function CoursePage() {
     return {
       id: node.id,
       type: 'courseNode',
-      position: { x: node.x, y: node.y },
+      position: isMobile ? { x: node.vx, y: node.vy } : { x: node.x, y: node.y },
       data: {
         title: node.title,
         icon: node.icon,
@@ -107,13 +119,13 @@ export default function CoursePage() {
         onStepClick: stepIdx => navigate(`/learn/${node.id}/${stepIdx + 1}`),
       },
     }
-  }), [completed, expandedId])
+  }), [completed, expandedId, isMobile])
 
   const edges = useMemo(() => EDGES.map(({ from, to }) => {
     const fromNode = NODES.find(n => n.id === from)
     const toNode = NODES.find(n => n.id === to)
-    const dx = toNode.x - fromNode.x
-    const dy = toNode.y - fromNode.y
+    const dx = isMobile ? toNode.vx - fromNode.vx : toNode.x - fromNode.x
+    const dy = isMobile ? toNode.vy - fromNode.vy : toNode.y - fromNode.y
     // Pick handles based on dominant direction of the edge
     let sourceHandle, targetHandle
     if (Math.abs(dx) >= Math.abs(dy)) {
@@ -139,7 +151,7 @@ export default function CoursePage() {
         strokeWidth: 2,
       },
     }
-  }), [completed])
+  }), [completed, isMobile])
 
   const onNodeClick = useCallback((_, node) => {
     if (!node.data.unlocked && !node.data.done) return
