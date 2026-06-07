@@ -85,7 +85,7 @@ function ConfettiBurst({ onDone }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
 }
 
-function QuizQuestion({ question, number, onCorrect, onAnswer, isLast }) {
+function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, isCompleted }) {
   const isFitb = !question.options
   const [selected, setSelected] = useState(null)
   const [fitbInput, setFitbInput] = useState('')
@@ -115,16 +115,59 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, isLast }) {
 
   const isCorrect = mcqCorrect || (fitbSubmitted && fitbCorrect)
 
-  const feedbackRow = (
-    <div className="quiz-feedback-row" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
-      <div className="quiz-feedback quiz-fb-correct">
-        ✓ Correct!{question.explanation && ` ${question.explanation}`}
+  const prevBtn = onBack ? (
+    <button className="quiz-back-btn" onClick={onBack}>
+      <ChevronLeft size={14} />Previous
+    </button>
+  ) : <div />
+
+  const actionRow = (
+    <div className="quiz-action-row">
+      {prevBtn}
+      <div className="quiz-feedback-right" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
+        <div className="quiz-feedback quiz-fb-correct">
+          ✓ Correct!{question.explanation && ` ${question.explanation}`}
+        </div>
+        <button className="quiz-next-btn" onClick={onAnswer}>
+          {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
+        </button>
       </div>
-      <button className="quiz-next-btn" onClick={onAnswer}>
-        {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
-      </button>
     </div>
   )
+
+  if (isCompleted) {
+    const correctText = String(Array.isArray(question.answer) ? question.answer[0] : question.answer)
+    return (
+      <div className="mb-7">
+        <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
+        {question.options ? (
+          <div className="flex flex-col gap-1.5">
+            {question.options.map((text, i) => (
+              <button key={i} className={`quiz-option${i === question.answer ? ' quiz-option-correct' : ''}`} disabled style={{ opacity: i === question.answer ? 1 : 0.38 }}>
+                <span className="quiz-marker">{i === question.answer ? '✓' : String.fromCharCode(65 + i)}</span>
+                {text}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex gap-2 items-center">
+            <input type="text" className="quiz-fitb-input" value={correctText} readOnly disabled />
+          </div>
+        )}
+        <div className="quiz-action-row" style={{ marginTop: '0.5rem' }}>
+          {prevBtn}
+          <div className="quiz-feedback-right">
+            <div className="quiz-feedback quiz-fb-correct">
+              ✓ Correct!{question.explanation && ` ${question.explanation}`}
+            </div>
+            <button className="quiz-next-btn" onClick={onAnswer}>
+              {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (isFitb) {
     return (
@@ -153,7 +196,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, isLast }) {
         {fitbSubmitted && !fitbCorrect && (
           <p className="quiz-fitb-wrong">Not quite — give it another try.</p>
         )}
-        {feedbackRow}
+        {actionRow}
       </div>
     )
   }
@@ -187,7 +230,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, isLast }) {
           </div>
         )}
       </div>
-      {feedbackRow}
+      {actionRow}
     </div>
   )
 }
@@ -222,6 +265,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const [quizAnsweredCount, setQuizAnsweredCount] = useState(0)
   const [activeQuizIndex, setActiveQuizIndex] = useState(0)
   const [exitingQuizIndex, setExitingQuizIndex] = useState(null)
+  const [navDirection, setNavDirection] = useState('forward')
   const quizAllAnswered = quizAnsweredCount >= (currentStep?.quiz?.length ?? 0)
 
   const challengeContainerRef = useRef(null)
@@ -244,8 +288,23 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       quizLockedHeightRef.current = Math.max(quizLockedHeightRef.current, h)
       container.style.minHeight = quizLockedHeightRef.current + 'px'
     }
+    setNavDirection('forward')
     setExitingQuizIndex(activeQuizIndex)
     setActiveQuizIndex(i => i + 1)
+    setTimeout(() => setExitingQuizIndex(null), 300)
+  }
+
+  function handleQuizBack() {
+    if (activeQuizIndex === 0) return
+    const container = quizContainerRef.current
+    if (container) {
+      const h = container.offsetHeight
+      quizLockedHeightRef.current = Math.max(quizLockedHeightRef.current, h)
+      container.style.minHeight = quizLockedHeightRef.current + 'px'
+    }
+    setNavDirection('back')
+    setExitingQuizIndex(activeQuizIndex)
+    setActiveQuizIndex(i => i - 1)
     setTimeout(() => setExitingQuizIndex(null), 300)
   }
 
@@ -443,23 +502,26 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
               <p className="quiz-progress-label">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
               <div className="quiz-slide-container" ref={quizContainerRef}>
                 {exitingQuizIndex !== null && (
-                  <div className="quiz-slide-card quiz-slide-exit">
+                  <div className={`quiz-slide-card ${navDirection === 'back' ? 'quiz-slide-exit-back' : 'quiz-slide-exit'}`}>
                     <QuizQuestion
                       question={currentStep.quiz[exitingQuizIndex]}
                       number={exitingQuizIndex + 1}
                       isLast={exitingQuizIndex === currentStep.quiz.length - 1}
+                      isCompleted={exitingQuizIndex < quizAnsweredCount}
                       onAnswer={() => {}}
                     />
                   </div>
                 )}
                 {activeQuizIndex < currentStep.quiz.length && (
-                  <div key={`${node.id}-${stepIdx}-${activeQuizIndex}`} className="quiz-slide-card quiz-slide-enter">
+                  <div key={`${node.id}-${stepIdx}-${activeQuizIndex}`} className={`quiz-slide-card ${navDirection === 'back' ? 'quiz-slide-enter-back' : 'quiz-slide-enter'}`}>
                     <QuizQuestion
                       question={currentStep.quiz[activeQuizIndex]}
                       number={activeQuizIndex + 1}
                       isLast={activeQuizIndex === currentStep.quiz.length - 1}
+                      isCompleted={activeQuizIndex < quizAnsweredCount}
                       onCorrect={handleQuizCorrect}
                       onAnswer={handleQuizAdvance}
+                      onBack={activeQuizIndex > 0 ? handleQuizBack : undefined}
                     />
                   </div>
                 )}
