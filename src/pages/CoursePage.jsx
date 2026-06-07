@@ -7,7 +7,7 @@ import { NODES, EDGES, NODE_W, NODE_H } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
 
 function CourseNode({ data }) {
-  const { title, icon: Icon, unlocked, done, expanded, steps, onStepClick } = data
+  const { title, icon: Icon, unlocked, done, expanded, steps, onStepClick, isMobile } = data
   const [popupVisible, setPopupVisible] = useState(false)
   const [popupExiting, setPopupExiting] = useState(false)
 
@@ -42,7 +42,7 @@ function CourseNode({ data }) {
       </div>
       <span className="course-node-title">{title}</span>
 
-      {popupVisible && (
+      {!isMobile && popupVisible && (
         <div
           className={`course-node-popup${popupExiting ? ' course-node-popup-exit' : ''}`}
           onClick={e => e.stopPropagation()}
@@ -97,6 +97,15 @@ export default function CoursePage() {
   const isLight = theme === 'light' || theme === 'hc-light'
   const isMobile = useIsMobile()
   const [expandedId, setExpandedId] = useState(null)
+  const [sheetExiting, setSheetExiting] = useState(false)
+
+  const closeSheet = useCallback(() => {
+    setSheetExiting(true)
+    setTimeout(() => {
+      setExpandedId(null)
+      setSheetExiting(false)
+    }, 200)
+  }, [])
 
   const nodes = useMemo(() => NODES.map(node => {
     const isDone = node.steps.every((_, i) => isStepComplete(node.id, i))
@@ -111,6 +120,7 @@ export default function CoursePage() {
         done: isDone,
         unlocked: isNodeUnlocked,
         expanded: expandedId === node.id,
+        isMobile,
         steps: node.steps.map((s, i) => ({
           title: s.title,
           done: isStepComplete(node.id, i),
@@ -155,13 +165,24 @@ export default function CoursePage() {
 
   const onNodeClick = useCallback((_, node) => {
     if (!node.data.unlocked && !node.data.done) return
-    setExpandedId(prev => prev === node.id ? null : node.id)
-  }, [])
+    if (isMobile) {
+      setSheetExiting(false)
+      setExpandedId(prev => prev === node.id ? null : node.id)
+    } else {
+      setExpandedId(prev => prev === node.id ? null : node.id)
+    }
+  }, [isMobile])
 
-  const onPaneClick = useCallback(() => setExpandedId(null), [])
+  const onPaneClick = useCallback(() => {
+    if (expandedId === null) return
+    if (isMobile) closeSheet()
+    else setExpandedId(null)
+  }, [expandedId, isMobile, closeSheet])
 
   const done = completed.length
   const total = NODES.length
+
+  const expandedNode = isMobile && expandedId ? nodes.find(n => n.id === expandedId) : null
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden page-enter">
@@ -199,6 +220,29 @@ export default function CoursePage() {
           <Background variant={isLight ? 'lines' : 'dots'} color="var(--course-dot)" gap={28} size={1} lineWidth={0.75} />
         </ReactFlow>
       </div>
+
+      {expandedNode && (
+        <>
+          <div className="course-sheet-backdrop" onClick={closeSheet} />
+          <div className={`course-sheet${sheetExiting ? ' course-sheet-exit' : ''}`}>
+            <div className="course-sheet-handle" />
+            <div className="course-sheet-title">{expandedNode.data.title}</div>
+            <div className="course-sheet-steps">
+              {expandedNode.data.steps.map((step, i) => (
+                <button
+                  key={i}
+                  className={`course-step-btn ${step.done ? 'course-step-done' : step.unlocked ? 'course-step-available' : 'course-step-locked'}`}
+                  disabled={!step.unlocked && !step.done}
+                  title={step.title}
+                  onClick={() => { closeSheet(); expandedNode.data.onStepClick(i) }}
+                >
+                  {step.done ? <Check size={11} /> : i + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
