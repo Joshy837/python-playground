@@ -323,6 +323,11 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
   const [visibleCategory, setVisibleCategory] = useState(CATEGORIES[0])
   const [exiting, setExiting] = useState(false)
   const exitTimer = useRef(null)
+  const mainRef = useRef(null)
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 })
+  }, [visibleCategory])
 
   function handleCategoryChange(cat) {
     if (cat === activeCategory) return
@@ -338,36 +343,53 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
   const items = DOCS[visibleCategory] ?? []
 
   return (
-    <div className="page-enter" style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+    <div className="page-enter doc-page-root">
 
-      {/* Sidebar */}
-      <aside className="doc-sidebar" style={{ width: 176, flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--header-border)', overflowY: 'auto' }}>
-        <div className="px-3 py-2.5 text-xs font-semibold tracking-wide uppercase text-app-muted border-b border-app-border shrink-0">
-          Reference
-        </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 8 }}>
+      {/* Mobile category nav (hidden on md+) */}
+      <div className="doc-mobile-nav">
+        <div className="doc-mobile-nav-scroll">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
-              className={`doc-category-btn${activeCategory === cat ? ' doc-category-btn-active' : ''}`}
+              className={`doc-mobile-cat-btn${activeCategory === cat ? ' doc-mobile-cat-btn-active' : ''}`}
             >
               {cat}
             </button>
           ))}
-        </nav>
-      </aside>
+        </div>
+      </div>
 
-      {/* Main content */}
-      <div className="doc-main">
-        <div
-          key={visibleCategory}
-          className={`flex flex-col gap-4 p-6 ${exiting ? 'doc-content-exit' : 'doc-content-enter'}`}
-        >
-          <h1 className="font-semibold text-base">{visibleCategory}</h1>
-          {items.map(item => (
-            <DocCard key={item.name} item={item} pyodideReady={pyodideReady} monacoTheme={monacoTheme} />
-          ))}
+      <div className="doc-page-body">
+        {/* Sidebar (hidden on mobile) */}
+        <aside className="doc-sidebar">
+          <div className="px-3 py-2.5 text-xs font-semibold tracking-wide uppercase text-app-muted border-b border-app-border shrink-0">
+            Reference
+          </div>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 8 }}>
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`doc-category-btn${activeCategory === cat ? ' doc-category-btn-active' : ''}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <div className="doc-main" ref={mainRef}>
+          <div
+            key={visibleCategory}
+            className={`flex flex-col gap-4 p-4 sm:p-6 ${exiting ? 'doc-content-exit' : 'doc-content-enter'}`}
+          >
+            <h1 className="font-semibold text-base">{visibleCategory}</h1>
+            {items.map(item => (
+              <DocCard key={item.name} item={item} pyodideReady={pyodideReady} monacoTheme={monacoTheme} />
+            ))}
+          </div>
         </div>
       </div>
 

@@ -1106,7 +1106,87 @@ body {
   pointer-events: none;
 }
 
-.doc-sidebar { background: var(--header-bg); }
+.doc-page-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.doc-page-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.doc-sidebar {
+  background: var(--header-bg);
+  display: none;
+  flex-direction: column;
+  width: 176px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--header-border);
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .doc-sidebar { display: flex; }
+}
+
+.doc-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--header-border);
+  background: var(--header-bg);
+  flex-shrink: 0;
+}
+
+.doc-mobile-nav-label {
+  padding: 0.35rem 0.9rem 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.doc-mobile-nav-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem 0.55rem;
+  scrollbar-width: none;
+}
+
+.doc-mobile-nav-scroll::-webkit-scrollbar { display: none; }
+
+.doc-mobile-cat-btn {
+  flex-shrink: 0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--output-border);
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.doc-mobile-cat-btn:hover { color: var(--text-primary); background: var(--btn-secondary-bg); }
+
+.doc-mobile-cat-btn-active {
+  color: var(--text-primary) !important;
+  background: var(--btn-secondary-bg) !important;
+  border-color: var(--text-muted) !important;
+}
+
+@media (min-width: 768px) {
+  .doc-mobile-nav { display: none; }
+}
 
 .doc-main {
   flex: 1;
@@ -1190,10 +1270,14 @@ body {
 
 .doc-card-body {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .doc-card-body { flex-direction: row; }
 }
 
 .doc-card-toolbar {
@@ -1257,12 +1341,21 @@ body {
 }
 
 .doc-card-output {
-  width: 40%;
+  width: 100%;
   flex-shrink: 0;
-  border-left: 1px solid var(--output-border);
+  border-top: 1px solid var(--output-border);
   padding: 0.5rem 0.9rem;
   background: var(--header-bg);
   overflow-y: auto;
+  min-height: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .doc-card-output {
+    width: 40%;
+    border-top: none;
+    border-left: 1px solid var(--output-border);
+  }
 }
 
 .doc-output-placeholder {
