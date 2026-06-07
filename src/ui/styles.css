@@ -393,10 +393,16 @@ body {
   max-width: 740px;
   width: 100%;
   margin: 0 auto;
-  padding: 2.25rem 1.5rem 60vh;
+  padding: 2.25rem 1.5rem 3rem;
 }
 
 /* Nav bar — locked to bottom of viewport */
+.lesson-nav-bar-wrap {
+  flex-shrink: 0;
+  border-top: 1px solid var(--header-border);
+  background: var(--header-bg);
+}
+
 .lesson-nav-bar {
   display: flex;
   align-items: center;
@@ -434,29 +440,22 @@ body {
   gap: 0.3rem;
   padding: 0.35rem 0.8rem;
   border-radius: 8px;
-  border: none;
-  background: var(--btn-secondary-bg);
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--nav-btn-accent, var(--header-border)) 45%, var(--header-border));
+  background: color-mix(in srgb, var(--nav-btn-accent, transparent) 8%, var(--btn-secondary-bg));
   color: var(--text-primary);
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
-  min-width: 76px;
-  justify-content: center;
-  transition: background-color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s;
 }
-.lesson-nav-btn:hover { background: var(--btn-secondary-hover); }
-.lesson-nav-btn-fwd {
-  background: transparent;
-  border: 1px solid var(--header-border);
-  color: var(--text-muted);
+.lesson-nav-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--nav-btn-accent, transparent) 14%, var(--btn-secondary-hover));
+  border-color: color-mix(in srgb, var(--nav-btn-accent, var(--header-border)) 70%, var(--header-border));
 }
-.lesson-nav-btn-fwd:hover {
-  background: var(--btn-secondary-bg);
+.lesson-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.lesson-nav-btn-fwd:hover:not(:disabled) {
   color: var(--text-primary);
-  border-color: var(--text-muted);
-}
-.lesson-nav-btn-placeholder {
-  min-width: 76px;
 }
 
 /* Step dots in header */
