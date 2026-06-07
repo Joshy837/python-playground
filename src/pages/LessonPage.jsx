@@ -576,7 +576,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           </div>
 
           <div className="flex-1 flex items-center justify-end">
-            {currentSection < maxSection && (
+            {currentSection < maxSection ? (
               <button
                 className="lesson-nav-btn lesson-nav-btn-fwd"
                 style={{ '--nav-btn-accent': sectionAccent(currentSection + 1) }}
@@ -586,6 +586,29 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 <span>{sectionLabel(currentSection + 1)}</span>
                 <ChevronRight size={15} className="shrink-0" />
               </button>
+            ) : allPassed && (
+              isLastStep ? (
+                <button
+                  className="lesson-nav-btn lesson-nav-btn-fwd"
+                  style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
+                  onClick={() => navigate('/course')}
+                >
+                  <span>Back to course</span>
+                  <ChevronRight size={15} className="shrink-0" />
+                </button>
+              ) : (
+                <button
+                  className="lesson-nav-btn lesson-nav-btn-fwd"
+                  style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
+                  onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
+                >
+                  <span className="flex flex-col items-end leading-tight">
+                    <span className="text-[0.65rem] opacity-60">Next step</span>
+                    <span>{node.steps[stepIdx + 1].title}</span>
+                  </span>
+                  <ChevronRight size={15} className="shrink-0" />
+                </button>
+              )
             )}
           </div>
         </div>
