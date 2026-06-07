@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Play } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
@@ -320,8 +320,22 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
 
 export default function DocumentationPage({ pyodideReady, monacoTheme }) {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0])
+  const [visibleCategory, setVisibleCategory] = useState(CATEGORIES[0])
+  const [exiting, setExiting] = useState(false)
+  const exitTimer = useRef(null)
 
-  const items = DOCS[activeCategory] ?? []
+  function handleCategoryChange(cat) {
+    if (cat === activeCategory) return
+    clearTimeout(exitTimer.current)
+    setActiveCategory(cat)
+    setExiting(true)
+    exitTimer.current = setTimeout(() => {
+      setVisibleCategory(cat)
+      setExiting(false)
+    }, 160)
+  }
+
+  const items = DOCS[visibleCategory] ?? []
 
   return (
     <div className="page-enter" style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
@@ -335,7 +349,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
           {CATEGORIES.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => handleCategoryChange(cat)}
               className={`doc-category-btn${activeCategory === cat ? ' doc-category-btn-active' : ''}`}
             >
               {cat}
@@ -346,8 +360,11 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
 
       {/* Main content */}
       <div className="doc-main">
-        <div className="flex flex-col gap-4 p-6">
-          <h1 className="font-semibold text-base">{activeCategory}</h1>
+        <div
+          key={visibleCategory}
+          className={`flex flex-col gap-4 p-6 ${exiting ? 'doc-content-exit' : 'doc-content-enter'}`}
+        >
+          <h1 className="font-semibold text-base">{visibleCategory}</h1>
           {items.map(item => (
             <DocCard key={item.name} item={item} pyodideReady={pyodideReady} monacoTheme={monacoTheme} />
           ))}

@@ -972,6 +972,22 @@ body {
 }
 
 /* ── Documentation page ─────────────────────────────── */
+@keyframes doc-content-enter {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes doc-content-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-7px); }
+}
+.doc-content-enter {
+  animation: doc-content-enter 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.doc-content-exit {
+  animation: doc-content-exit 0.16s ease-in both;
+  pointer-events: none;
+}
+
 .doc-sidebar { background: var(--header-bg); }
 
 .doc-main {

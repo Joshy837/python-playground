@@ -3,7 +3,7 @@ import { Terminal } from 'lucide-react'
 
 const OutputPanel = forwardRef(function OutputPanel({ output }, ref) {
   return (
-    <div ref={ref} className="flex flex-col flex-1 md:flex-none overflow-hidden bg-app-output border-t-2 border-t-sky-500/30">
+    <div ref={ref} className="flex flex-col h-44 shrink-0 md:h-auto md:flex-none overflow-hidden bg-app-output border-t-2 border-t-sky-500/30">
       <div className="px-3 py-2 text-xs font-medium border-b shrink-0 flex items-center justify-between border-app-output-border text-app-muted bg-app-surface">
         <span className="uppercase tracking-wider">Output</span>
         {output?.elapsed != null && (
