@@ -273,6 +273,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const quizContainerRef = useRef(null)
   const quizLockedHeightRef = useRef(0)
   const scrollContainerRef = useRef(null)
+  const quizRestoredRef = useRef(false)
   const initialThemeRef = useRef(monacoTheme)
 
   function handleQuizCorrect() {
@@ -306,6 +307,16 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setExitingQuizIndex(activeQuizIndex)
     setActiveQuizIndex(i => i - 1)
     setTimeout(() => setExitingQuizIndex(null), 300)
+  }
+
+  function handleQuizReset() {
+    setQuizAnsweredCount(0)
+    saveQuizProgress(node.id, stepIdx, 0)
+    setNavDirection('back')
+    setExitingQuizIndex(null)
+    setActiveQuizIndex(0)
+    quizLockedHeightRef.current = 0
+    if (quizContainerRef.current) quizContainerRef.current.style.minHeight = ''
   }
 
   useEffect(() => {
@@ -418,7 +429,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
   const maxSection = hasQuiz ? 2 : 1
   const progressPct = allPassed ? 100 : currentSection === 0 ? 5 : Math.round(5 + (currentSection / maxSection) * 80)
-  const nextDisabled = hasQuiz && currentSection === SECTION_QUIZ && !quizAllAnswered
+  const nextDisabled = hasQuiz && currentSection === SECTION_QUIZ && !quizAllAnswered && !allPassed
 
   function sectionLabel(idx) {
     if (idx === 0) return 'Description'
@@ -523,6 +534,13 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       onAnswer={handleQuizAdvance}
                       onBack={activeQuizIndex > 0 ? handleQuizBack : undefined}
                     />
+                  </div>
+                )}
+                {activeQuizIndex >= currentStep.quiz.length && exitingQuizIndex === null && (
+                  <div className="quiz-slide-card quiz-slide-enter quiz-complete-card">
+                    <p className="quiz-complete-title">All done!</p>
+                    <p className="quiz-complete-sub">You answered all {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''}.</p>
+                    <button className="quiz-try-again-btn" onClick={handleQuizReset}>Try Again</button>
                   </div>
                 )}
               </div>

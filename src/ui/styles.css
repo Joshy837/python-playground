@@ -1048,6 +1048,26 @@ body {
 }
 .quiz-try-again-btn:hover { border-color: var(--text-muted); background: var(--bg); }
 
+.quiz-complete-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+.quiz-complete-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--status-green);
+  margin: 0;
+}
+.quiz-complete-sub {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
 .quiz-fitb-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
