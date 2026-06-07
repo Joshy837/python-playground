@@ -10,8 +10,18 @@ function load() {
   }
 }
 
+function loadQuizProgress() {
+  try {
+    const raw = localStorage.getItem('quiz-progress-v1')
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
 export function useProgress() {
   const [stepsDone, setStepsDone] = useState(load)
+  const [quizProgress, setQuizProgress] = useState(loadQuizProgress)
 
   function markStepComplete(nodeId, stepIdx) {
     setStepsDone(prev => {
@@ -44,7 +54,20 @@ export function useProgress() {
     return stepIdx === 0 || isStepComplete(nodeId, stepIdx - 1)
   }
 
+  function saveQuizProgress(nodeId, stepIdx, answeredCount) {
+    const key = `${nodeId}:${stepIdx}`
+    setQuizProgress(prev => {
+      const next = { ...prev, [key]: answeredCount }
+      localStorage.setItem('quiz-progress-v1', JSON.stringify(next))
+      return next
+    })
+  }
+
+  function getQuizAnsweredCount(nodeId, stepIdx) {
+    return quizProgress[`${nodeId}:${stepIdx}`] ?? 0
+  }
+
   const completed = NODES.filter(n => isComplete(n.id)).map(n => n.id)
 
-  return { completed, stepsDone, markStepComplete, isStepComplete, isStepUnlocked, isComplete, isUnlocked }
+  return { completed, stepsDone, markStepComplete, isStepComplete, isStepUnlocked, isComplete, isUnlocked, saveQuizProgress, getQuizAnsweredCount }
 }

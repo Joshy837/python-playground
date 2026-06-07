@@ -85,7 +85,7 @@ function ConfettiBurst({ onDone }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
 }
 
-function QuizQuestion({ question, number, onAnswer, isLast }) {
+function QuizQuestion({ question, number, onCorrect, onAnswer, isLast }) {
   const isFitb = !question.options
   const [selected, setSelected] = useState(null)
   const [fitbInput, setFitbInput] = useState('')
@@ -110,6 +110,7 @@ function QuizQuestion({ question, number, onAnswer, isLast }) {
 
   function submitFitb() {
     setFitbSubmitted(true)
+    if (fitbCorrect) onCorrect?.()
   }
 
   const isCorrect = mcqCorrect || (fitbSubmitted && fitbCorrect)
@@ -167,7 +168,7 @@ function QuizQuestion({ question, number, onAnswer, isLast }) {
             let cls = 'quiz-option'
             if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct'
             return (
-              <button key={i} className={cls} disabled={answered} onClick={() => setSelected(i)}>
+              <button key={i} className={cls} disabled={answered} onClick={() => { setSelected(i); if (i === shuffledAnswer) onCorrect?.() }}>
                 <span className="quiz-marker">
                   {answered && mcqCorrect && optCorrect ? '✓' : String.fromCharCode(65 + i)}
                 </span>
@@ -237,7 +238,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const SECTION_QUIZ      = hasQuiz ? 1 : null
   const SECTION_CHALLENGE = hasQuiz ? 2 : 1
 
-  const { isStepComplete, isStepUnlocked, markStepComplete } = useProgress()
+  const { isStepComplete, isStepUnlocked, markStepComplete, saveQuizProgress, getQuizAnsweredCount } = useProgress()
 
   const [revealedUpTo, setRevealedUpTo] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -260,8 +261,13 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const pendingScrollRef = useRef(null)
   const initialThemeRef = useRef(monacoTheme)
 
-  function handleQuizAnswer() {
-    setQuizAnsweredCount(c => c + 1)
+  function handleQuizCorrect() {
+    const newCount = quizAnsweredCount + 1
+    setQuizAnsweredCount(newCount)
+    saveQuizProgress(node.id, stepIdx, newCount)
+  }
+
+  function handleQuizAdvance() {
     const container = quizContainerRef.current
     if (container) {
       const h = container.offsetHeight
@@ -285,11 +291,25 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     quizLockedHeightRef.current = 0
     setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
-      const sectionMax = (step.quiz?.length ?? 0) > 0 ? 2 : 1
+      const hasQ = (step.quiz?.length ?? 0) > 0
+      const sectionMax = hasQ ? 2 : 1
       setCurrentStep(step)
       const complete = isStepComplete(node.id, stepIdx)
+      const savedCount = hasQ ? getQuizAnsweredCount(node.id, stepIdx) : 0
       setAllPassed(complete)
-      setRevealedUpTo(complete ? sectionMax : 0)
+      if (complete) {
+        setRevealedUpTo(sectionMax)
+      } else if (savedCount >= step.quiz.length) {
+        setQuizAnsweredCount(step.quiz.length)
+        setActiveQuizIndex(step.quiz.length)
+        setRevealedUpTo(sectionMax)
+      } else if (savedCount > 0) {
+        setQuizAnsweredCount(savedCount)
+        setActiveQuizIndex(savedCount)
+        setRevealedUpTo(1)
+      } else {
+        setRevealedUpTo(0)
+      }
       setStepLoading(false)
     }).catch(() => setStepLoading(false))
   }, [node?.id, stepIdx])
@@ -481,7 +501,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                           question={currentStep.quiz[activeQuizIndex]}
                           number={activeQuizIndex + 1}
                           isLast={activeQuizIndex === currentStep.quiz.length - 1}
-                          onAnswer={handleQuizAnswer}
+                          onCorrect={handleQuizCorrect}
+                          onAnswer={handleQuizAdvance}
                         />
                       </div>
                     )}
