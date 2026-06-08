@@ -677,7 +677,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 onClick={() => navigate(`/learn/${node.id}/${stepIdx}`, { state: { section: 'challenge' } })}
               >
                 <ChevronLeft size={15} className="shrink-0" />
-                <span className="flex flex-col leading-tight">
+                <span className="flex flex-col items-start leading-tight">
                   <span className="text-[0.65rem] opacity-60">Prev lesson</span>
                   <span>{node.steps[stepIdx - 1].title}</span>
                 </span>
