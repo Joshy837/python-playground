@@ -120,7 +120,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
           ✓ Correct!{question.explanation && ` ${question.explanation}`}
         </div>
         <button className="quiz-next-btn" onClick={onAnswer}>
-          {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
+          {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
         </button>
       </div>
     </div>
@@ -152,7 +152,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
               ✓ Correct!{question.explanation && ` ${question.explanation}`}
             </div>
             <button className="quiz-next-btn" onClick={onAnswer}>
-              {isLast ? 'Done' : 'Next'} <ChevronRight size={14} />
+              {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -294,10 +294,14 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       quizLockedHeightRef.current = Math.max(quizLockedHeightRef.current, h)
       container.style.minHeight = quizLockedHeightRef.current + 'px'
     }
+    const isLastQuestion = activeQuizIndex === currentStep.quiz.length - 1
     setNavDirection('forward')
     setExitingQuizIndex(activeQuizIndex)
     setActiveQuizIndex(i => i + 1)
-    setTimeout(() => setExitingQuizIndex(null), 300)
+    setTimeout(() => {
+      setExitingQuizIndex(null)
+      if (isLastQuestion) goToSection(SECTION_CHALLENGE)
+    }, 300)
   }
 
   function handleQuizBack() {
@@ -565,8 +569,13 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 {activeQuizIndex >= currentStep.quiz.length && exitingQuizIndex === null && (
                   <div className="quiz-slide-card quiz-slide-enter quiz-complete-card">
                     <p className="quiz-complete-title">All done!</p>
-                    <p className="quiz-complete-sub">You answered all {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''}.</p>
-                    <button className="quiz-try-again-btn" onClick={handleQuizReset}>Try Again</button>
+                    <p className="quiz-complete-sub">All {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''} correct.</p>
+                    <div className="flex gap-3">
+                      <button className="quiz-try-again-btn" onClick={handleQuizReset}>Try Again</button>
+                      <button className="quiz-next-btn" onClick={() => goToSection(SECTION_CHALLENGE)}>
+                        Continue <ChevronRight size={14} />
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
