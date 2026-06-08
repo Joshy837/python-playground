@@ -207,10 +207,10 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     setSaveModalOpen(true)
   }
 
-  function handleConfirmSave(name) {
+  function handleConfirmSave(name, description) {
     const code = pendingCodeRef.current
     if (!code) return
-    const snippet = { id: Date.now(), label: name, code }
+    const snippet = { id: Date.now(), label: name, description, code }
     const next = [...savedSnippets, snippet]
     setSavedSnippets(next)
     try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}

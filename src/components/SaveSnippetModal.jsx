@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { X, BookmarkPlus } from 'lucide-react'
 
+const DESC_MAX = 60
+
 export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
   const [name, setName] = useState(defaultName)
+  const [description, setDescription] = useState('')
   const [closing, setClosing] = useState(false)
   const inputRef = useRef(null)
 
@@ -20,12 +23,12 @@ export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
   function handleClose() { setClosing(true) }
 
   function handleSave() {
-    onSave(name.trim() || defaultName)
+    onSave(name.trim() || defaultName, description.trim())
     handleClose()
   }
 
   function handleKeyDown(e) {
-    if (e.key === 'Enter') handleSave()
+    if (e.key === 'Enter' && e.target === inputRef.current) handleSave()
   }
 
   return (
@@ -55,6 +58,14 @@ export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
             onKeyDown={handleKeyDown}
             placeholder={defaultName}
             maxLength={60}
+          />
+          <label className="save-snippet-label">Description <span className="save-snippet-char-count">{description.length}/{DESC_MAX}</span></label>
+          <textarea
+            className="save-snippet-input save-snippet-textarea"
+            value={description}
+            onChange={e => setDescription(e.target.value.slice(0, DESC_MAX))}
+            placeholder="Optional — what does this snippet do?"
+            rows={2}
           />
           <div className="save-snippet-actions">
             <button className="save-snippet-btn-cancel" onClick={handleClose}>Cancel</button>

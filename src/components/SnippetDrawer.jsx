@@ -24,14 +24,14 @@ export default function SnippetDrawer({ examples, onSelect, savedSnippets = [], 
             {description && <span className="snippet-card-desc">{description}</span>}
           </button>
         ))}
-        {savedSnippets.map(({ id, label, code }) => (
+        {savedSnippets.map(({ id, label, description, code }) => (
           <div key={id} className="snippet-card snippet-card-saved">
             <button
               className="snippet-card-body"
               onClick={() => onSelect({ label, code })}
             >
               <span className="snippet-card-title">{label}</span>
-              <span className="snippet-card-desc">Saved snippet</span>
+              <span className="snippet-card-desc">{description || 'Saved snippet'}</span>
             </button>
             <button
               className="snippet-card-delete"
