@@ -85,21 +85,12 @@ function ConfettiBurst({ onDone }) {
   return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
 }
 
-function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, isCompleted }) {
+function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, isCompleted, shuffledOptions }) {
   const isFitb = !question.options
   const [selected, setSelected] = useState(null)
   const [fitbInput, setFitbInput] = useState('')
   const [fitbSubmitted, setFitbSubmitted] = useState(false)
 
-  const [shuffledOptions] = useState(() => {
-    if (!question.options) return null
-    const opts = question.options.map((text, i) => ({ text, i }))
-    for (let i = opts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [opts[i], opts[j]] = [opts[j], opts[i]]
-    }
-    return opts
-  })
   const shuffledAnswer = shuffledOptions ? shuffledOptions.findIndex(o => o.i === question.answer) : -1
 
   const answered = selected !== null
@@ -140,11 +131,11 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
     return (
       <div className="mb-7">
         <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
-        {question.options ? (
+        {shuffledOptions ? (
           <div className="flex flex-col gap-1.5">
-            {question.options.map((text, i) => (
-              <button key={i} className={`quiz-option${i === question.answer ? ' quiz-option-correct' : ''}`} disabled style={{ opacity: i === question.answer ? 1 : 0.38 }}>
-                <span className="quiz-marker">{i === question.answer ? '✓' : String.fromCharCode(65 + i)}</span>
+            {shuffledOptions.map(({ text }, i) => (
+              <button key={i} className={`quiz-option${i === shuffledAnswer ? ' quiz-option-correct' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
+                <span className="quiz-marker">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
                 {text}
               </button>
             ))}
@@ -285,6 +276,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const challengeContainerRef = useRef(null)
   const challengeEditorRef = useRef(null)
   const quizContainerRef = useRef(null)
+  const quizShufflesRef = useRef([])
   const quizLockedHeightRef = useRef(0)
   const scrollContainerRef = useRef(null)
   const initialThemeRef = useRef(monacoTheme)
@@ -345,6 +337,15 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     setShowConfetti(false)
     loadStep(node.id, stepIdx).then(step => {
       const hasQ = (step.quiz?.length ?? 0) > 0
+      quizShufflesRef.current = (step.quiz ?? []).map(q => {
+        if (!q.options) return null
+        const opts = q.options.map((text, i) => ({ text, i }))
+        for (let i = opts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [opts[i], opts[j]] = [opts[j], opts[i]]
+        }
+        return opts
+      })
       setCurrentStep(step)
       const complete = isStepComplete(node.id, stepIdx)
       const savedCount = hasQ ? getQuizAnsweredCount(node.id, stepIdx) : 0
@@ -542,6 +543,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       number={exitingQuizIndex + 1}
                       isLast={exitingQuizIndex === currentStep.quiz.length - 1}
                       isCompleted={exitingQuizIndex < quizAnsweredCount}
+                      shuffledOptions={quizShufflesRef.current[exitingQuizIndex]}
                       onAnswer={() => {}}
                     />
                   </div>
@@ -553,6 +555,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       number={activeQuizIndex + 1}
                       isLast={activeQuizIndex === currentStep.quiz.length - 1}
                       isCompleted={activeQuizIndex < quizAnsweredCount}
+                      shuffledOptions={quizShufflesRef.current[activeQuizIndex]}
                       onCorrect={handleQuizCorrect}
                       onAnswer={handleQuizAdvance}
                       onBack={activeQuizIndex > 0 ? handleQuizBack : undefined}
