@@ -41,7 +41,7 @@ plotsProxy.destroy()
 ## Bug 3 — Snippet modal stuck in loading state on fetch error (MEDIUM)
 
 **File:** `src/pages/PlaygroundPage.jsx` lines 163–166
-**Status:** Open
+**Status:** Fixed (2026-06-09)
 
 `handleSnippetSelect` has no `try/catch`. If `fetch` rejects (network offline), `setModalSnippet('loading')` was already called and is never reset. The loading modal's backdrop calls `handleClose` which only sets `closing=true` — it never calls `onClose` (that only fires via `onAnimationEnd` on the non-loading path). The modal is unrecoverable.
 

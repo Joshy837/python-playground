@@ -155,15 +155,21 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   async function loadExample(file) {
     if (!file) return
     const res = await fetch(`/examples/${file}`)
+    if (!res.ok) return
     const code = await res.text()
     loadCodeAnimated(code)
   }
 
   async function handleSnippetSelect({ label, file }) {
     setModalSnippet('loading')
-    const res = await fetch(`/examples/${file}`)
-    const code = await res.text()
-    setModalSnippet({ label, code })
+    try {
+      const res = await fetch(`/examples/${file}`)
+      if (!res.ok) throw new Error(res.statusText)
+      const code = await res.text()
+      setModalSnippet({ label, code })
+    } catch {
+      setModalSnippet(null)
+    }
   }
 
   const running = isRunning || isRestarting
