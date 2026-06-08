@@ -34,6 +34,7 @@ self.onmessage = async function (e) {
   const stderr = pyodide.runPython('sys.stderr.getvalue()')
   const plotsProxy = pyodide.runPython(PLOT_CAPTURE)
   const plots = plotsProxy.toJs ? plotsProxy.toJs() : Array.from(plotsProxy)
+  plotsProxy.destroy()
   self.postMessage({ type: 'result', stdout, stderr, error, plots })
 }
 

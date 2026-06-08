@@ -23,7 +23,7 @@ if (isRunning || isRestarting) { ... }
 ## Bug 2 — PyProxy memory leak on every run (MEDIUM)
 
 **File:** `public/pyodide-worker.js` lines 35–36
-**Status:** Open
+**Status:** Fixed (2026-06-08)
 
 `pyodide.runPython(PLOT_CAPTURE)` returns a `PyProxy` wrapping a Python list. `.toJs()` converts the contents to a JS array but does not destroy the proxy. The proxy is never explicitly `.destroy()`ed, so the Python-side object's reference count is never decremented and the WASM heap leaks one object per run.
 
