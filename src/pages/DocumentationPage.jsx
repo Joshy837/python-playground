@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { Play } from 'lucide-react'
+import { Play, Copy, Check, ArrowUpRight } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
+
+const PENDING_KEY = 'playground-pending-load'
 
 const DOCS = {
   'Variables': [
@@ -252,6 +254,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
   const [output, setOutput] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
   const [colorizedCode, setColorizedCode] = useState(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     monaco.editor.colorize(item.ex, 'python', { tabSize: 4 })
@@ -268,6 +271,17 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
     } finally {
       setIsRunning(false)
     }
+  }
+
+  function handleCopy() {
+    navigator.clipboard.writeText(item.ex)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  function handleLoadInEditor() {
+    try { localStorage.setItem(PENDING_KEY, item.ex) } catch {}
+    window.open('/', '_blank')
   }
 
   const hasOutput = output && (output.stdout || output.stderr || output.error)
@@ -296,10 +310,28 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
             </button>
           </div>
           <div className="doc-card-body">
-            <pre
-              className="doc-card-example"
-              dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
-            />
+            <div className="doc-code-wrapper">
+              <div className="modal-code-actions">
+                <button
+                  className={`modal-code-btn${copied ? ' modal-code-btn-copied' : ''}`}
+                  onClick={handleCopy}
+                  title="Copy code"
+                >
+                  {copied ? <Check size={13} /> : <Copy size={13} />}
+                </button>
+                <button
+                  className="modal-code-btn modal-code-btn-load"
+                  onClick={handleLoadInEditor}
+                  title="Load into Editor"
+                >
+                  <ArrowUpRight size={13} />
+                </button>
+              </div>
+              <pre
+                className="doc-card-example"
+                dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
+              />
+            </div>
             <div className="doc-card-output">
               {hasOutput ? (
                 <>

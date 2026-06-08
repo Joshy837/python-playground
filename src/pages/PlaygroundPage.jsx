@@ -22,8 +22,16 @@ print("Hello, World!")
 `
 
 const STORAGE_KEY = 'playground-editor-v1'
+const PENDING_KEY = 'playground-pending-load'
 function loadSavedCode() {
-  try { return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE } catch { return DEFAULT_CODE }
+  try {
+    const pending = localStorage.getItem(PENDING_KEY)
+    if (pending !== null) {
+      localStorage.removeItem(PENDING_KEY)
+      return pending
+    }
+    return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE
+  } catch { return DEFAULT_CODE }
 }
 
 export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
