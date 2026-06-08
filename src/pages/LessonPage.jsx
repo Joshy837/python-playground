@@ -287,7 +287,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const quizContainerRef = useRef(null)
   const quizLockedHeightRef = useRef(0)
   const scrollContainerRef = useRef(null)
-  const quizRestoredRef = useRef(false)
   const initialThemeRef = useRef(monacoTheme)
 
   function handleQuizCorrect() {
@@ -748,14 +747,24 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 }
 
 const TOKEN_COLORS = {
-  'vs-dark':  { keyword: '#569cd6', string: '#ce9178', number: '#b5cea8', comment: '#6a9955', default: '#d4d4d4' },
+  'monokai':  { keyword: '#e06c75', string: '#e5c07b', number: '#c678dd', comment: '#676f7d', default: '#abb2bf', function: '#98c379', class: '#61afef', builtin: '#56b6c2', constant: '#56b6c2' },
   'vs':       { keyword: '#0000ff', string: '#a31515', number: '#098658', comment: '#008000', default: '#000000' },
   'hc-black': { keyword: '#c586c0', string: '#ce9178', number: '#b5cea8', comment: '#608b4e', default: '#ffffff' },
   'hc-light': { keyword: '#0f4a85', string: '#b94824', number: '#005000', comment: '#4d7a00', default: '#000000' },
 }
 
+function resolveTokenColor(tokType, colors) {
+  const type = tokType.replace(/\.python$/, '')
+  if (type === 'entity.name.function') return [colors.function ?? null, false]
+  if (type === 'entity.name.class')    return [colors.class    ?? null, false]
+  if (type.startsWith('support.'))     return [colors.builtin  ?? null, false]
+  if (type.startsWith('constant.'))    return [colors.constant ?? null, false]
+  const base = type.split('.')[0]
+  return [colors[base] ?? null, base === 'comment']
+}
+
 function highlightWithMonaco(code, monacoTheme) {
-  const colors = TOKEN_COLORS[monacoTheme] ?? TOKEN_COLORS['vs-dark']
+  const colors = TOKEN_COLORS[monacoTheme] ?? TOKEN_COLORS['monokai']
   const lines = code.split('\n')
   const tokenizedLines = monaco.editor.tokenize(code, 'python')
   return lines.map((line, li) => {
@@ -763,10 +772,9 @@ function highlightWithMonaco(code, monacoTheme) {
     if (tokens.length === 0) return escHtml(line)
     return tokens.map((tok, i) => {
       const text = line.slice(tok.offset, tokens[i + 1]?.offset ?? line.length)
-      const base = tok.type.split('.')[0]
-      const color = colors[base] ?? null
+      const [color, italic] = resolveTokenColor(tok.type, colors)
       const style = color
-        ? `color:${color}${base === 'comment' ? ';font-style:italic' : ''}`
+        ? `color:${color}${italic ? ';font-style:italic' : ''}`
         : null
       return style ? `<span style="${style}">${escHtml(text)}</span>` : escHtml(text)
     }).join('')

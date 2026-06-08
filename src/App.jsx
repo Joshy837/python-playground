@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
+import './monacoSetup.js'
 import Header from './components/Header.jsx'
 import PlaygroundPage from './pages/PlaygroundPage.jsx'
 import CoursePage from './pages/CoursePage.jsx'
@@ -9,21 +10,21 @@ import DocumentationPage from './pages/DocumentationPage.jsx'
 import { initPyodide } from './runner.js'
 
 const PAGE_THEME = {
-  'vs-dark':  'dark',
+  'monokai':  'dark',
   'vs':       'light',
   'hc-black': 'hc-dark',
   'hc-light': 'hc-light',
 }
 
 const THEME_BG = {
-  'vs-dark':  '#111827',
+  'monokai':  '#282c34',
   'vs':       '#ffffff',
   'hc-black': '#000000',
   'hc-light': '#ffffff',
 }
 
 export default function App() {
-  const [monacoTheme, setMonacoTheme] = useState('vs-dark')
+  const [monacoTheme, setMonacoTheme] = useState('monokai')
   const [pyodideReady, setPyodideReady] = useState(false)
   const [pyodideError, setPyodideError] = useState(false)
   const themeSwitchTimer = useRef(null)
@@ -35,7 +36,7 @@ export default function App() {
   }, [])
 
   function toggleTheme() {
-    const next = monacoTheme === 'vs-dark' ? 'vs' : 'vs-dark'
+    const next = monacoTheme === 'monokai' ? 'vs' : 'monokai'
     setMonacoTheme(next)
     monaco.editor.setTheme(next)
     clearTimeout(themeSwitchTimer.current)
@@ -50,7 +51,7 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Header isDark={monacoTheme === 'vs-dark'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
+      <Header isDark={monacoTheme === 'monokai'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
       <Routes>
         <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
