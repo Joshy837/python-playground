@@ -1899,3 +1899,103 @@ body {
   background: color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
+/* ── Delete-snippet confirm modal ─────────────────────── */
+.delete-snippet-modal {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  background: var(--header-bg);
+  border: 1px solid color-mix(in srgb, #f87171 30%, var(--header-border));
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 32px 72px color-mix(in srgb, #000 60%, transparent),
+    0 0 48px color-mix(in srgb, #f87171 6%, transparent);
+  animation: modal-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.delete-snippet-modal.modal-closing {
+  animation: modal-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.delete-snippet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, #f87171 18%, var(--header-border));
+  background:
+    radial-gradient(ellipse 130% 160% at -5% 50%, color-mix(in srgb, #f87171 10%, transparent) 0%, transparent 60%),
+    color-mix(in srgb, var(--header-bg) 85%, var(--app-bg));
+  flex-shrink: 0;
+}
+
+.delete-snippet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1rem 0.9rem;
+}
+
+.delete-snippet-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.delete-snippet-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.delete-snippet-btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  border: 1px solid color-mix(in srgb, #f87171 40%, transparent);
+  background: color-mix(in srgb, #f87171 15%, transparent);
+  color: #f87171;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.delete-snippet-btn-delete:hover {
+  background: color-mix(in srgb, #f87171 25%, transparent);
+}
+
+/* ── Toast ────────────────────────────────────────────── */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9px;
+  border: 1px solid color-mix(in srgb, #4ade80 35%, var(--header-border));
+  background: var(--header-bg);
+  color: #4ade80;
+  font-size: 0.8rem;
+  font-weight: 500;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px color-mix(in srgb, #000 40%, transparent);
+  animation: toast-in 0.2s ease both;
+  pointer-events: none;
+}
+.toast-dismissing {
+  animation: toast-out 0.2s ease both;
+}
+

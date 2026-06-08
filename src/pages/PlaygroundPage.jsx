@@ -7,6 +7,8 @@ import OutputPanel from '../components/OutputPanel.jsx'
 import SnippetDrawer from '../components/SnippetDrawer.jsx'
 import SnippetModal from '../components/SnippetModal.jsx'
 import SaveSnippetModal from '../components/SaveSnippetModal.jsx'
+import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
+import Toast from '../components/Toast.jsx'
 import ExamplesDropdown from '../components/ExamplesDropdown.jsx'
 
 const EXAMPLES = [
@@ -55,6 +57,8 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const [modalSnippet, setModalSnippet] = useState(null)
   const [savedSnippets, setSavedSnippets] = useState(loadSavedSnippets)
   const [saveModalOpen, setSaveModalOpen] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [toast, setToast] = useState(null)
   const pendingCodeRef = useRef(null)
   const animationRef = useRef(null)
 
@@ -217,9 +221,15 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   }
 
   function handleDeleteSnippet(id) {
-    const next = savedSnippets.filter(s => s.id !== id)
+    const snippet = savedSnippets.find(s => s.id === id)
+    if (snippet) setDeleteTarget(snippet)
+  }
+
+  function confirmDelete() {
+    const next = savedSnippets.filter(s => s.id !== deleteTarget.id)
     setSavedSnippets(next)
     try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+    setToast({ id: Date.now(), message: 'Snippet deleted' })
   }
 
   const running = isRunning || isRestarting
@@ -275,6 +285,14 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
           onClose={() => setSaveModalOpen(false)}
         />
       )}
+      {deleteTarget && (
+        <DeleteSnippetModal
+          snippet={deleteTarget}
+          onConfirm={confirmDelete}
+          onClose={() => setDeleteTarget(null)}
+        />
+      )}
+      {toast && <Toast key={toast.id} message={toast.message} onDone={() => setToast(null)} />}
     </main>
   )
 }
