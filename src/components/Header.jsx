@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import { Sun, Moon, Terminal, GraduationCap, BookOpen } from 'lucide-react'
 
 const BASE_NAV = 'inline-flex items-center gap-[0.35rem] px-[0.625rem] py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors duration-150'
@@ -14,12 +14,12 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
 
   return (
     <header className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b shrink-0 bg-app-surface border-app-border">
-      <div className="flex items-center gap-2 min-w-0 shrink-0">
+      <Link to="/" className="flex items-center gap-2 min-w-0 shrink-0 no-underline" style={{ color: 'inherit' }}>
         <img src="/favicon.svg" alt="" width="24" height="24" className="rounded-md shrink-0" />
         <span className="font-semibold hidden sm:inline truncate">Just Python It</span>
-      </div>
+      </Link>
       <nav className="flex items-center gap-0.5 sm:gap-1 ml-2 sm:ml-4">
-        <NavLink to="/" end className={navClass}><Terminal size={15} /><span className="hidden sm:inline">Playground</span></NavLink>
+        <NavLink to="/playground" className={navClass}><Terminal size={15} /><span className="hidden sm:inline">Playground</span></NavLink>
         <NavLink to="/course" className={onLesson ? () => courseClass : navClass}><GraduationCap size={15} /><span className="hidden sm:inline">Course</span></NavLink>
         <NavLink to="/docs" className={navClass}><BookOpen size={15} /><span className="hidden sm:inline">Docs</span></NavLink>
       </nav>

@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
 import './monacoSetup.js'
 import Header from './components/Header.jsx'
+import LandingPage from './pages/LandingPage.jsx'
 import PlaygroundPage from './pages/PlaygroundPage.jsx'
 import CoursePage from './pages/CoursePage.jsx'
 import LessonPage from './pages/LessonPage.jsx'
@@ -53,7 +54,8 @@ export default function App() {
     <HashRouter>
       <Header isDark={monacoTheme === 'monokai'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
       <Routes>
-        <Route path="/" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/playground" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
         <Route path="/course" element={<CoursePage />} />
         <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
         <Route path="/learn/:id/:step" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
