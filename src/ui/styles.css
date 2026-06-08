@@ -1540,6 +1540,59 @@ body {
   overflow: hidden;
 }
 
+.snippet-drawer-count {
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0 0.35rem;
+  line-height: 1.5;
+}
+
+.snippet-card-saved {
+  position: relative;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--header-border));
+}
+.snippet-card-saved:hover {
+  border-color: var(--accent);
+}
+
+.snippet-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  min-width: 0;
+}
+
+.snippet-card-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.45rem;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--header-border);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+  border-radius: 0 8px 8px 0;
+}
+.snippet-card-delete:hover {
+  color: #f87171;
+  background: color-mix(in srgb, #f87171 12%, transparent);
+}
+
 /* ── Snippet modal ───────────────────────────────────── */
 @keyframes modal-backdrop-in {
   from { opacity: 0; }
@@ -1741,5 +1794,93 @@ body {
   text-align: center;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+/* ── Save-to-drawer modal ─────────────────────────────── */
+.save-snippet-modal {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  background: var(--header-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--header-border));
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 32px 72px color-mix(in srgb, #000 60%, transparent),
+    0 0 48px color-mix(in srgb, var(--accent) 8%, transparent);
+  animation: modal-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.save-snippet-modal.modal-closing {
+  animation: modal-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.save-snippet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.1rem 1rem 1rem;
+}
+
+.save-snippet-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.save-snippet-input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--header-border);
+  background: var(--app-bg);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.save-snippet-input:focus {
+  border-color: var(--accent);
+}
+
+.save-snippet-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.save-snippet-btn-cancel {
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  border: 1px solid var(--header-border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+.save-snippet-btn-cancel:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.save-snippet-btn-save {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.save-snippet-btn-save:hover {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
 }
 

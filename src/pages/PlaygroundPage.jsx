@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { Play, Square } from 'lucide-react'
+import { Play, Square, BookmarkPlus } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode, cancelRun } from '../runner.js'
 import { BASE_EDITOR_CONFIG } from '../editor.js'
 import OutputPanel from '../components/OutputPanel.jsx'
 import SnippetDrawer from '../components/SnippetDrawer.jsx'
 import SnippetModal from '../components/SnippetModal.jsx'
+import SaveSnippetModal from '../components/SaveSnippetModal.jsx'
 import ExamplesDropdown from '../components/ExamplesDropdown.jsx'
 
 const EXAMPLES = [
@@ -23,6 +24,8 @@ print("Hello, World!")
 
 const STORAGE_KEY = 'playground-editor-v1'
 const PENDING_KEY = 'playground-pending-load'
+const SNIPPETS_KEY = 'playground-saved-snippets-v1'
+
 function loadSavedCode() {
   try {
     const pending = localStorage.getItem(PENDING_KEY)
@@ -32,6 +35,10 @@ function loadSavedCode() {
     }
     return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE
   } catch { return DEFAULT_CODE }
+}
+
+function loadSavedSnippets() {
+  try { return JSON.parse(localStorage.getItem(SNIPPETS_KEY)) || [] } catch { return [] }
 }
 
 export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
@@ -46,6 +53,9 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const [isRestarting, setIsRestarting] = useState(false)
   const [output, setOutput] = useState(null)
   const [modalSnippet, setModalSnippet] = useState(null)
+  const [savedSnippets, setSavedSnippets] = useState(loadSavedSnippets)
+  const [saveModalOpen, setSaveModalOpen] = useState(false)
+  const pendingCodeRef = useRef(null)
   const animationRef = useRef(null)
 
   // Monaco setup
@@ -177,16 +187,39 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     loadCodeAnimated(code)
   }
 
-  async function handleSnippetSelect({ label, file }) {
+  async function handleSnippetSelect({ label, file, code }) {
+    if (code !== undefined) { setModalSnippet({ label, code }); return }
     setModalSnippet('loading')
     try {
       const res = await fetch(`/examples/${file}`)
       if (!res.ok) throw new Error(res.statusText)
-      const code = await res.text()
-      setModalSnippet({ label, code })
+      const fetched = await res.text()
+      setModalSnippet({ label, code: fetched })
     } catch {
       setModalSnippet(null)
     }
+  }
+
+  function handleSaveSnippet() {
+    const code = editorRef.current?.getValue()
+    if (!code) return
+    pendingCodeRef.current = code
+    setSaveModalOpen(true)
+  }
+
+  function handleConfirmSave(name) {
+    const code = pendingCodeRef.current
+    if (!code) return
+    const snippet = { id: Date.now(), label: name, code }
+    const next = [...savedSnippets, snippet]
+    setSavedSnippets(next)
+    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+  }
+
+  function handleDeleteSnippet(id) {
+    const next = savedSnippets.filter(s => s.id !== id)
+    setSavedSnippets(next)
+    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
   }
 
   const running = isRunning || isRestarting
@@ -199,7 +232,15 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
         <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
           <ExamplesDropdown examples={EXAMPLES} onSelect={loadExample} />
           <button
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-semibold cursor-pointer transition-all duration-150 shrink-0 ml-auto disabled:opacity-40 disabled:cursor-not-allowed ${
+            className="flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-semibold cursor-pointer transition-all duration-150 shrink-0 ml-auto text-blue-400 border-blue-400/30 bg-blue-400/10 hover:bg-blue-400/20"
+            title="Save to Drawer"
+            onClick={handleSaveSnippet}
+          >
+            <BookmarkPlus size={13} />
+            <span>Add to Drawer</span>
+          </button>
+          <button
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-md border text-xs font-semibold cursor-pointer transition-all duration-150 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed ${
               running
                 ? 'text-red-500 border-red-500/30 bg-red-500/10 hover:bg-red-500/20'
                 : 'text-green-500 border-green-500/30 bg-green-500/10 hover:bg-green-500/20'
@@ -216,7 +257,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
         </div>
         <div className="relative flex-1 min-h-0">
           <div ref={editorContainerRef} className="absolute inset-0" />
-          <SnippetDrawer examples={EXAMPLES.slice(0, 1)} onSelect={handleSnippetSelect} />
+          <SnippetDrawer examples={EXAMPLES.slice(0, 1)} onSelect={handleSnippetSelect} savedSnippets={savedSnippets} onDeleteSnippet={handleDeleteSnippet} />
         </div>
       </div>
       <div ref={resizeHandleRef} className="resize-handle shrink-0" />
@@ -227,6 +268,13 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
         onLoad={loadCodeAnimated}
         monacoTheme={monacoTheme}
       />
+      {saveModalOpen && (
+        <SaveSnippetModal
+          defaultName={`Snippet ${savedSnippets.length + 1}`}
+          onSave={handleConfirmSave}
+          onClose={() => setSaveModalOpen(false)}
+        />
+      )}
     </main>
   )
 }
