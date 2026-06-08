@@ -33,7 +33,7 @@ const perks = [
 
 export default function LandingPage() {
   return (
-    <div className="flex-1 overflow-y-auto" style={{ background: 'var(--app-bg)', color: 'var(--text-primary)' }}>
+    <div className="page-enter flex-1 overflow-y-auto" style={{ background: 'var(--app-bg)', color: 'var(--text-primary)' }}>
       {/* Hero */}
       <section className="flex flex-col items-center text-center px-6 pt-20 pb-16 max-w-2xl mx-auto">
         <img src="/favicon.svg" alt="" width="56" height="56" className="rounded-2xl mb-6 shadow-lg" />
