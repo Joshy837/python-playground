@@ -1999,3 +1999,24 @@ body {
   animation: toast-out 0.2s ease both;
 }
 
+/* ── Landing page animated aurora background ─────────── */
+
+.landing-bg {
+  position: relative;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--text-muted) 18%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  color: var(--text-primary);
+}
+
+.landing-aurora {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 25% 45%, color-mix(in srgb, var(--accent-try) 9%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 55% at 80% 30%, color-mix(in srgb, var(--accent-quiz) 8%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 40% at 55% 80%, color-mix(in srgb, var(--accent-challenge) 7%, transparent) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
