@@ -21,6 +21,11 @@ const DEFAULT_CODE = `# Write your Python code here and press Run (or Ctrl+Enter
 print("Hello, World!")
 `
 
+const STORAGE_KEY = 'playground-editor-v1'
+function loadSavedCode() {
+  try { return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE } catch { return DEFAULT_CODE }
+}
+
 export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
   const editorContainerRef = useRef(null)
   const editorRef = useRef(null)
@@ -39,7 +44,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   useEffect(() => {
     const editor = monaco.editor.create(editorContainerRef.current, {
       ...BASE_EDITOR_CONFIG,
-      value: DEFAULT_CODE,
+      value: loadSavedCode(),
       theme: initialThemeRef.current,
       fontSize: 14,
       padding: { top: 16, bottom: 16 },
@@ -48,7 +53,11 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       handleRunRef.current()
     })
+    const disposable = editor.onDidChangeModelContent(() => {
+      try { localStorage.setItem(STORAGE_KEY, editor.getValue()) } catch {}
+    })
     return () => {
+      disposable.dispose()
       editor.dispose()
       editorRef.current = null
     }
