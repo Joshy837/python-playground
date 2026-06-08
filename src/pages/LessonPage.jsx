@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, RotateCcw, LayoutGrid } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
@@ -243,6 +243,7 @@ function useIsMobile(breakpoint = 768) {
 export default function LessonPage({ pyodideReady, monacoTheme }) {
   const { id, step } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const node = NODES.find(n => n.id === id)
 
   const stepIdx = step ? Math.max(0, parseInt(step, 10) - 1) : 0
@@ -358,7 +359,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         setQuizAnsweredCount(savedCount)
         setActiveQuizIndex(savedCount)
       }
-      setCurrentSection(0)
+      setCurrentSection(location.state?.section === 'challenge' ? (hasQ ? 2 : 1) : 0)
       setStepLoading(false)
     }).catch(() => setStepLoading(false))
   }, [node?.id, stepIdx])
@@ -664,10 +665,22 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       <div className="lesson-nav-bar-wrap">
         <div className="lesson-nav-bar">
           <div className="flex-1 flex items-center">
-            {currentSection > 0 && (
+            {currentSection > 0 ? (
               <button className="lesson-nav-btn" style={{ '--nav-btn-accent': sectionAccent(currentSection - 1) }} onClick={() => goToSection(currentSection - 1)}>
                 <ChevronLeft size={15} className="shrink-0" />
                 <span>{sectionLabel(currentSection - 1)}</span>
+              </button>
+            ) : stepIdx > 0 && (
+              <button
+                className="lesson-nav-btn"
+                style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
+                onClick={() => navigate(`/learn/${node.id}/${stepIdx}`, { state: { section: 'challenge' } })}
+              >
+                <ChevronLeft size={15} className="shrink-0" />
+                <span className="flex flex-col leading-tight">
+                  <span className="text-[0.65rem] opacity-60">Prev lesson</span>
+                  <span>{node.steps[stepIdx - 1].title}</span>
+                </span>
               </button>
             )}
           </div>
@@ -709,7 +722,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
                 >
                   <span className="flex flex-col items-end leading-tight">
-                    <span className="text-[0.65rem] opacity-60">Next step</span>
+                    <span className="text-[0.65rem] opacity-60">Next lesson</span>
                     <span>{node.steps[stepIdx + 1].title}</span>
                   </span>
                   <ChevronRight size={15} className="shrink-0" />
