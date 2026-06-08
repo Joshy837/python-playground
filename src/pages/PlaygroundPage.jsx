@@ -105,7 +105,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   }, [])
 
   async function handleRun() {
-    if (isRunning) {
+    if (isRunning || isRestarting) {
       setIsRunning(false)
       setIsRestarting(true)
       await cancelRun()

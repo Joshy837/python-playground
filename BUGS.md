@@ -7,7 +7,7 @@ Logged from code health check on 2026-06-08.
 ## Bug 1 — Ctrl+Enter during restart bypasses guard (HIGH)
 
 **File:** `src/pages/PlaygroundPage.jsx` line 108
-**Status:** Open
+**Status:** Fixed (2026-06-08)
 
 `handleRun` only checks `if (isRunning)` at the top, but during a worker restart `isRunning` is `false` while `isRestarting` is `true`. The run button is correctly disabled (`runBtnDisabled = !pyodideReady || isRestarting`), but the Monaco Ctrl+Enter keybinding calls `handleRunRef.current()` which skips the `isRestarting` check entirely.
 
