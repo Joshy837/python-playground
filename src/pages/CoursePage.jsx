@@ -208,6 +208,16 @@ export default function CoursePage() {
     else setExpandedId(null)
   }, [expandedId, isMobile, closeSheet])
 
+  const translateExtent = useMemo(() => {
+    const PADDING = isMobile ? 80 : 400
+    const xs = NODES.map(n => isMobile ? n.vx : n.x)
+    const ys = NODES.map(n => isMobile ? n.vy : n.y)
+    return [
+      [Math.min(...xs) - NODE_W / 2 - PADDING, Math.min(...ys) - NODE_H / 2 - PADDING],
+      [Math.max(...xs) + NODE_W / 2 + PADDING, Math.max(...ys) + NODE_H / 2 + PADDING],
+    ]
+  }, [isMobile])
+
   const done = completed.length
   const total = NODES.length
 
@@ -243,6 +253,7 @@ export default function CoursePage() {
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
+          translateExtent={translateExtent}
           panOnScroll
           zoomOnScroll={false}
         >
