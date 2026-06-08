@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, RotateCcw } from 'lucide-react'
+import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, RotateCcw, LayoutGrid } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -238,6 +238,17 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
 // currentSection: 0=description, 1=quiz (if hasQuiz), 2=challenge (or 1 without quiz)
 
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint)
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+    const handler = e => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [breakpoint])
+  return isMobile
+}
+
 export default function LessonPage({ pyodideReady, monacoTheme }) {
   const { id, step } = useParams()
   const navigate = useNavigate()
@@ -255,6 +266,9 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const SECTION_CHALLENGE = hasQuiz ? 2 : 1
 
   const { isStepComplete, isStepUnlocked, markStepComplete, saveQuizProgress, getQuizAnsweredCount } = useProgress()
+
+  const isMobile = useIsMobile()
+  const [showStepSheet, setShowStepSheet] = useState(false)
 
   const [currentSection, setCurrentSection] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -458,30 +472,40 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
             Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          {node.steps.map((s, i) => {
-            const done = isStepComplete(node.id, i)
-            const current = i === stepIdx
-            return (
-              <button
-                key={i}
-                className={[
-                  'lesson-step-dot',
-                  current ? 'lesson-step-dot-current' : '',
-                  done ? 'lesson-step-dot-done' : '',
-                ].join(' ')}
-                onClick={() => {
-                  if (current) return
-                  if (done || isStepUnlocked(node.id, i))
-                    navigate(`/learn/${node.id}/${i + 1}`)
-                }}
-                title={s.title}
-              >
-                {done ? <Check size={14} strokeWidth={3} /> : <span>{i + 1}</span>}
-              </button>
-            )
-          })}
-        </div>
+        {isMobile ? (
+          <button
+            className="lesson-back-btn shrink-0"
+            title="Jump to step"
+            onClick={() => setShowStepSheet(true)}
+          >
+            <LayoutGrid size={16} />
+          </button>
+        ) : (
+          <div className="flex items-center gap-1.5 shrink-0">
+            {node.steps.map((s, i) => {
+              const done = isStepComplete(node.id, i)
+              const current = i === stepIdx
+              return (
+                <button
+                  key={i}
+                  className={[
+                    'lesson-step-dot',
+                    current ? 'lesson-step-dot-current' : '',
+                    done ? 'lesson-step-dot-done' : '',
+                  ].join(' ')}
+                  onClick={() => {
+                    if (current) return
+                    if (done || isStepUnlocked(node.id, i))
+                      navigate(`/learn/${node.id}/${i + 1}`)
+                  }}
+                  title={s.title}
+                >
+                  {done ? <Check size={14} strokeWidth={3} /> : <span>{i + 1}</span>}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* Progress bar */}
@@ -685,6 +709,40 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </div>
       </div>
 
+      {showStepSheet && (
+        <>
+          <div className="course-sheet-backdrop" onClick={() => setShowStepSheet(false)} />
+          <div className="course-sheet">
+            <div className="course-sheet-handle" />
+            <p className="course-sheet-title">{node.title} — Steps</p>
+            <div className="course-sheet-steps">
+              {node.steps.map((s, i) => {
+                const done = isStepComplete(node.id, i)
+                const current = i === stepIdx
+                const unlocked = done || isStepUnlocked(node.id, i)
+                return (
+                  <button
+                    key={i}
+                    className={[
+                      'course-step-btn',
+                      done ? 'course-step-done' : unlocked ? 'course-step-available' : 'course-step-locked',
+                    ].join(' ')}
+                    style={current ? { outline: '2px solid var(--text-primary)', outlineOffset: '2px' } : undefined}
+                    title={s.title}
+                    onClick={() => {
+                      if (!unlocked) return
+                      setShowStepSheet(false)
+                      if (!current) navigate(`/learn/${node.id}/${i + 1}`)
+                    }}
+                  >
+                    {done ? <Check size={12} strokeWidth={3} /> : <span>{i + 1}</span>}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
