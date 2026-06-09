@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
 import './monacoSetup.js'
 import Header from './components/Header.jsx'
@@ -51,7 +51,7 @@ export default function App() {
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Header isDark={monacoTheme === 'monokai'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -61,6 +61,6 @@ export default function App() {
         <Route path="/learn/:id/:step" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
         <Route path="/docs" element={<DocumentationPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   )
 }

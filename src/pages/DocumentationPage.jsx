@@ -281,7 +281,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
 
   function handleLoadInEditor() {
     try { localStorage.setItem(PENDING_KEY, item.ex) } catch {}
-    window.open('/', '_blank')
+    window.open('/playground', '_blank')
   }
 
   const hasOutput = output && (output.stdout || output.stderr || output.error)
