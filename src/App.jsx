@@ -17,10 +17,20 @@ const PAGE_THEME = {
   'hc-light': 'hc-light',
 }
 
+const THEME_KEY = 'app-theme-v1'
+
+function loadTheme() {
+  try { return localStorage.getItem(THEME_KEY) || 'monokai' } catch { return 'monokai' }
+}
+
 export default function App() {
-  const [monacoTheme, setMonacoTheme] = useState('monokai')
+  const [monacoTheme, setMonacoTheme] = useState(loadTheme)
   const [pyodideReady, setPyodideReady] = useState(false)
   const [pyodideError, setPyodideError] = useState(false)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = PAGE_THEME[monacoTheme]
+  }, [])
 
   useEffect(() => {
     initPyodide()
@@ -35,6 +45,7 @@ export default function App() {
     root.dataset.theme = PAGE_THEME[next]
     setMonacoTheme(next)
     monaco.editor.setTheme(next)
+    try { localStorage.setItem(THEME_KEY, next) } catch {}
     requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-switching')))
   }
 

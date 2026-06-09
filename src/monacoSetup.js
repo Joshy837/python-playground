@@ -31,6 +31,8 @@ monaco.editor.defineTheme('monokai', {
   },
 })
 
+monaco.editor.setTheme((() => { try { return localStorage.getItem('app-theme-v1') || 'monokai' } catch { return 'monokai' } })())
+
 // Custom Python tokenizer that tracks state after `def`/`class` so function
 // and class names get distinct token types (Monaco's built-in doesn't do this).
 monaco.languages.setMonarchTokensProvider('python', {

@@ -20,6 +20,8 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
   const savedCodeRef = useRef(null)
   const runRef = useRef(onRun)
   useEffect(() => { runRef.current = onRun })
+  const themeRef = useRef(theme)
+  useEffect(() => { themeRef.current = theme })
 
   // Reset saved code on render when the step changes so the new step's
   // initialCode is used rather than code saved from the previous step.
@@ -44,7 +46,7 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
       ...BASE_EDITOR_CONFIG,
       ...extraOptions,
       value: code,
-      theme,
+      theme: themeRef.current,
     })
     editorRef.current = editor
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current?.())
