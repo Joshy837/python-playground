@@ -218,6 +218,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     const next = [...savedSnippets, snippet]
     setSavedSnippets(next)
     try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+    setToast({ id: Date.now(), message: 'Snippet saved' })
   }
 
   function handleDeleteSnippet(id) {
