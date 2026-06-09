@@ -191,8 +191,8 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     loadCodeAnimated(code)
   }
 
-  async function handleSnippetSelect({ label, file, code }) {
-    if (code !== undefined) { setModalSnippet({ label, code }); return }
+  async function handleSnippetSelect({ id, label, file, code }) {
+    if (code !== undefined) { setModalSnippet({ id, label, code }); return }
     setModalSnippet('loading')
     try {
       const res = await fetch(`/examples/${file}`)
@@ -224,6 +224,16 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   function handleDeleteSnippet(id) {
     const snippet = savedSnippets.find(s => s.id === id)
     if (snippet) setDeleteTarget(snippet)
+  }
+
+  function handleSaveSnippetEdit(code) {
+    const id = modalSnippet?.id
+    if (!id) return
+    const next = savedSnippets.map(s => s.id === id ? { ...s, code } : s)
+    setSavedSnippets(next)
+    setModalSnippet(prev => ({ ...prev, code }))
+    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+    setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
   function confirmDelete() {
@@ -277,6 +287,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
         snippet={modalSnippet}
         onClose={() => setModalSnippet(null)}
         onLoad={loadCodeAnimated}
+        onSave={modalSnippet?.id ? handleSaveSnippetEdit : undefined}
         monacoTheme={monacoTheme}
       />
       {saveModalOpen && (
@@ -293,7 +304,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
           onClose={() => setDeleteTarget(null)}
         />
       )}
-      {toast && <Toast key={toast.id} message={toast.message} onDone={() => setToast(null)} />}
+{toast && <Toast key={toast.id} message={toast.message} onDone={() => setToast(null)} />}
     </main>
   )
 }

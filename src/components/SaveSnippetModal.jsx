@@ -3,9 +3,9 @@ import { X, BookmarkPlus } from 'lucide-react'
 
 const DESC_MAX = 60
 
-export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
+export default function SaveSnippetModal({ defaultName, defaultDescription = '', isEdit = false, onSave, onClose }) {
   const [name, setName] = useState(defaultName)
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState(defaultDescription)
   const [closing, setClosing] = useState(false)
   const inputRef = useRef(null)
 
@@ -44,7 +44,7 @@ export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
         <div className="modal-header">
           <div className="modal-header-left">
             <BookmarkPlus size={15} style={{ color: 'var(--accent)' }} />
-            <span className="modal-title">Add to Drawer</span>
+            <span className="modal-title">{isEdit ? 'Edit Snippet' : 'Add to Drawer'}</span>
           </div>
           <button className="modal-close-btn" onClick={handleClose}><X size={15} /></button>
         </div>
@@ -71,7 +71,7 @@ export default function SaveSnippetModal({ defaultName, onSave, onClose }) {
             <button className="save-snippet-btn-cancel" onClick={handleClose}>Cancel</button>
             <button className="save-snippet-btn-save" onClick={handleSave}>
               <BookmarkPlus size={13} />
-              Add to Drawer
+              {isEdit ? 'Save Changes' : 'Add to Drawer'}
             </button>
           </div>
         </div>

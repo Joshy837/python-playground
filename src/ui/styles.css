@@ -1577,6 +1577,23 @@ body {
   min-width: 0;
 }
 
+.snippet-card-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.45rem;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--header-border);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+.snippet-card-edit:hover {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
 .snippet-card-delete {
   display: flex;
   align-items: center;
@@ -1776,6 +1793,42 @@ body {
   color: var(--accent-try);
   background: color-mix(in srgb, var(--accent-try) 22%, var(--header-bg));
   border-color: color-mix(in srgb, var(--accent-try) 55%, transparent);
+}
+
+.modal-code-btn-edit {
+  color: var(--accent-challenge);
+  background: color-mix(in srgb, var(--accent-challenge) 14%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--accent-challenge) 35%, transparent);
+}
+.modal-code-btn-edit:hover {
+  background: color-mix(in srgb, var(--accent-challenge) 22%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--accent-challenge) 55%, transparent);
+}
+
+.modal-code-btn-cancel-edit {
+  color: var(--status-red);
+  background: color-mix(in srgb, var(--status-red) 14%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--status-red) 35%, transparent);
+}
+.modal-code-btn-cancel-edit:hover {
+  background: color-mix(in srgb, var(--status-red) 22%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--status-red) 55%, transparent);
+}
+
+.modal-code-btn-save {
+  color: var(--status-green);
+  background: color-mix(in srgb, var(--status-green) 14%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--status-green) 35%, transparent);
+}
+.modal-code-btn-save:hover {
+  background: color-mix(in srgb, var(--status-green) 22%, var(--header-bg));
+  border-color: color-mix(in srgb, var(--status-green) 55%, transparent);
+}
+
+.modal-code-edit-container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
 }
 
 .modal-code {
