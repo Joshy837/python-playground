@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
 import './monacoSetup.js'
@@ -17,18 +17,10 @@ const PAGE_THEME = {
   'hc-light': 'hc-light',
 }
 
-const THEME_BG = {
-  'monokai':  '#282c34',
-  'vs':       '#ffffff',
-  'hc-black': '#000000',
-  'hc-light': '#ffffff',
-}
-
 export default function App() {
   const [monacoTheme, setMonacoTheme] = useState('monokai')
   const [pyodideReady, setPyodideReady] = useState(false)
   const [pyodideError, setPyodideError] = useState(false)
-  const themeSwitchTimer = useRef(null)
 
   useEffect(() => {
     initPyodide()
@@ -38,16 +30,12 @@ export default function App() {
 
   function toggleTheme() {
     const next = monacoTheme === 'monokai' ? 'vs' : 'monokai'
+    const root = document.documentElement
+    root.classList.add('theme-switching')
+    root.dataset.theme = PAGE_THEME[next]
     setMonacoTheme(next)
     monaco.editor.setTheme(next)
-    clearTimeout(themeSwitchTimer.current)
-    document.documentElement.style.backgroundColor = THEME_BG[next]
-    document.documentElement.dataset.themeSwitching = ''
-    themeSwitchTimer.current = setTimeout(() => {
-      document.documentElement.dataset.theme = PAGE_THEME[next]
-      document.documentElement.style.backgroundColor = ''
-      delete document.documentElement.dataset.themeSwitching
-    }, 200)
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-switching')))
   }
 
   return (

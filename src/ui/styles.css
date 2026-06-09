@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+.theme-switching, .theme-switching * { transition: none !important; }
+
 /* ── Tailwind theme tokens (bridge CSS vars → utilities) ── */
 @theme inline {
   --color-app-bg:             var(--app-bg);
