@@ -229,7 +229,7 @@ export default function CoursePage() {
         <div>
           <h1 className="font-semibold text-sm">Python Fundamentals</h1>
           <p className="text-xs mt-0.5 text-app-muted">
-            Click a node to choose a step, then click the step to begin.
+            Select a topic to get started.
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-6">
