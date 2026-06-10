@@ -140,7 +140,7 @@ export default function SnippetsPage({ monacoTheme }) {
           <div className="flex-1 min-w-0 md:overflow-y-auto">
             <section className="mb-10">
               <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">Examples</h2>
-              <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}>
+              <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
                 {EXAMPLES.map(({ label, file, description }) => (
                   <button
                     key={file}
@@ -164,7 +164,7 @@ export default function SnippetsPage({ monacoTheme }) {
                   <p className="text-xs" style={{ opacity: 0.6 }}>Save code from the Playground to see it here.</p>
                 </div>
               ) : (
-                <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}>
+                <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
                   {savedSnippets.map(({ id, label, description, code }) => (
                     <div
                       key={id}
