@@ -129,7 +129,7 @@ export default function SnippetsPage({ monacoTheme }) {
   const previewLoading = preview === 'loading'
 
   return (
-    <main className="flex-1 overflow-y-auto md:overflow-hidden landing-bg flex flex-col page-enter">
+    <main className="snippets-page flex-1 overflow-y-auto md:overflow-hidden landing-bg flex flex-col page-enter">
       <div className="landing-aurora" aria-hidden="true" />
       <div className="shrink-0 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 pb-4">
         <h1 className="text-xl font-bold text-app-fg">Snippets</h1>
