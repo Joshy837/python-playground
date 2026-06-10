@@ -8,6 +8,7 @@ import PlaygroundPage from './pages/PlaygroundPage.jsx'
 import CoursePage from './pages/CoursePage.jsx'
 import LessonPage from './pages/LessonPage.jsx'
 import DocumentationPage from './pages/DocumentationPage.jsx'
+import SnippetsPage from './pages/SnippetsPage.jsx'
 import { initPyodide } from './runner.js'
 
 const PAGE_THEME = {
@@ -59,6 +60,7 @@ export default function App() {
         <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
         <Route path="/learn/:id/:step" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
         <Route path="/docs" element={<DocumentationPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
+        <Route path="/snippets" element={<SnippetsPage monacoTheme={monacoTheme} />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,5 +1,5 @@
 import { NavLink, Link, useLocation } from 'react-router-dom'
-import { Sun, Moon, Terminal, GraduationCap, BookOpen } from 'lucide-react'
+import { Sun, Moon, Terminal, GraduationCap, BookOpen, Library } from 'lucide-react'
 
 const BASE_NAV = 'inline-flex items-center gap-[0.35rem] px-[0.625rem] py-1 rounded-md text-[0.8125rem] font-medium no-underline transition-colors duration-150'
 const navClass = ({ isActive }) =>
@@ -22,6 +22,7 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
         <NavLink to="/playground" className={navClass}><Terminal size={15} /><span className="hidden sm:inline">Playground</span></NavLink>
         <NavLink to="/course" className={onLesson ? () => courseClass : navClass}><GraduationCap size={15} /><span className="hidden sm:inline">Course</span></NavLink>
         <NavLink to="/docs" className={navClass}><BookOpen size={15} /><span className="hidden sm:inline">Docs</span></NavLink>
+        <NavLink to="/snippets" className={navClass}><Library size={15} /><span className="hidden sm:inline">Snippets</span></NavLink>
       </nav>
       <div className="flex items-center gap-2 sm:gap-3 ml-auto">
         <span className="status-badge" data-status={statusColor}>

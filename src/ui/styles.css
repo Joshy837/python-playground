@@ -1612,6 +1612,102 @@ body {
   background: color-mix(in srgb, #f87171 12%, transparent);
 }
 
+/* ── Snippet active card ─────────────────────────────── */
+.snippet-card-active {
+  border-color: color-mix(in srgb, var(--accent-try) 60%, var(--header-border));
+  background: color-mix(in srgb, var(--accent-try) 8%, var(--app-bg));
+}
+.snippet-card-active .snippet-card-title {
+  color: var(--accent-try);
+}
+
+/* ── Snippets page side preview panel ────────────────── */
+@keyframes preview-panel-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes preview-panel-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(16px); }
+}
+@keyframes preview-panel-in-mobile {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes preview-panel-out-mobile {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(12px); }
+}
+
+.snippets-preview-panel {
+  width: 500px;
+  min-width: 300px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid var(--header-border);
+  background: var(--header-bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: preview-panel-in 0.2s ease;
+}
+.snippets-preview-panel.snippets-preview-closing {
+  animation: preview-panel-out 0.18s ease forwards;
+}
+
+@media (max-width: 767px) {
+  .snippets-preview-panel {
+    width: 100%;
+    max-height: 60vh;
+    animation-name: preview-panel-in-mobile;
+  }
+  .snippets-preview-panel.snippets-preview-closing {
+    animation-name: preview-panel-out-mobile;
+  }
+}
+
+@keyframes preview-content-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.snippets-preview-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  animation: preview-content-in 0.15s ease;
+}
+
+.snippets-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--header-border);
+  flex-shrink: 0;
+}
+
+.snippets-preview-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.snippets-preview-body .modal-code {
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  min-height: 100%;
+}
+
+.snippets-preview-editor {
+  position: relative;
+  height: min(400px, 60vh);
+}
+
 /* ── Snippet modal ───────────────────────────────────── */
 @keyframes modal-backdrop-in {
   from { opacity: 0; }

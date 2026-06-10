@@ -1,22 +1,33 @@
 import { useState } from 'react'
-import { BookOpen, ChevronUp, ChevronDown, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { BookOpen, ChevronUp, ChevronDown, X, ArrowUpRight } from 'lucide-react'
 
 export default function SnippetDrawer({ examples, onSelect, savedSnippets = [], onDeleteSnippet }) {
   const [open, setOpen] = useState(false)
 
   return (
     <div className="snippet-drawer">
-      <button
-        className={`snippet-drawer-toggle${open ? ' snippet-drawer-toggle-open' : ''}`}
-        onClick={() => setOpen(o => !o)}
-      >
-        <BookOpen size={12} />
-        <span>Drawer</span>
-        {savedSnippets.length > 0 && (
-          <span className="snippet-drawer-count">{savedSnippets.length}</span>
-        )}
-        {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          className={`snippet-drawer-toggle${open ? ' snippet-drawer-toggle-open' : ''}`}
+          onClick={() => setOpen(o => !o)}
+        >
+          <BookOpen size={12} />
+          <span>Drawer</span>
+          {savedSnippets.length > 0 && (
+            <span className="snippet-drawer-count">{savedSnippets.length}</span>
+          )}
+          {open ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+        </button>
+        <Link
+          to="/snippets"
+          className="snippet-drawer-toggle"
+          style={{ width: 'auto', flexShrink: 0, textDecoration: 'none' }}
+          title="View all snippets"
+        >
+          <ArrowUpRight size={12} />
+        </Link>
+      </div>
       <div className={`snippet-cards-row${open ? ' snippet-cards-row-open' : ''}`}>
         {examples.map(({ label, file, description }) => (
           <button key={file} className="snippet-card" onClick={() => onSelect({ label, file })}>
