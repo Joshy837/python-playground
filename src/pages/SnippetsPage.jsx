@@ -129,7 +129,7 @@ export default function SnippetsPage({ monacoTheme }) {
   const previewLoading = preview === 'loading'
 
   return (
-    <main className="snippets-page flex-1 overflow-y-auto md:overflow-hidden landing-bg flex flex-col page-enter">
+    <main className="flex-1 overflow-y-auto md:overflow-hidden landing-bg flex flex-col page-enter">
       <div className="landing-aurora" aria-hidden="true" />
       <div className="shrink-0 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 pb-4">
         <h1 className="text-xl font-bold text-app-fg">Snippets</h1>
@@ -141,17 +141,19 @@ export default function SnippetsPage({ monacoTheme }) {
             <section className="mb-10">
               <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">Examples</h2>
               <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                {EXAMPLES.map(({ label, file, description }) => (
-                  <button
-                    key={file}
-                    className={`snippet-card${preview?.label === label && !preview?.id ? ' snippet-card-active' : ''}`}
-                    style={{ width: '100%' }}
-                    onClick={() => handleExampleClick({ label, file })}
-                  >
-                    <span className="snippet-card-title">{label}</span>
-                    {description && <span className="snippet-card-desc">{description}</span>}
-                  </button>
-                ))}
+                {EXAMPLES.map(({ label, file, description }) => {
+                  const active = preview?.label === label && !preview?.id
+                  return (
+                    <button
+                      key={file}
+                      className={`flex flex-col gap-[0.3rem] w-full h-[100px] py-[0.85rem] px-4 rounded-[10px] border text-left cursor-pointer transition-[border-color,background-color] duration-150 ${active ? 'border-[color-mix(in_srgb,var(--accent-try)_60%,var(--header-border))] bg-[color-mix(in_srgb,var(--accent-try)_8%,var(--app-bg))]' : 'border-app-border bg-app-surface hover:border-app-muted hover:bg-app-btn'}`}
+                      onClick={() => handleExampleClick({ label, file })}
+                    >
+                      <span className={`text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${active ? 'text-[var(--accent-try)]' : 'text-app-fg'}`}>{label}</span>
+                      {description && <span className="text-[0.78rem] text-app-muted leading-[1.4] line-clamp-2">{description}</span>}
+                    </button>
+                  )
+                })}
               </div>
             </section>
 
@@ -165,28 +167,30 @@ export default function SnippetsPage({ monacoTheme }) {
                 </div>
               ) : (
                 <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                  {savedSnippets.map(({ id, label, description, code }) => (
-                    <div
-                      key={id}
-                      className={`snippet-card snippet-card-saved${preview?.id === id ? ' snippet-card-active' : ''}`}
-                      style={{ width: '100%' }}
-                    >
-                      <button
-                        className="snippet-card-body"
-                        onClick={() => handleSavedClick({ id, label, code })}
+                  {savedSnippets.map(({ id, label, description, code }) => {
+                    const active = preview?.id === id
+                    return (
+                      <div
+                        key={id}
+                        className={`relative flex flex-row items-stretch w-full h-[100px] rounded-[10px] overflow-hidden border transition-[border-color,background-color] duration-150 ${active ? 'border-[color-mix(in_srgb,var(--accent-try)_60%,var(--header-border))] bg-[color-mix(in_srgb,var(--accent-try)_8%,var(--app-bg))]' : 'border-app-border bg-app-surface hover:border-app-muted hover:bg-app-btn-hover'}`}
                       >
-                        <span className="snippet-card-title">{label}</span>
-                        <span className="snippet-card-desc">{description || 'Saved snippet'}</span>
-                      </button>
-                      <button
-                        className="snippet-card-delete"
-                        title="Delete"
-                        onClick={e => { e.stopPropagation(); setDeleteTarget({ id, label, description, code }) }}
-                      >
-                        <X size={11} />
-                      </button>
-                    </div>
-                  ))}
+                        <button
+                          className="flex flex-col gap-[0.3rem] flex-1 py-[0.85rem] px-4 text-left cursor-pointer bg-transparent border-none min-w-0"
+                          onClick={() => handleSavedClick({ id, label, code })}
+                        >
+                          <span className={`text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${active ? 'text-[var(--accent-try)]' : 'text-app-fg'}`}>{label}</span>
+                          <span className="text-[0.78rem] text-app-muted leading-[1.4] line-clamp-2">{description || 'Saved snippet'}</span>
+                        </button>
+                        <button
+                          className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_10px_10px_0] hover:text-[#f87171] hover:bg-[color-mix(in_srgb,#f87171_12%,transparent)]"
+                          title="Delete"
+                          onClick={e => { e.stopPropagation(); setDeleteTarget({ id, label, description, code }) }}
+                        >
+                          <X size={11} />
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </section>
