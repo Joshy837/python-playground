@@ -113,10 +113,10 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
   ) : <div />
 
   const actionRow = (
-    <div className="quiz-action-row">
+    <div className="flex items-center justify-between gap-4 mt-2">
       {prevBtn}
-      <div className="quiz-feedback-right" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
-        <div className="quiz-feedback quiz-fb-correct">
+      <div className="flex items-center gap-3" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
+        <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
           ✓ Correct!{question.explanation && ` ${question.explanation}`}
         </div>
         <button className="quiz-next-btn" onClick={onAnswer}>
@@ -130,7 +130,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
     const correctText = String(Array.isArray(question.answer) ? question.answer[0] : question.answer)
     return (
       <div className="mb-7">
-        <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
+        <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
         {shuffledOptions ? (
           <div className="flex flex-col gap-1.5">
             {shuffledOptions.map(({ text }, i) => (
@@ -145,10 +145,10 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
             <input type="text" className="quiz-fitb-input" value={correctText} readOnly disabled />
           </div>
         )}
-        <div className="quiz-action-row" style={{ marginTop: '0.5rem' }}>
+        <div className="flex items-center justify-between gap-4 mt-2">
           {prevBtn}
-          <div className="quiz-feedback-right">
-            <div className="quiz-feedback quiz-fb-correct">
+          <div className="flex items-center gap-3">
+            <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
               ✓ Correct!{question.explanation && ` ${question.explanation}`}
             </div>
             <button className="quiz-next-btn" onClick={onAnswer}>
@@ -163,7 +163,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
   if (isFitb) {
     return (
       <div className="mb-7">
-        <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
+        <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
         <div className="flex gap-2 items-center">
           <input
             type="text"
@@ -194,7 +194,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
 
   return (
     <div className="mb-7">
-      <p className="quiz-question-text"><span className="quiz-question-number">{number}.</span> {question.question}</p>
+      <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
       <div className="relative">
         <div className="flex flex-col gap-1.5">
           {shuffledOptions.map(({ text }, i) => {
@@ -463,11 +463,11 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   }
 
   return (
-    <div className="lesson-page page-enter">
+    <div className="flex-1 min-h-0 flex flex-col bg-transparent overflow-hidden page-enter">
       {showConfetti && <ConfettiBurst onDone={() => setShowConfetti(false)} />}
 
       {/* Sticky header */}
-      <div className="lesson-slide-header">
+      <div className="flex items-center gap-[0.65rem] px-4 py-[0.65rem] bg-app-surface border-b border-app-border shrink-0">
         <button onClick={() => navigate('/course')} className="lesson-back-btn" title="Back to course">
           <ChevronLeft size={16} />
         </button>
@@ -519,12 +519,12 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       </div>
 
       {/* Scrollable content */}
-      <div className="lesson-slide-content" ref={scrollContainerRef}>
-        <div className="lesson-slide-body">
+      <div className="flex-1 min-h-0 overflow-y-auto dot-bg" ref={scrollContainerRef}>
+        <div className="max-w-[740px] w-full mx-auto px-6 pt-9 pb-12">
 
           {/* Section 0: Description */}
           {currentSection === 0 && (
-            <div className="lesson-prose lesson-section-pop">
+            <div className="text-[0.9rem] leading-[1.75] text-app-fg lesson-section-pop">
               <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.description, monacoTheme) }} />
             </div>
           )}
@@ -539,8 +539,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   style={{ width: `${(quizAnsweredCount / currentStep.quiz.length) * 100}%` }}
                 />
               </div>
-              <p className="quiz-progress-label">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
-              <div className="quiz-slide-container" ref={quizContainerRef}>
+              <p className="text-[0.72rem] text-app-muted mb-6">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
+              <div className="overflow-hidden relative" ref={quizContainerRef}>
                 {exitingQuizIndex !== null && (
                   <div className={`quiz-slide-card ${navDirection === 'back' ? 'quiz-slide-exit-back' : 'quiz-slide-exit'}`}>
                     <QuizQuestion
@@ -568,9 +568,9 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                   </div>
                 )}
                 {activeQuizIndex >= currentStep.quiz.length && exitingQuizIndex === null && (
-                  <div className="quiz-slide-card quiz-slide-enter quiz-complete-card">
-                    <p className="quiz-complete-title">All done!</p>
-                    <p className="quiz-complete-sub">All {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''} correct.</p>
+                  <div className="quiz-slide-card quiz-slide-enter flex flex-col items-center gap-2 px-4 py-8 text-center">
+                    <p className="text-lg font-semibold text-app-green m-0">All done!</p>
+                    <p className="text-sm text-app-muted m-0 mb-3">All {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''} correct.</p>
                     <div className="flex gap-3">
                       <button className="quiz-try-again-btn" onClick={handleQuizReset}>Try Again</button>
                       <button className="quiz-next-btn" onClick={() => goToSection(SECTION_CHALLENGE)}>
@@ -587,11 +587,11 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           {currentSection === SECTION_CHALLENGE && (
             <div className="lesson-section--challenge lesson-section-pop">
               <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
-              <div className="lesson-task-text lesson-prose">
+              <div className="text-[0.9rem] leading-[1.75] text-app-fg">
                 <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task, monacoTheme) }} />
               </div>
-              <div className="lesson-editor-box" style={{ marginTop: '1rem' }}>
-                <div className="lesson-editor-toolbar">
+              <div className="border border-app-border rounded-[10px] overflow-hidden mt-4">
+                <div className="flex items-center gap-2 px-3 py-[0.4rem] bg-app-surface border-b border-app-border">
                   <span className="text-xs text-app-muted">
                     {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
                   </span>
@@ -605,9 +605,9 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                     {isTestRunning ? 'Running…' : 'Run Tests'}
                   </button>
                 </div>
-                <div className="lesson-editor-body">
-                  <div ref={challengeContainerRef} className="lesson-editor-pane" />
-                  <div className="lesson-output-panel">
+                <div className="flex flex-row items-stretch">
+                  <div ref={challengeContainerRef} className="lesson-editor-pane flex-1 min-w-0" />
+                  <div className="w-[40%] border-l border-app-output-border bg-app-surface px-[0.9rem] py-[0.65rem] overflow-y-auto">
                     {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) ? (
                       <>
                         {runtimeOutput.error && <pre className="text-app-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
@@ -622,7 +622,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
               </div>
 
               {testResults && (
-                <div className="lesson-test-list">
+                <div className="flex flex-col gap-2 mt-4">
                   {testResults.map((t, i) => (
                     <div key={i} className="flex items-start gap-[0.6rem] text-[0.84rem]">
                       <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
@@ -662,8 +662,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       </div>
 
       {/* Bottom navigation */}
-      <div className="lesson-nav-bar-wrap">
-        <div className="lesson-nav-bar">
+      <div className="shrink-0 border-t border-app-border bg-app-surface">
+        <div className="flex items-center justify-between shrink-0 max-w-[740px] w-full mx-auto px-6 py-[0.85rem]">
           <div className="flex-1 flex items-center">
             {currentSection > 0 ? (
               <button className="lesson-nav-btn" style={{ '--nav-btn-accent': sectionAccent(currentSection - 1) }} onClick={() => goToSection(currentSection - 1)}>
@@ -685,7 +685,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
             )}
           </div>
 
-          <div className="lesson-slide-pips">
+          <div className="flex items-center gap-[0.45rem]">
             {Array.from({ length: maxSection + 1 }).map((_, i) => (
               <div key={i} className={[
                 'lesson-slide-pip',
@@ -737,9 +737,9 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         <>
           <div className="course-sheet-backdrop" onClick={() => setShowStepSheet(false)} />
           <div className="course-sheet">
-            <div className="course-sheet-handle" />
-            <p className="course-sheet-title">{node.title} — Steps</p>
-            <div className="course-sheet-steps">
+            <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
+            <p className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{node.title} — Steps</p>
+            <div className="flex flex-wrap gap-[10px] justify-center">
               {node.steps.map((s, i) => {
                 const done = isStepComplete(node.id, i)
                 const current = i === stepIdx

@@ -58,7 +58,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
     return (
       <div className="modal-backdrop" onClick={handleClose}>
         <div className="modal">
-          <div className="modal-loading">Loading…</div>
+          <div className="p-8 text-center text-[0.85rem] text-app-muted">Loading…</div>
         </div>
       </div>
     )
@@ -87,9 +87,9 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
         onAnimationEnd={closing ? (e => { if (e.animationName === 'modal-out') onClose() }) : undefined}
       >
         <div className="modal-header">
-          <div className="modal-header-left">
+          <div className="flex items-center gap-[0.55rem] min-w-0">
             <span className="modal-lang-badge">py</span>
-            <span className="modal-title">{snippet.label}</span>
+            <span className="text-[0.88rem] font-semibold text-app-fg truncate">{snippet.label}</span>
           </div>
           <button className="modal-close-btn" onClick={handleClose}><X size={15} /></button>
         </div>
@@ -143,12 +143,12 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
               )}
             </div>
             {editing
-              ? <div className="modal-code-edit-container">
+              ? <div className="relative flex-1 min-h-0">
                   <div ref={editContainerRef} style={{ position: 'absolute', inset: 0 }} />
                 </div>
               : colorizedHtml
-                ? <pre className="modal-code" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
-                : <pre className="modal-code">{snippet.code}</pre>
+                ? <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-auto flex-1 min-h-0" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
+                : <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-auto flex-1 min-h-0">{snippet.code}</pre>
             }
           </div>
         </div>

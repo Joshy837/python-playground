@@ -286,19 +286,24 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
 
   const hasOutput = output && (output.stdout || output.stderr || output.error)
 
+  const OUTPUT_PRE = 'font-mono text-[0.76rem] leading-[1.55] whitespace-pre-wrap m-0'
+
   return (
-    <div className="doc-card">
+    <div className="border border-app-output-border rounded-lg overflow-hidden min-w-0">
       <div className="flex flex-col sm:flex-row sm:items-stretch">
         {/* Left: explanation */}
-        <div className="doc-card-left">
-          <div className="doc-card-name">{item.name}</div>
-          <p className="doc-card-desc">{item.desc}</p>
-          <p className="doc-card-detail">{item.detail}</p>
+        <div className="p-[0.85rem_1rem] bg-app-surface flex flex-col gap-[0.4rem] border-b border-app-output-border sm:w-[38%] sm:shrink-0 sm:border-b-0 sm:border-r sm:border-r-app-output-border">
+          <div className="text-[0.82rem] font-bold text-app-fg mb-[0.05rem]">{item.name}</div>
+          <p className="text-[0.8rem] text-app-fg leading-[1.5] m-0">{item.desc}</p>
+          <p className="text-[0.76rem] text-app-muted leading-[1.55] m-0">{item.detail}</p>
         </div>
 
         {/* Right: code + run button + output */}
-        <div className="doc-card-right">
-          <div className="doc-card-toolbar">
+        <div className="flex-1 min-w-0 flex flex-col" style={{ background: 'var(--monaco-bg)' }}>
+          <div
+            className="flex items-center justify-end gap-[0.375rem] px-2 py-[0.3rem] border-b border-app-output-border shrink-0"
+            style={{ background: 'color-mix(in srgb, var(--header-bg) 60%, var(--monaco-bg))' }}
+          >
             <button
               className="doc-run-btn"
               onClick={handleRun}
@@ -309,8 +314,8 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
               <span>{isRunning ? 'Running…' : 'Run'}</span>
             </button>
           </div>
-          <div className="doc-card-body">
-            <div className="doc-code-wrapper">
+          <div className="flex flex-col sm:flex-row flex-1 min-h-0 overflow-hidden">
+            <div className="relative flex-1 min-w-0 overflow-hidden">
               <div className="modal-code-actions">
                 <button
                   className={`modal-code-btn${copied ? ' modal-code-btn-copied' : ''}`}
@@ -328,19 +333,19 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
                 </button>
               </div>
               <pre
-                className="doc-card-example"
+                className="p-[0.7rem_0.9rem] bg-transparent font-mono text-[0.78rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto m-0 flex-1 min-w-0"
                 dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
               />
             </div>
-            <div className="doc-card-output">
+            <div className="w-full shrink-0 border-t border-app-output-border px-[0.9rem] py-[0.5rem] bg-app-surface overflow-y-auto min-h-[2.5rem] sm:w-[40%] sm:border-t-0 sm:border-l sm:border-l-app-output-border">
               {hasOutput ? (
                 <>
-                  {output.error && <pre className="text-app-error doc-output-pre">{output.error}</pre>}
-                  {output.stderr && <pre className="text-app-stderr doc-output-pre">{output.stderr}</pre>}
-                  {output.stdout && <pre className="text-app-stdout doc-output-pre">{output.stdout}</pre>}
+                  {output.error && <pre className={`text-app-error ${OUTPUT_PRE}`}>{output.error}</pre>}
+                  {output.stderr && <pre className={`text-app-stderr ${OUTPUT_PRE}`}>{output.stderr}</pre>}
+                  {output.stdout && <pre className={`text-app-stdout ${OUTPUT_PRE}`}>{output.stdout}</pre>}
                 </>
               ) : (
-                <span className="doc-output-placeholder">Run to see output</span>
+                <span className="text-[0.72rem] text-app-muted">Run to see output</span>
               )}
             </div>
           </div>
@@ -374,17 +379,22 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
 
   const items = DOCS[visibleCategory] ?? []
 
+  const CAT_BTN = 'shrink-0 px-[0.65rem] py-[0.25rem] rounded-full border text-[0.75rem] font-medium cursor-pointer transition-colors duration-150 whitespace-nowrap'
+  const SIDEBAR_BTN = 'block w-full text-left px-[0.6rem] py-[0.3rem] rounded-md border-0 bg-transparent text-[0.8rem] font-medium cursor-pointer transition-colors duration-150 whitespace-nowrap'
+
   return (
-    <div className="page-enter doc-page-root">
+    <div className="page-enter flex flex-col flex-1 min-h-0 overflow-hidden">
 
       {/* Mobile category nav (hidden on md+) */}
-      <div className="doc-mobile-nav">
-        <div className="doc-mobile-nav-scroll">
+      <div className="flex flex-col border-b border-app-border bg-app-surface shrink-0 md:hidden">
+        <div className="flex overflow-x-auto gap-[0.35rem] px-3 py-[0.45rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
-              className={`doc-mobile-cat-btn${activeCategory === cat ? ' doc-mobile-cat-btn-active' : ''}`}
+              className={`${CAT_BTN} ${activeCategory === cat
+                ? 'text-app-fg bg-app-btn border-app-muted'
+                : 'text-app-muted border-app-output-border bg-transparent hover:text-app-fg hover:bg-app-btn'}`}
             >
               {cat}
             </button>
@@ -392,18 +402,20 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
         </div>
       </div>
 
-      <div className="doc-page-body">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Sidebar (hidden on mobile) */}
-        <aside className="doc-sidebar">
+        <aside className="bg-app-surface hidden md:flex flex-col w-44 shrink-0 border-r border-app-border overflow-y-auto">
           <div className="px-3 py-2.5 text-xs font-semibold tracking-wide uppercase text-app-muted border-b border-app-border shrink-0">
             Reference
           </div>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 8 }}>
+          <nav className="flex flex-col gap-0.5 p-2">
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
-                className={`doc-category-btn${activeCategory === cat ? ' doc-category-btn-active' : ''}`}
+                className={`${SIDEBAR_BTN} ${activeCategory === cat
+                  ? 'text-app-fg bg-app-btn'
+                  : 'text-app-muted hover:text-app-fg hover:bg-app-btn'}`}
               >
                 {cat}
               </button>
@@ -412,7 +424,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
         </aside>
 
         {/* Main content */}
-        <div className="doc-main" ref={mainRef}>
+        <div className="flex-1 overflow-y-auto min-w-0 dot-bg" ref={mainRef}>
           <div
             key={visibleCategory}
             className={`flex flex-col gap-4 p-4 sm:p-6 ${exiting ? 'doc-content-exit' : 'doc-content-enter'}`}

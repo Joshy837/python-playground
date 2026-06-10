@@ -143,13 +143,13 @@ function CodeTypewriter() {
   }
 
   return (
-    <div className="landing-code-demo">
-      <div className="landing-code-titlebar">
-        <span className="landing-code-dot" style={{ background: '#ff5f57' }} />
-        <span className="landing-code-dot" style={{ background: '#ffbd2e' }} />
-        <span className="landing-code-dot" style={{ background: '#28ca41' }} />
+    <div className="bg-[var(--monaco-bg)] border border-app-border rounded-xl overflow-hidden relative z-[1]">
+      <div className="flex items-center gap-[6px] px-[14px] py-[10px] border-b border-app-border bg-app-surface">
+        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#ff5f57' }} />
+        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#ffbd2e' }} />
+        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#28ca41' }} />
       </div>
-      <pre className="landing-code-pre">{spans}<span className="landing-code-cursor">▋</span></pre>
+      <pre className="m-0 px-6 py-5 font-mono text-[0.83rem] leading-[1.65] text-app-fg min-h-[9rem] whitespace-pre [tab-size:4]">{spans}<span className="landing-code-cursor">▋</span></pre>
     </div>
   )
 }

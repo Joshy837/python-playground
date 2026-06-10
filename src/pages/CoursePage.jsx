@@ -37,10 +37,10 @@ function CourseNode({ data }) {
       <Handle id="l-t" type="target" position={Position.Left}   style={{ visibility: 'hidden' }} />
       <Handle id="r-s" type="source" position={Position.Right}  style={{ visibility: 'hidden' }} />
       <Handle id="r-t" type="target" position={Position.Right}  style={{ visibility: 'hidden' }} />
-      <div className="course-node-icon">
+      <div className={`h-[13px] flex items-center ${done ? 'text-app-green' : 'text-app-muted'}`}>
         {done ? <Check size={13} /> : !unlocked ? <Lock size={13} /> : Icon ? <Icon size={13} /> : null}
       </div>
-      <span className="course-node-title">{title}</span>
+      <span className={`text-[0.75rem] font-semibold ${unlocked || done ? 'text-app-fg' : 'text-app-muted'}`}>{title}</span>
 
       {!isMobile && popupVisible && (
         <div
@@ -266,9 +266,9 @@ export default function CoursePage() {
         <>
           <div className="course-sheet-backdrop" onClick={closeSheet} />
           <div className={`course-sheet${sheetExiting ? ' course-sheet-exit' : ''}`}>
-            <div className="course-sheet-handle" />
-            <div className="course-sheet-title">{expandedNode.data.title}</div>
-            <div className="course-sheet-steps">
+            <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
+            <div className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{expandedNode.data.title}</div>
+            <div className="flex flex-wrap gap-[10px] justify-center">
               {expandedNode.data.steps.map((step, i) => (
                 <button
                   key={i}
