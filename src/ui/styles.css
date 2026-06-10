@@ -1628,6 +1628,15 @@ body {
   height: 100px;
   padding: 0.85rem 1rem;
   border-radius: 10px;
+  background: var(--header-bg);
+}
+.snippets-page .snippet-card-saved {
+  padding: 0;
+  border-color: var(--header-border);
+}
+.snippets-page .snippet-card-saved:hover {
+  border-color: var(--text-muted);
+  background: var(--btn-secondary-hover);
 }
 .snippets-page .snippet-card-title {
   font-size: 0.875rem;
