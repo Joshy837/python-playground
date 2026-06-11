@@ -28,7 +28,7 @@ function CourseNode({ data }) {
 
   return (
     <div
-      className={`course-node ${done ? 'course-node-done' : unlocked ? 'course-node-unlocked' : 'course-node-locked'}`}
+      className={`flex flex-col items-center justify-center gap-[3px] rounded-[10px] border-2 transition-[opacity,box-shadow,border-color] duration-150 text-center px-[10px] ${done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))]' : unlocked ? 'border-app-muted bg-app-surface hover:border-app-fg hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_12%,transparent)]' : 'border-app-border bg-app-surface opacity-45'}`}
       style={{ width: NODE_W, height: NODE_H, cursor: unlocked ? 'pointer' : 'default', overflow: 'visible', position: 'relative' }}
     >
       <Handle id="t"   type="target" position={Position.Top}    style={{ visibility: 'hidden' }} />
@@ -44,13 +44,13 @@ function CourseNode({ data }) {
 
       {!isMobile && popupVisible && (
         <div
-          className={`course-node-popup${popupExiting ? ' course-node-popup-exit' : ''}`}
+          className={`course-node-popup absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 z-10 flex flex-wrap gap-[6px] w-[130px] justify-center${popupExiting ? ' course-node-popup-exit' : ''}`}
           onClick={e => e.stopPropagation()}
         >
           {steps.map((step, i) => (
             <button
               key={i}
-              className={`course-step-btn ${step.done ? 'course-step-done' : step.unlocked ? 'course-step-available' : 'course-step-locked'}`}
+              className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${step.done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : step.unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
               style={{ animationDelay: popupExiting ? `${(steps.length - 1 - i) * 30}ms` : `${i * 60}ms` }}
               disabled={!step.unlocked && !step.done}
               title={step.title}
@@ -233,8 +233,8 @@ export default function CoursePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-6">
-          <div className="course-progress-bar">
-            <div className="course-progress-fill" style={{ width: `${(done / total) * 100}%` }} />
+          <div className="w-[80px] h-[5px] rounded-full bg-app-border overflow-hidden">
+            <div className="h-full rounded-full bg-app-green transition-[width] duration-[400ms] ease" style={{ width: `${(done / total) * 100}%` }} />
           </div>
           <span className="text-xs tabular-nums text-app-muted">{done} / {total}</span>
         </div>
@@ -264,7 +264,7 @@ export default function CoursePage() {
 
       {expandedNode && (
         <>
-          <div className="course-sheet-backdrop" onClick={closeSheet} />
+          <div className="fixed inset-0 z-[100] bg-transparent" onClick={closeSheet} />
           <div className={`course-sheet${sheetExiting ? ' course-sheet-exit' : ''}`}>
             <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
             <div className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{expandedNode.data.title}</div>
@@ -272,7 +272,7 @@ export default function CoursePage() {
               {expandedNode.data.steps.map((step, i) => (
                 <button
                   key={i}
-                  className={`course-step-btn ${step.done ? 'course-step-done' : step.unlocked ? 'course-step-available' : 'course-step-locked'}`}
+                  className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${step.done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : step.unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
                   disabled={!step.unlocked && !step.done}
                   title={step.title}
                   onClick={() => { closeSheet(); expandedNode.data.onStepClick(i) }}

@@ -305,7 +305,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
             style={{ background: 'color-mix(in srgb, var(--header-bg) 60%, var(--monaco-bg))' }}
           >
             <button
-              className="doc-run-btn"
+              className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.2rem] px-[0.55rem] rounded-[5px] text-[0.72rem] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
               onClick={handleRun}
               disabled={!pyodideReady || isRunning}
               title={isRunning ? 'Running…' : pyodideReady ? 'Run (click)' : 'Connecting to Python…'}
@@ -316,7 +316,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
           </div>
           <div className="flex flex-col sm:flex-row flex-1 min-h-0 overflow-hidden">
             <div className="relative flex-1 min-w-0 overflow-hidden">
-              <div className="modal-code-actions">
+              <div className="absolute top-[0.55rem] right-[0.55rem] flex gap-[0.3rem] z-[1]">
                 <button
                   className={`modal-code-btn${copied ? ' modal-code-btn-copied' : ''}`}
                   onClick={handleCopy}
@@ -424,7 +424,7 @@ export default function DocumentationPage({ pyodideReady, monacoTheme }) {
         </aside>
 
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto min-w-0 dot-bg" ref={mainRef}>
+        <div className="flex-1 overflow-y-auto min-w-0 bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px]" ref={mainRef}>
           <div
             key={visibleCategory}
             className={`flex flex-col gap-4 p-4 sm:p-6 ${exiting ? 'doc-content-exit' : 'doc-content-enter'}`}

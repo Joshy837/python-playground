@@ -107,7 +107,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
   const isCorrect = mcqCorrect || (fitbSubmitted && fitbCorrect)
 
   const prevBtn = onBack ? (
-    <button className="quiz-back-btn" onClick={onBack}>
+    <button className="flex items-center gap-[0.2rem] text-[0.78rem] text-app-muted bg-transparent border-none cursor-pointer py-[0.2rem] px-[0.5rem] rounded-[6px] transition-[color,background] duration-150 hover:text-app-fg hover:bg-app-btn" onClick={onBack}>
       <ChevronLeft size={14} />Previous
     </button>
   ) : <div />
@@ -119,7 +119,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
         <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
           ✓ Correct!{question.explanation && ` ${question.explanation}`}
         </div>
-        <button className="quiz-next-btn" onClick={onAnswer}>
+        <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={onAnswer}>
           {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
         </button>
       </div>
@@ -134,15 +134,15 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
         {shuffledOptions ? (
           <div className="flex flex-col gap-1.5">
             {shuffledOptions.map(({ text }, i) => (
-              <button key={i} className={`quiz-option${i === shuffledAnswer ? ' quiz-option-correct' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
-                <span className="quiz-marker">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
+              <button key={i} className={`quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface${i === shuffledAnswer ? ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
+                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
                 {text}
               </button>
             ))}
           </div>
         ) : (
           <div className="flex gap-2 items-center">
-            <input type="text" className="quiz-fitb-input" value={correctText} readOnly disabled />
+            <input type="text" className="flex-1 py-2 px-3 rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] outline-none transition-[border-color] duration-[120ms] font-[inherit] disabled:opacity-60 disabled:cursor-default focus:border-app-muted" value={correctText} readOnly disabled />
           </div>
         )}
         <div className="flex items-center justify-between gap-4 mt-2">
@@ -151,7 +151,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
             <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
               ✓ Correct!{question.explanation && ` ${question.explanation}`}
             </div>
-            <button className="quiz-next-btn" onClick={onAnswer}>
+            <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={onAnswer}>
               {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
             </button>
           </div>
@@ -167,7 +167,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
         <div className="flex gap-2 items-center">
           <input
             type="text"
-            className="quiz-fitb-input"
+            className="flex-1 py-2 px-3 rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] outline-none transition-[border-color] duration-[120ms] font-[inherit] disabled:opacity-60 disabled:cursor-default focus:border-app-muted"
             value={fitbInput}
             onChange={e => { setFitbInput(e.target.value); setFitbSubmitted(false) }}
             disabled={fitbSubmitted && fitbCorrect}
@@ -177,7 +177,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
             spellCheck={false}
           />
           <button
-            className="lesson-run-btn"
+            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
             disabled={(fitbSubmitted && fitbCorrect) || !fitbInput.trim()}
             onClick={submitFitb}
           >
@@ -185,7 +185,7 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
           </button>
         </div>
         {fitbSubmitted && !fitbCorrect && (
-          <p className="quiz-fitb-wrong">Not quite — give it another try.</p>
+          <p className="mt-2 text-[0.83rem] text-app-red">Not quite — give it another try.</p>
         )}
         {actionRow}
       </div>
@@ -199,11 +199,11 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
         <div className="flex flex-col gap-1.5">
           {shuffledOptions.map(({ text }, i) => {
             const optCorrect = i === shuffledAnswer
-            let cls = 'quiz-option'
-            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct'
+            let cls = 'quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface'
+            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default'
             return (
               <button key={i} className={cls} disabled={answered} onClick={() => { setSelected(i); if (i === shuffledAnswer) onCorrect?.() }}>
-                <span className="quiz-marker">
+                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">
                   {answered && mcqCorrect && optCorrect ? '✓' : String.fromCharCode(65 + i)}
                 </span>
                 {text}
@@ -212,9 +212,9 @@ function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, i
           })}
         </div>
         {answered && !mcqCorrect && (
-          <div className="quiz-wrong-overlay">
-            <span className="quiz-overlay-text">Not quite — give it another go.</span>
-            <button className="quiz-try-again-btn" onClick={() => setSelected(null)}>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[0.9rem] rounded-[10px] bg-[color-mix(in_srgb,var(--app-bg)_75%,transparent)] backdrop-blur-sm">
+            <span className="text-[0.88rem] font-semibold text-app-red">Not quite — give it another go.</span>
+            <button className="flex items-center gap-[0.4rem] py-[0.4rem] px-4 rounded-[7px] border border-app-border text-app-fg bg-app-surface text-[0.83rem] font-medium cursor-pointer transition-[border-color,background] duration-150 hover:border-app-muted hover:bg-app-bg" onClick={() => setSelected(null)}>
               <RotateCcw size={13} />
               Try again
             </button>
@@ -468,7 +468,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
       {/* Sticky header */}
       <div className="flex items-center gap-[0.65rem] px-4 py-[0.65rem] bg-app-surface border-b border-app-border shrink-0">
-        <button onClick={() => navigate('/course')} className="lesson-back-btn" title="Back to course">
+        <button onClick={() => navigate('/course')} className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" title="Back to course">
           <ChevronLeft size={16} />
         </button>
         <div className="flex flex-col min-w-0 flex-1">
@@ -479,7 +479,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         </div>
         {isMobile ? (
           <button
-            className="lesson-back-btn shrink-0"
+            className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn"
             title="Jump to step"
             onClick={() => setShowStepSheet(true)}
           >
@@ -493,11 +493,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
               return (
                 <button
                   key={i}
-                  className={[
-                    'lesson-step-dot',
-                    current ? 'lesson-step-dot-current' : '',
-                    done ? 'lesson-step-dot-done' : '',
-                  ].join(' ')}
+                  className={`w-[32px] h-[32px] rounded-full border-[2.5px] bg-app-bg text-[0.8rem] font-semibold cursor-pointer flex items-center justify-center shrink-0 p-0 transition-[border-color,color] duration-150 ${done ? 'border-app-green text-app-green' : current ? 'border-app-fg text-app-fg' : 'border-app-border text-app-muted hover:border-app-muted hover:text-app-fg'}`}
                   onClick={() => {
                     if (current) return
                     if (done || isStepUnlocked(node.id, i))
@@ -514,12 +510,12 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
       </div>
 
       {/* Progress bar */}
-      <div className="lesson-progress-track">
-        <div className="lesson-progress-fill" style={{ width: `${progressPct}%` }} />
+      <div className="h-[3px] bg-app-border shrink-0 relative">
+        <div className="absolute left-0 top-0 h-full bg-gradient-to-r from-[var(--accent-try)] to-[var(--accent-challenge)] [transition:width_0.55s_cubic-bezier(0.4,0,0.2,1)] rounded-[0_2px_2px_0] shadow-[0_0_8px_color-mix(in_srgb,var(--accent-try)_50%,transparent)]" style={{ width: `${progressPct}%` }} />
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 min-h-0 overflow-y-auto dot-bg" ref={scrollContainerRef}>
+      <div className="flex-1 min-h-0 overflow-y-auto bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px]" ref={scrollContainerRef}>
         <div className="max-w-[740px] w-full mx-auto px-6 pt-9 pb-12">
 
           {/* Section 0: Description */}
@@ -532,10 +528,10 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           {/* Section 1: Quiz */}
           {hasQuiz && currentSection === SECTION_QUIZ && (
             <div className="lesson-section--quiz lesson-section-pop">
-              <p className="lesson-section-label"><HelpCircle size={12} />Check your understanding</p>
-              <div className="quiz-progress-bar-track">
+              <p className="lesson-section-label flex items-center gap-[0.35rem] text-[0.68rem] font-bold uppercase tracking-[0.09em] text-app-muted mb-4"><HelpCircle size={12} />Check your understanding</p>
+              <div className="h-[6px] bg-app-border rounded-full overflow-hidden mb-[0.4rem]">
                 <div
-                  className="quiz-progress-bar-fill"
+                  className="h-full bg-[var(--accent-quiz)] rounded-full transition-[width] duration-[350ms] ease"
                   style={{ width: `${(quizAnsweredCount / currentStep.quiz.length) * 100}%` }}
                 />
               </div>
@@ -572,8 +568,8 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                     <p className="text-lg font-semibold text-app-green m-0">All done!</p>
                     <p className="text-sm text-app-muted m-0 mb-3">All {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''} correct.</p>
                     <div className="flex gap-3">
-                      <button className="quiz-try-again-btn" onClick={handleQuizReset}>Try Again</button>
-                      <button className="quiz-next-btn" onClick={() => goToSection(SECTION_CHALLENGE)}>
+                      <button className="flex items-center gap-[0.4rem] py-[0.4rem] px-4 rounded-[7px] border border-app-border text-app-fg bg-app-surface text-[0.83rem] font-medium cursor-pointer transition-[border-color,background] duration-150 hover:border-app-muted hover:bg-app-bg" onClick={handleQuizReset}>Try Again</button>
+                      <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={() => goToSection(SECTION_CHALLENGE)}>
                         Continue <ChevronRight size={14} />
                       </button>
                     </div>
@@ -586,7 +582,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           {/* Section 2 (or 1): Challenge */}
           {currentSection === SECTION_CHALLENGE && (
             <div className="lesson-section--challenge lesson-section-pop">
-              <p className="lesson-section-label"><Trophy size={12} />Challenge</p>
+              <p className="lesson-section-label flex items-center gap-[0.35rem] text-[0.68rem] font-bold uppercase tracking-[0.09em] text-app-muted mb-4"><Trophy size={12} />Challenge</p>
               <div className="text-[0.9rem] leading-[1.75] text-app-fg">
                 <div dangerouslySetInnerHTML={{ __html: renderMarkdown(currentStep.task, monacoTheme) }} />
               </div>
@@ -596,7 +592,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                     {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
                   </span>
                   <button
-                    className="lesson-run-btn"
+                    className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
                     disabled={!pyodideReady || isTestRunning}
                     onClick={handleRunChallenge}
                     title="Run Tests (Ctrl+Enter)"
@@ -640,7 +636,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
               )}
 
               {allPassed && (
-                <div className="lesson-complete-bar">
+                <div className="flex items-center justify-between gap-4 mt-6 py-4 px-5 rounded-[10px] bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] border border-[color-mix(in_srgb,var(--status-green)_30%,transparent)]">
                   <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
                     {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
                   </span>
@@ -649,7 +645,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                       Back to course
                     </button>
                   ) : (
-                    <button className="lesson-next-btn" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
+                    <button className="inline-flex items-center gap-[4px] py-[0.35rem] px-[0.85rem] rounded-[8px] border-none bg-app-green text-black text-[0.82rem] font-semibold cursor-pointer transition-opacity duration-150 hover:opacity-85" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
                       Next step <ChevronRight size={14} />
                     </button>
                   )}
@@ -687,10 +683,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
           <div className="flex items-center gap-[0.45rem]">
             {Array.from({ length: maxSection + 1 }).map((_, i) => (
-              <div key={i} className={[
-                'lesson-slide-pip',
-                i === currentSection ? 'lesson-slide-pip-current' : '',
-              ].join(' ')} />
+              <div key={i} className={`w-[7px] h-[7px] rounded-full [transition:background-color_0.15s,transform_0.1s] ${i === currentSection ? 'bg-app-fg scale-[1.3]' : 'bg-app-border'}`} />
             ))}
           </div>
 
@@ -735,7 +728,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
 
       {showStepSheet && (
         <>
-          <div className="course-sheet-backdrop" onClick={() => setShowStepSheet(false)} />
+          <div className="fixed inset-0 z-[100] bg-transparent" onClick={() => setShowStepSheet(false)} />
           <div className="course-sheet">
             <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
             <p className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{node.title} — Steps</p>
@@ -747,10 +740,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 return (
                   <button
                     key={i}
-                    className={[
-                      'course-step-btn',
-                      done ? 'course-step-done' : unlocked ? 'course-step-available' : 'course-step-locked',
-                    ].join(' ')}
+                    className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
                     style={current ? { outline: '2px solid var(--text-primary)', outlineOffset: '2px' } : undefined}
                     title={s.title}
                     onClick={() => {

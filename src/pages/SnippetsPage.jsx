@@ -129,8 +129,8 @@ export default function SnippetsPage({ monacoTheme }) {
   const previewLoading = preview === 'loading'
 
   return (
-    <main className="flex-1 overflow-y-auto md:overflow-hidden landing-bg flex flex-col page-enter">
-      <div className="landing-aurora" aria-hidden="true" />
+    <main className="flex-1 overflow-y-auto md:overflow-hidden relative bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px] bg-fixed text-app-fg flex flex-col page-enter">
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_25%_45%,color-mix(in_srgb,var(--accent-try)_9%,transparent)_0%,transparent_70%),radial-gradient(ellipse_50%_55%_at_80%_30%,color-mix(in_srgb,var(--accent-quiz)_8%,transparent)_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_55%_80%,color-mix(in_srgb,var(--accent-challenge)_7%,transparent)_0%,transparent_70%)] blur-[60px] pointer-events-none" aria-hidden="true" />
       <div className="shrink-0 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 pb-4">
         <h1 className="text-xl font-bold text-app-fg">Snippets</h1>
       </div>
@@ -207,13 +207,13 @@ export default function SnippetsPage({ monacoTheme }) {
                 className="snippets-preview-content"
               >
               {previewLoading ? (
-                <div className="modal-loading" style={{ padding: '2rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Loading…</div>
+                <div className="py-8 px-8 text-app-muted text-[0.85rem]">Loading…</div>
               ) : (
                 <>
-                  <div className="snippets-preview-header">
-                    <div className="modal-header-left">
-                      <span className="modal-lang-badge">py</span>
-                      <span className="modal-title">{preview.label}</span>
+                  <div className="flex items-center justify-between gap-2 py-[0.6rem] px-[0.75rem] border-b border-app-border shrink-0">
+                    <div className="flex items-center gap-[0.55rem] min-w-0">
+                      <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[color-mix(in_srgb,var(--accent-try)_18%,transparent)] text-[var(--accent-try)] border border-[color-mix(in_srgb,var(--accent-try)_40%,transparent)] shrink-0 leading-[1.6]">py</span>
+                      <span className="text-[0.88rem] font-semibold text-app-fg truncate">{preview.label}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       {!editing && (
@@ -246,17 +246,17 @@ export default function SnippetsPage({ monacoTheme }) {
                           </button>
                         </>
                       )}
-                      <button className="modal-close-btn" style={{ marginLeft: '4px' }} onClick={closePreview}>
+                      <button className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" style={{ marginLeft: '4px' }} onClick={closePreview}>
                         <X size={15} />
                       </button>
                     </div>
                   </div>
-                  <div className="snippets-preview-body">
+                  <div className="flex-1 overflow-y-auto p-0">
                     {editing
-                      ? <div className="snippets-preview-editor" ref={editContainerRef} />
+                      ? <div className="relative h-[min(400px,60vh)]" ref={editContainerRef} />
                       : colorizedHtml
-                        ? <pre className="modal-code" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
-                        : <pre className="modal-code">{preview.code}</pre>
+                        ? <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
+                        : <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full">{preview.code}</pre>
                     }
                   </div>
                 </>

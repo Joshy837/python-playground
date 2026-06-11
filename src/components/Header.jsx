@@ -26,7 +26,7 @@ export default function Header({ isDark, onToggleTheme, pyodideReady, pyodideErr
       </nav>
       <div className="flex items-center gap-2 sm:gap-3 ml-auto">
         <span className="status-badge" data-status={statusColor}>
-          <span className="status-dot" />
+          <span className="status-dot w-[7px] h-[7px] rounded-full shrink-0" />
           <span className="status-text hidden sm:inline">{statusText}</span>
         </span>
         <button

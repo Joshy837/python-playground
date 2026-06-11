@@ -24,7 +24,7 @@ export default function ExamplesDropdown({ examples, onSelect }) {
           className={`transition-transform duration-250 shrink-0 text-app-muted ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      <div className={`examples-dropdown-menu${open ? ' examples-dropdown-menu-open' : ''}`}>
+      <div className={`absolute top-[calc(100%+4px)] left-0 z-[30] min-w-[160px] rounded-[8px] border border-app-border bg-app-surface shadow-[0_8px_24px_color-mix(in_srgb,#000_35%,transparent)] overflow-hidden [transition:max-height_0.3s_ease,opacity_0.25s_ease] ${open ? 'max-h-[240px] opacity-100' : 'max-h-0 opacity-0'}`}>
         {examples.map(({ label, file }) => (
           <button
             key={file}

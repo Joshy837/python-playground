@@ -156,8 +156,8 @@ function CodeTypewriter() {
 
 export default function LandingPage() {
   return (
-    <div className="landing-bg page-enter flex-1 overflow-y-auto">
-      <div className="landing-aurora" aria-hidden="true" />
+    <div className="relative bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px] bg-fixed text-app-fg page-enter flex-1 overflow-y-auto">
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_25%_45%,color-mix(in_srgb,var(--accent-try)_9%,transparent)_0%,transparent_70%),radial-gradient(ellipse_50%_55%_at_80%_30%,color-mix(in_srgb,var(--accent-quiz)_8%,transparent)_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_55%_80%,color-mix(in_srgb,var(--accent-challenge)_7%,transparent)_0%,transparent_70%)] blur-[60px] pointer-events-none" aria-hidden="true" />
       {/* Hero */}
       <section className="flex flex-col items-center text-center px-6 pt-20 pb-16 max-w-2xl mx-auto">
         <img src="/favicon.svg" alt="" width="56" height="56" className="rounded-2xl mb-6 shadow-lg" />
