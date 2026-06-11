@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { useIsMobile } from '../hooks/useMedia.js'
-import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, RotateCcw, LayoutGrid } from 'lucide-react'
+import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, LayoutGrid } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -11,6 +11,8 @@ import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 import Markdown from '../components/Markdown.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import StepButton from '../components/StepButton.jsx'
+import ConfettiBurst from '../components/ConfettiBurst.jsx'
+import QuizQuestion from '../components/QuizQuestion.jsx'
 
 const NAV_BTN_CLS = "inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.8rem] rounded-[8px] relative border border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_45%,var(--header-border))] bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_8%,var(--btn-secondary-bg))] text-[var(--text-primary)] text-[0.82rem] font-medium cursor-pointer transition-[background-color,border-color] duration-[150ms] enabled:hover:bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_14%,var(--btn-secondary-hover))] enabled:hover:border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_70%,var(--header-border))] disabled:opacity-[0.35] disabled:cursor-not-allowed"
 
@@ -41,195 +43,6 @@ function parseTestResults(stdout) {
 
 function stripTestLine(stdout) {
   return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
-}
-
-function ConfettiBurst({ onDone }) {
-  const canvasRef = useRef(null)
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    const ctx = canvas.getContext('2d')
-    const COLORS = ['#38bdf8', '#a78bfa', '#fbbf24', '#4ade80', '#f472b6', '#fb923c']
-    const particles = Array.from({ length: 90 }, () => ({
-      x: canvas.width * (0.2 + Math.random() * 0.6),
-      y: -10 - Math.random() * 40,
-      vx: (Math.random() - 0.5) * 7,
-      vy: Math.random() * 3 + 2,
-      rot: Math.random() * Math.PI * 2,
-      rotV: (Math.random() - 0.5) * 0.25,
-      w: Math.random() * 9 + 4,
-      h: Math.random() * 5 + 3,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      alpha: 1,
-    }))
-    let raf, t = 0
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      t++
-      let alive = false
-      for (const p of particles) {
-        p.x += p.vx; p.vy += 0.15; p.y += p.vy; p.rot += p.rotV
-        if (t > 55) p.alpha = Math.max(0, p.alpha - 0.018)
-        if (p.alpha > 0 && p.y < canvas.height + 20) {
-          alive = true
-          ctx.save()
-          ctx.globalAlpha = p.alpha
-          ctx.translate(p.x, p.y)
-          ctx.rotate(p.rot)
-          ctx.fillStyle = p.color
-          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
-          ctx.restore()
-        }
-      }
-      if (alive) { raf = requestAnimationFrame(draw) } else { onDone?.() }
-    }
-    raf = requestAnimationFrame(draw)
-    return () => cancelAnimationFrame(raf)
-  }, [])
-  return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
-}
-
-function QuizQuestion({ question, number, onCorrect, onAnswer, onBack, isLast, isCompleted, shuffledOptions }) {
-  const isFitb = !question.options
-  const [selected, setSelected] = useState(null)
-  const [fitbInput, setFitbInput] = useState('')
-  const [fitbSubmitted, setFitbSubmitted] = useState(false)
-
-  const shuffledAnswer = shuffledOptions ? shuffledOptions.findIndex(o => o.i === question.answer) : -1
-
-  const answered = selected !== null
-  const mcqCorrect = selected === shuffledAnswer
-
-  const accepted = Array.isArray(question.answer) ? question.answer : [question.answer]
-  const fitbCorrect = accepted.some(a => String(a).toLowerCase() === fitbInput.trim().toLowerCase())
-
-  function submitFitb() {
-    setFitbSubmitted(true)
-    if (fitbCorrect) onCorrect?.()
-  }
-
-  const isCorrect = mcqCorrect || (fitbSubmitted && fitbCorrect)
-
-  const prevBtn = onBack ? (
-    <button className="flex items-center gap-[0.2rem] text-[0.78rem] text-app-muted bg-transparent border-none cursor-pointer py-[0.2rem] px-[0.5rem] rounded-[6px] transition-[color,background] duration-150 hover:text-app-fg hover:bg-app-btn" onClick={onBack}>
-      <ChevronLeft size={14} />Previous
-    </button>
-  ) : <div />
-
-  const actionRow = (
-    <div className="flex items-center justify-between gap-4 mt-2">
-      {prevBtn}
-      <div className="flex items-center gap-3" style={{ visibility: isCorrect ? 'visible' : 'hidden' }}>
-        <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
-          ✓ Correct!{question.explanation && ` ${question.explanation}`}
-        </div>
-        <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={onAnswer}>
-          {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
-        </button>
-      </div>
-    </div>
-  )
-
-  if (isCompleted) {
-    const correctText = String(Array.isArray(question.answer) ? question.answer[0] : question.answer)
-    return (
-      <div className="mb-7">
-        <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
-        {shuffledOptions ? (
-          <div className="flex flex-col gap-1.5">
-            {shuffledOptions.map(({ text }, i) => (
-              <button key={i} className={`quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface${i === shuffledAnswer ? ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
-                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
-                {text}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="flex gap-2 items-center">
-            <input type="text" className="flex-1 py-2 px-3 rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] outline-none transition-[border-color] duration-[120ms] font-[inherit] disabled:opacity-60 disabled:cursor-default focus:border-app-muted" value={correctText} readOnly disabled />
-          </div>
-        )}
-        <div className="flex items-center justify-between gap-4 mt-2">
-          {prevBtn}
-          <div className="flex items-center gap-3">
-            <div className="mt-[0.6rem] text-[0.83rem] px-[0.85rem] py-[0.55rem] rounded-[7px] bg-app-surface leading-[1.5] text-app-green">
-              ✓ Correct!{question.explanation && ` ${question.explanation}`}
-            </div>
-            <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={onAnswer}>
-              {isLast ? 'Continue' : 'Next'} <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (isFitb) {
-    return (
-      <div className="mb-7">
-        <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
-        <div className="flex gap-2 items-center">
-          <input
-            type="text"
-            className="flex-1 py-2 px-3 rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] outline-none transition-[border-color] duration-[120ms] font-[inherit] disabled:opacity-60 disabled:cursor-default focus:border-app-muted"
-            value={fitbInput}
-            onChange={e => { setFitbInput(e.target.value); setFitbSubmitted(false) }}
-            disabled={fitbSubmitted && fitbCorrect}
-            onKeyDown={e => { if (e.key === 'Enter' && fitbInput.trim()) submitFitb() }}
-            placeholder="Type your answer…"
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <button
-            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
-            disabled={(fitbSubmitted && fitbCorrect) || !fitbInput.trim()}
-            onClick={submitFitb}
-          >
-            Check
-          </button>
-        </div>
-        {fitbSubmitted && !fitbCorrect && (
-          <p className="mt-2 text-[0.83rem] text-app-red">Not quite — give it another try.</p>
-        )}
-        {actionRow}
-      </div>
-    )
-  }
-
-  return (
-    <div className="mb-7">
-      <p className="text-[0.9rem] font-semibold text-app-fg mb-3 leading-[1.5]"><span className="text-app-muted mr-[0.15rem]">{number}.</span> {question.question}</p>
-      <div className="relative">
-        <div className="flex flex-col gap-1.5">
-          {shuffledOptions.map(({ text }, i) => {
-            const optCorrect = i === shuffledAnswer
-            let cls = 'quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface'
-            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default'
-            return (
-              <button key={i} className={cls} disabled={answered} onClick={() => { setSelected(i); if (i === shuffledAnswer) onCorrect?.() }}>
-                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">
-                  {answered && mcqCorrect && optCorrect ? '✓' : String.fromCharCode(65 + i)}
-                </span>
-                {text}
-              </button>
-            )
-          })}
-        </div>
-        {answered && !mcqCorrect && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[0.9rem] rounded-[10px] bg-[color-mix(in_srgb,var(--app-bg)_75%,transparent)] backdrop-blur-sm">
-            <span className="text-[0.88rem] font-semibold text-app-red">Not quite — give it another go.</span>
-            <button className="flex items-center gap-[0.4rem] py-[0.4rem] px-4 rounded-[7px] border border-app-border text-app-fg bg-app-surface text-[0.83rem] font-medium cursor-pointer transition-[border-color,background] duration-150 hover:border-app-muted hover:bg-app-bg" onClick={() => setSelected(null)}>
-              <RotateCcw size={13} />
-              Try again
-            </button>
-          </div>
-        )}
-      </div>
-      {actionRow}
-    </div>
-  )
 }
 
 // currentSection: 0=description, 1=quiz (if hasQuiz), 2=challenge (or 1 without quiz)
