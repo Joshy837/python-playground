@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X, BookmarkPlus } from 'lucide-react'
+import { BookmarkPlus } from 'lucide-react'
 import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
 import SnippetPreview from '../components/SnippetPreview.jsx'
 import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
 import Toast from '../components/Toast.jsx'
+import SnippetCard from '../components/SnippetCard.jsx'
 
 const EXAMPLES = [
   { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },
@@ -86,19 +87,15 @@ export default function SnippetsPage({ monacoTheme }) {
             <section className="mb-10">
               <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">Examples</h2>
               <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                {EXAMPLES.map(({ label, file, description }) => {
-                  const active = preview?.label === label && !preview?.id
-                  return (
-                    <button
-                      key={file}
-                      className={`flex flex-col gap-[0.3rem] w-full h-[100px] py-[0.85rem] px-4 rounded-[10px] border text-left cursor-pointer transition-[border-color,background-color] duration-150 ${active ? 'border-[color-mix(in_srgb,var(--accent-try)_60%,var(--header-border))] bg-[color-mix(in_srgb,var(--accent-try)_8%,var(--app-bg))]' : 'border-app-border bg-app-surface hover:border-app-muted hover:bg-app-btn'}`}
-                      onClick={() => handleExampleClick({ label, file })}
-                    >
-                      <span className={`text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${active ? 'text-[var(--accent-try)]' : 'text-app-fg'}`}>{label}</span>
-                      {description && <span className="text-[0.78rem] text-app-muted leading-[1.4] line-clamp-2">{description}</span>}
-                    </button>
-                  )
-                })}
+                {EXAMPLES.map(({ label, file, description }) => (
+                  <SnippetCard
+                    key={file}
+                    label={label}
+                    description={description}
+                    active={preview?.label === label && !preview?.id}
+                    onClick={() => handleExampleClick({ label, file })}
+                  />
+                ))}
               </div>
             </section>
 
@@ -112,30 +109,16 @@ export default function SnippetsPage({ monacoTheme }) {
                 </div>
               ) : (
                 <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                  {savedSnippets.map(({ id, label, description, code }) => {
-                    const active = preview?.id === id
-                    return (
-                      <div
-                        key={id}
-                        className={`relative flex flex-row items-stretch w-full h-[100px] rounded-[10px] overflow-hidden border transition-[border-color,background-color] duration-150 ${active ? 'border-[color-mix(in_srgb,var(--accent-try)_60%,var(--header-border))] bg-[color-mix(in_srgb,var(--accent-try)_8%,var(--app-bg))]' : 'border-app-border bg-app-surface hover:border-app-muted hover:bg-app-btn-hover'}`}
-                      >
-                        <button
-                          className="flex flex-col gap-[0.3rem] flex-1 py-[0.85rem] px-4 text-left cursor-pointer bg-transparent border-none min-w-0"
-                          onClick={() => handleSavedClick({ id, label, code })}
-                        >
-                          <span className={`text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis ${active ? 'text-[var(--accent-try)]' : 'text-app-fg'}`}>{label}</span>
-                          <span className="text-[0.78rem] text-app-muted leading-[1.4] line-clamp-2">{description || 'Saved snippet'}</span>
-                        </button>
-                        <button
-                          className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_10px_10px_0] hover:text-[#f87171] hover:bg-[color-mix(in_srgb,#f87171_12%,transparent)]"
-                          title="Delete"
-                          onClick={e => { e.stopPropagation(); setDeleteTarget({ id, label, description, code }) }}
-                        >
-                          <X size={11} />
-                        </button>
-                      </div>
-                    )
-                  })}
+                  {savedSnippets.map(({ id, label, description, code }) => (
+                    <SnippetCard
+                      key={id}
+                      label={label}
+                      description={description}
+                      active={preview?.id === id}
+                      onClick={() => handleSavedClick({ id, label, code })}
+                      onDelete={() => setDeleteTarget({ id, label, description, code })}
+                    />
+                  ))}
                 </div>
               )}
             </section>
