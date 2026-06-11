@@ -1,0 +1,32 @@
+[
+  {
+    "name": "print",
+    "desc": "Show values on screen. You can pass multiple things at once — it puts a space between them.",
+    "detail": "Use sep= to change what goes between items. Use end= to change what's printed at the very end (normally a new line).",
+    "ex": "print(\"hello\", \"world\")           # hello world\nprint(\"a\", \"b\", \"c\", sep=\"-\")     # a-b-c\nprint(\"no newline\", end=\"\")\nprint(\" same line\")\n\nprint(type(42), type(\"hi\"))"
+  },
+  {
+    "name": "len, range, type",
+    "desc": "len() counts how many items something has. range() gives a sequence of numbers. type() tells you what kind of value something is.",
+    "detail": "range() doesn't build a full list — it generates numbers one at a time as needed. Wrap it in list() if you want to see all the numbers at once.",
+    "ex": "print(len(\"hello\"))          # 5\nprint(len([1, 2, 3, 4]))     # 4\nprint(len({\"a\": 1, \"b\": 2})) # 2\n\nprint(list(range(5)))         # [0, 1, 2, 3, 4]\nprint(list(range(2, 8, 2)))   # [2, 4, 6]\n\nprint(type(42))       # <class 'int'>\nprint(type(\"hello\"))  # <class 'str'>"
+  },
+  {
+    "name": "min / max / sum / abs",
+    "desc": "Find the smallest or largest value, add up a list of numbers, or get the positive version of a number.",
+    "detail": "min() and max() work on a list or on several values passed directly. sum() only works with numbers.",
+    "ex": "print(min(3, 1, 4, 1, 5))    # 1\nprint(max([5, 2, 8, 1]))      # 8\nprint(sum([1, 2, 3, 4, 5]))   # 15\nprint(abs(-42))               # 42\nprint(round(3.14159, 2))      # 3.14\n\nwords = [\"fig\", \"banana\", \"apple\"]\nprint(min(words, key=len))    # fig  (shortest word)"
+  },
+  {
+    "name": "enumerate & zip",
+    "desc": "enumerate gives you the position and value as you loop. zip lets you loop through two lists side by side.",
+    "detail": "enumerate is great when you need to know \"I'm on item number X\". zip pairs up items from two lists — it stops when the shorter list runs out.",
+    "ex": "fruits = [\"apple\", \"banana\", \"cherry\"]\nfor i, fruit in enumerate(fruits):\n    print(f\"{i}: {fruit}\")\n\nprint(\"---\")\n\nnames = [\"Alice\", \"Bob\"]\nscores = [92, 87]\nfor name, score in zip(names, scores):\n    print(f\"{name} scored {score}\")"
+  },
+  {
+    "name": "map & filter",
+    "desc": "map() does something to every item in a list. filter() keeps only the items that match a condition.",
+    "detail": "These do the same thing as list comprehensions — it's a matter of style. List comprehensions are usually easier to read when you're starting out.",
+    "ex": "nums = [1, 2, 3, 4, 5]\n\n# map: square every number\nsquares = list(map(lambda x: x**2, nums))\nprint(squares)\n\n# filter: keep only even numbers\nevens = list(filter(lambda x: x % 2 == 0, nums))\nprint(evens)\n\n# same thing with comprehensions:\nprint([x**2 for x in nums])\nprint([x for x in nums if x % 2 == 0])"
+  }
+]

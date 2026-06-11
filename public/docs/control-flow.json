@@ -1,0 +1,26 @@
+[
+  {
+    "name": "if / elif / else",
+    "desc": "Make a decision. Run one block of code if a condition is true, a different one if it's false.",
+    "detail": "Python uses indentation (the spaces at the start of a line) to group code into blocks — there are no curly braces. elif means \"otherwise if\".",
+    "ex": "x = 42\n\nif x < 0:\n    print(\"negative\")\nelif x == 0:\n    print(\"zero\")\nelif x < 100:\n    print(\"small positive\")\nelse:\n    print(\"large positive\")"
+  },
+  {
+    "name": "for loop",
+    "desc": "Do something once for each item in a list, string, or range of numbers.",
+    "detail": "range(5) gives you 0, 1, 2, 3, 4. Use enumerate() if you also need to know the position of each item while you loop.",
+    "ex": "for i in range(5):\n    print(i)\n\nprint(\"---\")\n\nfruits = [\"apple\", \"banana\", \"cherry\"]\nfor i, fruit in enumerate(fruits):\n    print(f\"{i}: {fruit}\")"
+  },
+  {
+    "name": "while loop",
+    "desc": "Keep repeating something as long as a condition is still true.",
+    "detail": "Make sure the condition eventually becomes false, or the loop will run forever. Good for when you don't know in advance how many times you need to repeat.",
+    "ex": "n = 5\nfactorial = 1\n\nwhile n > 0:\n    factorial *= n\n    n -= 1\n\nprint(factorial)   # 120  (5 × 4 × 3 × 2 × 1)"
+  },
+  {
+    "name": "break & continue",
+    "desc": "break stops the loop immediately. continue skips the current step and jumps to the next one.",
+    "detail": "Use break when you've found what you were looking for and don't need to keep going. Use continue to skip over items you don't care about.",
+    "ex": "# break: stop as soon as we find 5\nfor i in range(10):\n    if i == 5:\n        print(f\"found at {i}\")\n        break\n\n# continue: skip odd numbers\nfor i in range(8):\n    if i % 2 != 0:\n        continue\n    print(i)"
+  }
+]

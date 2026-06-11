@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Create & access",
+    "desc": "A dictionary stores pairs of information — a key and a value. Think of it like a word and its definition.",
+    "detail": "Looking up a key that doesn't exist with [] gives you an error. Use .get() instead to safely get None (or a backup value you choose) without crashing.",
+    "ex": "person = {\"name\": \"Alice\", \"age\": 30}\n\nprint(person[\"name\"])          # Alice\nprint(person.get(\"age\"))       # 30\nprint(person.get(\"city\"))      # None\nprint(person.get(\"city\", \"?\")) # ?  (your backup)"
+  },
+  {
+    "name": "Modify",
+    "desc": "Add a new key or change an existing one by assigning to it. Delete a key with del or .pop().",
+    "detail": "If the key already exists, assigning to it just updates the value. .pop() removes the key and also gives you its value back.",
+    "ex": "person = {\"name\": \"Alice\", \"age\": 30}\n\nperson[\"age\"] = 31\nperson[\"city\"] = \"NYC\"\nprint(person)\n\nremoved = person.pop(\"city\")\nprint(removed)    # NYC\nprint(person)"
+  },
+  {
+    "name": "Iterate",
+    "desc": "Loop through a dictionary to look at its keys, its values, or both at the same time.",
+    "detail": "Looping normally gives you just the keys. Use .values() for just the values. Use .items() to get key-value pairs together, which you can split into two variables.",
+    "ex": "scores = {\"Alice\": 92, \"Bob\": 87, \"Carol\": 95}\n\nfor name in scores:\n    print(name)\n\nprint(\"---\")\n\nfor name, score in scores.items():\n    print(f\"{name}: {score}\")"
+  },
+  {
+    "name": "Dict comprehensions",
+    "desc": "Build a dictionary in one line, the same way you'd build a list with a list comprehension.",
+    "detail": "The pattern is {key: value for item in something}. Add if at the end to only include some pairs.",
+    "ex": "# square each number\nsquares = {n: n**2 for n in range(1, 6)}\nprint(squares)\n\n# keep only high scores\nscores = {\"Alice\": 92, \"Bob\": 65, \"Carol\": 88}\nhigh = {k: v for k, v in scores.items() if v >= 80}\nprint(high)"
+  }
+]

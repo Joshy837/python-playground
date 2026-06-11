@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Arithmetic",
+    "desc": "Do math with +, -, *, /. Use // for whole-number division, % for the remainder, and ** to raise to a power.",
+    "detail": "% gives you what's left over after dividing. For example, 7 % 3 is 1 (3 goes into 7 twice, with 1 left). It's handy for checking if a number is even: n % 2 == 0.",
+    "ex": "print(5 + 2)    # 7\nprint(5 - 2)    # 3\nprint(5 * 2)    # 10\nprint(5 / 2)    # 2.5\nprint(5 // 2)   # 2  (whole number only)\nprint(5 % 2)    # 1  (remainder)\nprint(5 ** 2)   # 25 (power)\nprint(9 ** 0.5) # 3.0 (square root)"
+  },
+  {
+    "name": "Comparison",
+    "desc": "Compare two values. The answer is always True or False.",
+    "detail": "Use == to check if two things are equal — not = which sets a variable. You'll use these most inside if statements and while loops.",
+    "ex": "print(5 == 5)    # True\nprint(5 != 3)    # True\nprint(5 > 3)     # True\nprint(5 < 3)     # False\nprint(5 >= 5)    # True\n\nx = 7\nprint(1 < x < 10)   # True  (chained comparison)"
+  },
+  {
+    "name": "Logical",
+    "desc": "Join conditions together: and means both must be true, or means at least one must be true, not flips the answer.",
+    "detail": "Read them like plain English: \"x > 0 and x < 10\" means x has to satisfy both conditions at once.",
+    "ex": "print(True and False)   # False\nprint(True or False)    # True\nprint(not True)         # False\n\nx = 5\nprint(x > 0 and x < 10)   # True\nprint(x < 0 or x > 3)     # True"
+  },
+  {
+    "name": "Augmented assignment",
+    "desc": "A shorter way to update a variable. x += 1 does the same thing as x = x + 1.",
+    "detail": "Works with all the math operators: +=, -=, *=, /=. Also works on strings and lists — name += \" Jr.\" adds to the end of a string.",
+    "ex": "x = 10\nx += 5\nprint(x)   # 15\n\nx -= 3\nprint(x)   # 12\n\nx *= 2\nprint(x)   # 24\n\ngreeting = \"Hello\"\ngreeting += \", World!\"\nprint(greeting)"
+  }
+]

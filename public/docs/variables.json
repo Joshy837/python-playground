@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Variables",
+    "desc": "Give a value a name so you can use it later.",
+    "detail": "You can change what a variable holds at any time. Python figures out the type for you — no need to say \"this is a number\" or \"this is text\" up front.",
+    "ex": "x = 10\nname = \"Alice\"\nis_valid = True\n\nprint(x)\nprint(name)\nprint(is_valid)"
+  },
+  {
+    "name": "Numbers",
+    "desc": "Use int for whole numbers and float for numbers with a decimal point.",
+    "detail": "When you divide with /, you always get a decimal result (even if it divides evenly). Use // if you only want the whole number part.",
+    "ex": "x = 5        # int\ny = 3.14     # float\nz = x + y\n\nprint(z)         # 8.14\nprint(type(x))   # <class 'int'>\nprint(type(y))   # <class 'float'>\nprint(10 / 2)    # 5.0  (always decimal)\nprint(10 // 2)   # 5   (whole number only)"
+  },
+  {
+    "name": "Strings",
+    "desc": "Text goes inside quotes. You can grab any single character by its position.",
+    "detail": "Positions start at 0, so the first character is always [0]. You can also count from the end using negative numbers — -1 is the last character.",
+    "ex": "greeting = \"Hello, World!\"\n\nprint(greeting[0])      # H\nprint(greeting[-1])     # !\nprint(greeting[7:12])   # World\nprint(len(greeting))    # 13"
+  },
+  {
+    "name": "f-strings",
+    "desc": "Drop a variable or calculation straight into a string by adding f before the quotes.",
+    "detail": "Wrap whatever you want to insert in curly braces {}. You can put any calculation inside, not just variable names.",
+    "ex": "name = \"Alice\"\nage = 30\n\nprint(f\"Hi {name}, you are {age}\")\nprint(f\"Next year you'll be {age + 1}\")\nprint(f\"Name has {len(name)} letters\")"
+  },
+  {
+    "name": "Type conversion",
+    "desc": "Change a value from one type to another — for example, turning the text \"42\" into the number 42.",
+    "detail": "Python won't do this automatically, so you have to ask for it. If you try to convert something that doesn't make sense, like int(\"hello\"), you'll get an error.",
+    "ex": "print(int(\"42\"))       # 42\nprint(str(100))        # \"100\"\nprint(float(\"3.14\"))   # 3.14\nprint(bool(0))         # False\nprint(bool(\"hello\"))   # True\nprint(bool([]))        # False  (empty list)"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "try / except",
+    "desc": "Put risky code inside try. If something goes wrong, the except block runs instead of crashing.",
+    "detail": "Name the specific type of error you want to catch, like ValueError or IndexError. Catching all errors at once is usually a bad idea — it can hide bugs.",
+    "ex": "try:\n    x = int(\"abc\")\nexcept ValueError as e:\n    print(f\"That didn't work: {e}\")\n\n# catch different error types\ntry:\n    items = [1, 2, 3]\n    print(items[10])\nexcept IndexError:\n    print(\"that position doesn't exist\")"
+  },
+  {
+    "name": "finally & else",
+    "desc": "else runs only if nothing went wrong. finally always runs, no matter what.",
+    "detail": "Use finally for cleanup you always want to happen, like closing a file. Use else to make it clear which code is the \"everything went fine\" path.",
+    "ex": "try:\n    result = 10 / 2\nexcept ZeroDivisionError:\n    print(\"can't divide by zero\")\nelse:\n    print(f\"result: {result}\")   # only if no error\nfinally:\n    print(\"this always runs\")"
+  },
+  {
+    "name": "Raising exceptions",
+    "desc": "Throw your own error with raise when your code receives something it can't handle.",
+    "detail": "Pick an error type that fits the problem — ValueError for a bad value, TypeError for the wrong type. Always include a message that explains what went wrong.",
+    "ex": "def divide(a, b):\n    if b == 0:\n        raise ValueError(\"can't divide by zero\")\n    return a / b\n\ntry:\n    print(divide(10, 2))   # 5.0\n    print(divide(10, 0))   # raises an error\nexcept ValueError as e:\n    print(f\"Error: {e}\")"
+  }
+]

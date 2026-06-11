@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Common methods",
+    "desc": "Strings come with built-in tools to change their case, trim spaces, or split into a list.",
+    "detail": "These tools don't change the original string — they give you a new one. So \"hello\".upper() gives \"HELLO\" but \"hello\" stays the same.",
+    "ex": "print(\"hello\".upper())           # HELLO\nprint(\"HELLO\".lower())           # hello\nprint(\"  hi  \".strip())          # hi  (no spaces)\nprint(\"a,b,c\".split(\",\"))        # ['a', 'b', 'c']\nprint(\",\".join([\"a\", \"b\", \"c\"])) # a,b,c"
+  },
+  {
+    "name": "Search & replace",
+    "desc": "Find where a word appears, count how many times it shows up, or swap it for something else.",
+    "detail": ".find() returns the position of the first match, or -1 if it's not found. .replace() swaps every match by default.",
+    "ex": "s = \"hello world\"\n\nprint(s.replace(\"l\", \"r\"))   # herro worrd\nprint(s.find(\"world\"))       # 6\nprint(s.find(\"xyz\"))         # -1  (not found)\nprint(s.count(\"l\"))          # 3"
+  },
+  {
+    "name": "Check contents",
+    "desc": "Ask yes/no questions about a string — does it start with this? Is it all digits?",
+    "detail": "These all return True or False. They're great for checking input before you do anything with it.",
+    "ex": "print(\"hello\".startswith(\"he\"))   # True\nprint(\"hello\".endswith(\"lo\"))     # True\nprint(\"123\".isdigit())            # True\nprint(\"abc\".isalpha())            # True\nprint(\"abc123\".isalnum())         # True"
+  },
+  {
+    "name": "Slicing",
+    "desc": "Cut out part of a string using [start:stop]. The character at stop is not included.",
+    "detail": "You can leave out start (defaults to the beginning) or stop (defaults to the end). Using [::-1] gives you the string backwards.",
+    "ex": "s = \"hello\"\n\nprint(s[1:3])    # el   (positions 1 and 2)\nprint(s[:3])     # hel  (from the start)\nprint(s[2:])     # llo  (to the end)\nprint(s[-2:])    # lo   (last 2 characters)\nprint(s[::-1])   # olleh (reversed)"
+  }
+]
