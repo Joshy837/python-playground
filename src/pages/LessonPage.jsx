@@ -9,6 +9,8 @@ import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 import Markdown from '../components/Markdown.jsx'
+import ProgressBar from '../components/ProgressBar.jsx'
+import StepButton from '../components/StepButton.jsx'
 
 const NAV_BTN_CLS = "inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.8rem] rounded-[8px] relative border border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_45%,var(--header-border))] bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_8%,var(--btn-secondary-bg))] text-[var(--text-primary)] text-[0.82rem] font-medium cursor-pointer transition-[background-color,border-color] duration-[150ms] enabled:hover:bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_14%,var(--btn-secondary-hover))] enabled:hover:border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_70%,var(--header-border))] disabled:opacity-[0.35] disabled:cursor-not-allowed"
 
@@ -521,12 +523,12 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           {hasQuiz && currentSection === SECTION_QUIZ && (
             <div className="lesson-section--quiz lesson-section-pop">
               <p className="lesson-section-label flex items-center gap-[0.35rem] text-[0.68rem] font-bold uppercase tracking-[0.09em] text-app-muted mb-4"><HelpCircle size={12} />Check your understanding</p>
-              <div className="h-[6px] bg-app-border rounded-full overflow-hidden mb-[0.4rem]">
-                <div
-                  className="h-full bg-[var(--accent-quiz)] rounded-full transition-[width] duration-[350ms] ease"
-                  style={{ width: `${(quizAnsweredCount / currentStep.quiz.length) * 100}%` }}
-                />
-              </div>
+              <ProgressBar
+                percent={(quizAnsweredCount / currentStep.quiz.length) * 100}
+                color="var(--accent-quiz)"
+                height="6px"
+                className="mb-[0.4rem]"
+              />
               <p className="text-[0.72rem] text-app-muted mb-6">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
               <div className="overflow-hidden relative" ref={quizContainerRef}>
                 {exitingQuizIndex !== null && (
@@ -730,19 +732,19 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 const current = i === stepIdx
                 const unlocked = done || isStepUnlocked(node.id, i)
                 return (
-                  <button
+                  <StepButton
                     key={i}
-                    className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
-                    style={current ? { outline: '2px solid var(--text-primary)', outlineOffset: '2px' } : undefined}
+                    done={done}
+                    unlocked={unlocked}
+                    current={current}
+                    number={i + 1}
                     title={s.title}
                     onClick={() => {
                       if (!unlocked) return
                       setShowStepSheet(false)
                       if (!current) navigate(`/learn/${node.id}/${i + 1}`)
                     }}
-                  >
-                    {done ? <Check size={12} strokeWidth={3} /> : <span>{i + 1}</span>}
-                  </button>
+                  />
                 )
               })}
             </div>

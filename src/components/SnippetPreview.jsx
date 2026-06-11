@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Copy, Check, ArrowUpRight, Pencil, Save, X, Trash2 } from 'lucide-react'
 import * as monaco from 'monaco-editor'
-import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
+import ColorizedCodeBlock from './ColorizedCodeBlock.jsx'
 
 export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, onDelete, onClose, className = '' }) {
   const [editing, setEditing] = useState(false)
@@ -10,7 +10,6 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
   const editEditorRef = useRef(null)
 
   const code = snippet && snippet !== 'loading' ? snippet.code : null
-  const colorizedHtml = useMonacoColorize(code, monacoTheme)
 
   useEffect(() => { setEditing(false) }, [code])
 
@@ -115,9 +114,11 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
       <div className="flex-1 overflow-y-auto">
         {editing
           ? <div className="relative h-[min(400px,60vh)]" ref={editContainerRef} />
-          : colorizedHtml
-            ? <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
-            : <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full">{snippet.code}</pre>
+          : <ColorizedCodeBlock
+              code={code}
+              monacoTheme={monacoTheme}
+              className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full"
+            />
         }
       </div>
     </div>

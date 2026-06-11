@@ -6,6 +6,8 @@ import { Check, Lock } from 'lucide-react'
 import { NODES, EDGES, NODE_W, NODE_H } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useIsMobile, usePageTheme } from '../hooks/useMedia.js'
+import ProgressBar from '../components/ProgressBar.jsx'
+import StepButton from '../components/StepButton.jsx'
 
 function CourseNode({ data }) {
   const { title, icon: Icon, unlocked, done, expanded, steps, onStepClick, isMobile } = data
@@ -49,16 +51,15 @@ function CourseNode({ data }) {
           onClick={e => e.stopPropagation()}
         >
           {steps.map((step, i) => (
-            <button
+            <StepButton
               key={i}
-              className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${step.done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : step.unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
-              style={{ animationDelay: popupExiting ? `${(steps.length - 1 - i) * 30}ms` : `${i * 60}ms` }}
-              disabled={!step.unlocked && !step.done}
+              done={step.done}
+              unlocked={step.unlocked}
+              number={i + 1}
               title={step.title}
+              style={{ animationDelay: popupExiting ? `${(steps.length - 1 - i) * 30}ms` : `${i * 60}ms` }}
               onClick={e => { e.stopPropagation(); onStepClick(i) }}
-            >
-              {step.done ? <Check size={11} /> : i + 1}
-            </button>
+            />
           ))}
         </div>
       )}
@@ -213,9 +214,7 @@ export default function CoursePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-6">
-          <div className="w-[80px] h-[5px] rounded-full bg-app-border overflow-hidden">
-            <div className="h-full rounded-full bg-app-green transition-[width] duration-[400ms] ease" style={{ width: `${(done / total) * 100}%` }} />
-          </div>
+          <ProgressBar percent={(done / total) * 100} className="w-[80px]" />
           <span className="text-xs tabular-nums text-app-muted">{done} / {total}</span>
         </div>
       </div>
@@ -250,15 +249,14 @@ export default function CoursePage() {
             <div className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{expandedNode.data.title}</div>
             <div className="flex flex-wrap gap-[10px] justify-center">
               {expandedNode.data.steps.map((step, i) => (
-                <button
+                <StepButton
                   key={i}
-                  className={`course-step-btn w-[28px] h-[28px] rounded-full border-2 flex items-center justify-center text-[0.7rem] font-bold leading-none cursor-pointer bg-transparent shrink-0 [transition:transform_0.1s,box-shadow_0.15s,border-color_0.15s] ${step.done ? 'border-app-green bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] text-app-green hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-green)_25%,transparent)]' : step.unlocked ? 'border-app-muted bg-app-surface text-app-fg hover:border-app-fg hover:scale-[1.08] hover:shadow-[0_0_0_3px_color-mix(in_srgb,var(--text-primary)_15%,transparent)]' : 'border-app-border bg-app-surface text-app-muted opacity-45 cursor-not-allowed'}`}
-                  disabled={!step.unlocked && !step.done}
+                  done={step.done}
+                  unlocked={step.unlocked}
+                  number={i + 1}
                   title={step.title}
                   onClick={() => { closeSheet(); expandedNode.data.onStepClick(i) }}
-                >
-                  {step.done ? <Check size={11} /> : i + 1}
-                </button>
+                />
               ))}
             </div>
           </div>
