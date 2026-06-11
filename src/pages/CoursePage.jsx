@@ -5,6 +5,7 @@ import '@xyflow/react/dist/style.css'
 import { Check, Lock } from 'lucide-react'
 import { NODES, EDGES, NODE_W, NODE_H } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
+import { useIsMobile, usePageTheme } from '../hooks/useMedia.js'
 
 function CourseNode({ data }) {
   const { title, icon: Icon, unlocked, done, expanded, steps, onStepClick, isMobile } = data
@@ -98,31 +99,10 @@ function MobileZoomFitter({ isMobile }) {
   return null
 }
 
-function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < breakpoint)
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
-    const handler = e => setIsMobile(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [breakpoint])
-  return isMobile
-}
-
-function useTheme() {
-  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? '')
-  useEffect(() => {
-    const obs = new MutationObserver(() => setTheme(document.documentElement.dataset.theme ?? ''))
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
-    return () => obs.disconnect()
-  }, [])
-  return theme
-}
-
 export default function CoursePage() {
   const navigate = useNavigate()
   const { completed, isStepComplete, isStepUnlocked } = useProgress()
-  const theme = useTheme()
+  const theme = usePageTheme()
   const isLight = theme === 'light' || theme === 'hc-light'
   const isMobile = useIsMobile()
   const [expandedId, setExpandedId] = useState(null)

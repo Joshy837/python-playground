@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { usePageTheme } from '../hooks/useMedia.js'
 import { Terminal, GraduationCap, BookOpen, Zap, Globe, Lock } from 'lucide-react'
 
 const features = [
@@ -68,16 +69,6 @@ const DEMO_COLORS = {
   'light':   { kw: '#0000ff', string: '#a31515', number: '#098658', comment: '#008000', builtin: '#000000', plain: '#000000' },
   'hc-dark': { kw: '#c586c0', string: '#ce9178', number: '#b5cea8', comment: '#608b4e', builtin: '#9cdcfe', plain: '#ffffff' },
   'hc-light':{ kw: '#0f4a85', string: '#b94824', number: '#005000', comment: '#4d7a00', builtin: '#0f4a85', plain: '#000000' },
-}
-
-function usePageTheme() {
-  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? '')
-  useEffect(() => {
-    const obs = new MutationObserver(() => setTheme(document.documentElement.dataset.theme ?? ''))
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
-    return () => obs.disconnect()
-  }, [])
-  return theme
 }
 
 function tokenize(code) {

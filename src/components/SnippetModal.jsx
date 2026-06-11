@@ -1,34 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
-import { X, Copy, Check, ArrowUpRight, Pencil, Save } from 'lucide-react'
+import { Copy, Check, ArrowUpRight, Pencil, Save, X } from 'lucide-react'
 import * as monaco from 'monaco-editor'
+import ModalBase from './ModalBase.jsx'
 
 export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoTheme }) {
   const [copied, setCopied] = useState(false)
   const [colorizedHtml, setColorizedHtml] = useState('')
-  const [closing, setClosing] = useState(false)
   const [editing, setEditing] = useState(false)
   const editContainerRef = useRef(null)
   const editEditorRef = useRef(null)
 
-  function handleClose() {
-    setClosing(true)
-  }
-
-  useEffect(() => {
-    const onKey = e => { if (e.key === 'Escape') { editing ? setEditing(false) : handleClose() } }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [editing])
-
   useEffect(() => {
     if (!snippet || snippet === 'loading') return
-    setClosing(false)
     setEditing(false)
     setColorizedHtml('')
     monaco.editor.colorize(snippet.code, 'python', {}).then(setColorizedHtml)
   }, [snippet?.code, monacoTheme])
 
-  // spin up a Monaco editor when entering edit mode
   useEffect(() => {
     if (!editing || !editContainerRef.current) return
     const editor = monaco.editor.create(editContainerRef.current, {
@@ -56,7 +44,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
 
   if (snippet === 'loading') {
     return (
-      <div className="modal-backdrop" onClick={handleClose}>
+      <div className="modal-backdrop">
         <div className="modal">
           <div className="p-8 text-center text-[0.85rem] text-app-muted">Loading…</div>
         </div>
@@ -70,29 +58,25 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
     setTimeout(() => setCopied(false), 2000)
   }
 
-  function handleSaveEdit() {
+  function handleSaveEdit(close) {
     const code = editEditorRef.current?.getValue() ?? snippet.code
     onSave(code)
     setEditing(false)
+    close()
   }
 
+  const pyBadge = (
+    <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[color-mix(in_srgb,var(--accent-try)_18%,transparent)] text-[var(--accent-try)] border border-[color-mix(in_srgb,var(--accent-try)_40%,transparent)] shrink-0 leading-[1.6]">py</span>
+  )
+
   return (
-    <div
-      className={`modal-backdrop${closing ? ' modal-backdrop-closing' : ''}`}
-      onClick={handleClose}
+    <ModalBase
+      onClose={onClose}
+      headerIcon={pyBadge}
+      title={snippet.label}
+      onEscape={close => editing ? setEditing(false) : close()}
     >
-      <div
-        className={`modal${closing ? ' modal-closing' : ''}`}
-        onClick={e => e.stopPropagation()}
-        onAnimationEnd={closing ? (e => { if (e.animationName === 'modal-out') onClose() }) : undefined}
-      >
-        <div className="flex items-center justify-between py-3 px-4 border-b border-[color-mix(in_srgb,var(--accent-try)_18%,var(--header-border))] bg-[radial-gradient(ellipse_130%_160%_at_-5%_50%,color-mix(in_srgb,var(--accent-try)_12%,transparent)_0%,transparent_60%),color-mix(in_srgb,var(--header-bg)_85%,var(--app-bg))] shrink-0">
-          <div className="flex items-center gap-[0.55rem] min-w-0">
-            <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[color-mix(in_srgb,var(--accent-try)_18%,transparent)] text-[var(--accent-try)] border border-[color-mix(in_srgb,var(--accent-try)_40%,transparent)] shrink-0 leading-[1.6]">py</span>
-            <span className="text-[0.88rem] font-semibold text-app-fg truncate">{snippet.label}</span>
-          </div>
-          <button className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" onClick={handleClose}><X size={15} /></button>
-        </div>
+      {close => (
         <div className="flex-1 min-h-0 p-4 bg-[radial-gradient(ellipse_70%_55%_at_100%_100%,color-mix(in_srgb,var(--accent-quiz)_7%,transparent),transparent_65%),radial-gradient(ellipse_50%_40%_at_0%_0%,color-mix(in_srgb,var(--accent-try)_5%,transparent),transparent_60%),var(--app-bg)] flex flex-col">
           <div className="relative rounded-[9px] border border-[color-mix(in_srgb,var(--accent-try)_20%,var(--header-border))] bg-[var(--monaco-bg)] overflow-hidden flex-1 min-h-0 flex flex-col">
             <div className="absolute top-[0.55rem] right-[0.55rem] flex gap-[0.3rem] z-[1]">
@@ -116,7 +100,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
                   )}
                   <button
                     className="modal-code-btn modal-code-btn-load"
-                    onClick={() => { onLoad(snippet.code); handleClose() }}
+                    onClick={() => { onLoad(snippet.code); close() }}
                     title="Load into Editor"
                   >
                     <ArrowUpRight size={13} />
@@ -134,7 +118,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
                   </button>
                   <button
                     className="modal-code-btn modal-code-btn-save"
-                    onClick={handleSaveEdit}
+                    onClick={() => handleSaveEdit(close)}
                     title="Save changes"
                   >
                     <Save size={13} />
@@ -152,7 +136,7 @@ export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoT
             }
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </ModalBase>
   )
 }
