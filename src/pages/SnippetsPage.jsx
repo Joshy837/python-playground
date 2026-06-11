@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { BookmarkPlus } from 'lucide-react'
 import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
 import SnippetPreview from '../components/SnippetPreview.jsx'
-import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
+import { DeleteSnippetModal } from '../components/SnippetModals.jsx'
 import Toast from '../components/Toast.jsx'
 import SnippetCard from '../components/SnippetCard.jsx'
 
