@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X, BookmarkPlus, Copy, Check, ArrowUpRight, Pencil, Save, Trash2 } from 'lucide-react'
-import * as monaco from 'monaco-editor'
+import { X, BookmarkPlus } from 'lucide-react'
 import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
-import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
+import SnippetPreview from '../components/SnippetPreview.jsx'
 import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
 import Toast from '../components/Toast.jsx'
 
@@ -20,41 +19,9 @@ export default function SnippetsPage({ monacoTheme }) {
   const navigate = useNavigate()
   const { savedSnippets, updateSnippet, deleteSnippet } = useSnippetManagement()
   const [preview, setPreview] = useState(null)   // null | 'loading' | { id?, label, code }
-  const [editing, setEditing] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [previewClosing, setPreviewClosing] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [toast, setToast] = useState(null)
-  const editContainerRef = useRef(null)
-  const editEditorRef = useRef(null)
-
-  const colorizedHtml = useMonacoColorize(
-    preview && preview !== 'loading' ? preview.code : null,
-    monacoTheme,
-  )
-
-  useEffect(() => { setEditing(false) }, [preview?.code])
-
-  // Mount Monaco editor in edit mode
-  useEffect(() => {
-    if (!editing || !editContainerRef.current || !preview || preview === 'loading') return
-    const editor = monaco.editor.create(editContainerRef.current, {
-      value: preview.code,
-      language: 'python',
-      theme: monacoTheme,
-      fontSize: 13,
-      lineHeight: 22,
-      minimap: { enabled: false },
-      scrollBeyondLastLine: false,
-      padding: { top: 12, bottom: 12 },
-      lineNumbers: 'on',
-      folding: false,
-      renderLineHighlight: 'none',
-      overviewRulerLanes: 0,
-    })
-    editEditorRef.current = editor
-    return () => { editor.dispose(); editEditorRef.current = null }
-  }, [editing])
 
   function closePreview() {
     setPreviewClosing(true)
@@ -64,7 +31,6 @@ export default function SnippetsPage({ monacoTheme }) {
     if (e.animationName === 'preview-panel-out') {
       setPreview(null)
       setPreviewClosing(false)
-      setEditing(false)
     }
   }
 
@@ -91,20 +57,11 @@ export default function SnippetsPage({ monacoTheme }) {
     navigate('/playground')
   }
 
-  function handleCopy() {
-    if (!preview || preview === 'loading') return
-    navigator.clipboard.writeText(preview.code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  function handleSaveEdit() {
-    const code = editEditorRef.current?.getValue() ?? preview.code
+  function handleSaveEdit(newCode) {
     const id = preview?.id
     if (!id) return
-    updateSnippet(id, code)
-    setPreview(prev => ({ ...prev, code }))
-    setEditing(false)
+    updateSnippet(id, newCode)
+    setPreview(prev => ({ ...prev, code: newCode }))
     setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
@@ -115,7 +72,6 @@ export default function SnippetsPage({ monacoTheme }) {
   }
 
   const previewOpen = preview !== null
-  const previewLoading = preview === 'loading'
 
   return (
     <main className="flex-1 overflow-y-auto md:overflow-hidden relative bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px] bg-fixed text-app-fg flex flex-col page-enter">
@@ -191,66 +147,16 @@ export default function SnippetsPage({ monacoTheme }) {
               className={`w-[500px] min-w-[300px] shrink-0 rounded-[10px] border border-app-border bg-app-surface overflow-hidden flex flex-col animate-[preview-panel-in_0.2s_ease] max-md:w-full max-md:max-h-[60vh] max-md:animate-[preview-panel-in-mobile_0.2s_ease]${previewClosing ? ' snippets-preview-closing' : ''}`}
               onAnimationEnd={previewClosing ? handlePanelAnimationEnd : undefined}
             >
-              <div
-                key={preview === 'loading' ? '__loading__' : String(preview.id ?? preview.label)}
-                className="flex flex-col flex-1 min-h-0 overflow-hidden animate-[preview-content-in_0.15s_ease]"
-              >
-              {previewLoading ? (
-                <div className="py-8 px-8 text-app-muted text-[0.85rem]">Loading…</div>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between gap-2 py-[0.6rem] px-[0.75rem] border-b border-app-border shrink-0">
-                    <div className="flex items-center gap-[0.55rem] min-w-0">
-                      <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[color-mix(in_srgb,var(--accent-try)_18%,transparent)] text-[var(--accent-try)] border border-[color-mix(in_srgb,var(--accent-try)_40%,transparent)] shrink-0 leading-[1.6]">py</span>
-                      <span className="text-[0.88rem] font-semibold text-app-fg truncate">{preview.label}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {!editing && (
-                        <>
-                          <button className={`modal-code-btn modal-code-btn-copy${copied ? ' modal-code-btn-copied' : ''}`} onClick={handleCopy} title="Copy">
-                            {copied ? <Check size={13} /> : <Copy size={13} />}
-                          </button>
-                          {preview.id && (
-                            <button className="modal-code-btn modal-code-btn-edit" onClick={() => setEditing(true)} title="Edit">
-                              <Pencil size={13} />
-                            </button>
-                          )}
-                          {preview.id && (
-                            <button className="modal-code-btn" onClick={() => setDeleteTarget(preview)} title="Delete" style={{ color: 'var(--status-red)' }}>
-                              <Trash2 size={13} />
-                            </button>
-                          )}
-                          <button className="modal-code-btn modal-code-btn-load" onClick={() => loadInPlayground(preview.code)} title="Load in Playground">
-                            <ArrowUpRight size={13} />
-                          </button>
-                        </>
-                      )}
-                      {editing && (
-                        <>
-                          <button className="modal-code-btn modal-code-btn-cancel-edit" onClick={() => setEditing(false)} title="Cancel">
-                            <X size={13} />
-                          </button>
-                          <button className="modal-code-btn modal-code-btn-save" onClick={handleSaveEdit} title="Save changes">
-                            <Save size={13} />
-                          </button>
-                        </>
-                      )}
-                      <button className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" style={{ marginLeft: '4px' }} onClick={closePreview}>
-                        <X size={15} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-0">
-                    {editing
-                      ? <div className="relative h-[min(400px,60vh)]" ref={editContainerRef} />
-                      : colorizedHtml
-                        ? <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full" dangerouslySetInnerHTML={{ __html: colorizedHtml }} />
-                        : <pre className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full">{preview.code}</pre>
-                    }
-                  </div>
-                </>
-              )}
-              </div>
+              <SnippetPreview
+                key={preview === 'loading' ? '__loading__' : String(preview?.id ?? preview?.label)}
+                snippet={preview}
+                monacoTheme={monacoTheme}
+                onLoad={loadInPlayground}
+                onSave={preview?.id ? handleSaveEdit : undefined}
+                onDelete={preview?.id ? () => setDeleteTarget(preview) : undefined}
+                onClose={closePreview}
+                className="animate-[preview-content-in_0.15s_ease]"
+              />
             </div>
           )}
       </div>
