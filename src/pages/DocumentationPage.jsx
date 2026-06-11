@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Copy, Check, ArrowUpRight } from 'lucide-react'
-import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
+import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
 
 const PENDING_KEY = 'playground-pending-load'
 
@@ -31,13 +31,9 @@ async function fetchDocs(file) {
 function DocCard({ item, pyodideReady, monacoTheme }) {
   const [output, setOutput] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
-  const [colorizedCode, setColorizedCode] = useState(null)
   const [copied, setCopied] = useState(false)
 
-  useEffect(() => {
-    monaco.editor.colorize(item.ex, 'python', { tabSize: 4 })
-      .then(html => setColorizedCode(html))
-  }, [item.ex, monacoTheme])
+  const colorizedCode = useMonacoColorize(item.ex, monacoTheme)
 
   async function handleRun() {
     if (isRunning || !pyodideReady) return
@@ -112,7 +108,7 @@ function DocCard({ item, pyodideReady, monacoTheme }) {
               </div>
               <pre
                 className="p-[0.7rem_0.9rem] bg-transparent font-mono text-[0.78rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto m-0 flex-1 min-w-0"
-                dangerouslySetInnerHTML={{ __html: colorizedCode ?? item.ex }}
+                dangerouslySetInnerHTML={{ __html: colorizedCode || item.ex }}
               />
             </div>
             <div className="w-full shrink-0 border-t border-app-output-border px-[0.9rem] py-[0.5rem] bg-app-surface overflow-y-auto min-h-[2.5rem] sm:w-[40%] sm:border-t-0 sm:border-l sm:border-l-app-output-border">

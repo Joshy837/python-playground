@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { X, BookmarkPlus, Copy, Check, ArrowUpRight, Pencil, Save, Trash2 } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
+import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
 import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
 import Toast from '../components/Toast.jsx'
 
@@ -20,7 +21,6 @@ export default function SnippetsPage({ monacoTheme }) {
   const { savedSnippets, updateSnippet, deleteSnippet } = useSnippetManagement()
   const [preview, setPreview] = useState(null)   // null | 'loading' | { id?, label, code }
   const [editing, setEditing] = useState(false)
-  const [colorizedHtml, setColorizedHtml] = useState('')
   const [copied, setCopied] = useState(false)
   const [previewClosing, setPreviewClosing] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
@@ -28,13 +28,12 @@ export default function SnippetsPage({ monacoTheme }) {
   const editContainerRef = useRef(null)
   const editEditorRef = useRef(null)
 
-  // Colorize code when preview changes or theme changes
-  useEffect(() => {
-    if (!preview || preview === 'loading') { setColorizedHtml(''); return }
-    setEditing(false)
-    setColorizedHtml('')
-    monaco.editor.colorize(preview.code, 'python', {}).then(setColorizedHtml)
-  }, [preview?.code, monacoTheme])
+  const colorizedHtml = useMonacoColorize(
+    preview && preview !== 'loading' ? preview.code : null,
+    monacoTheme,
+  )
+
+  useEffect(() => { setEditing(false) }, [preview?.code])
 
   // Mount Monaco editor in edit mode
   useEffect(() => {

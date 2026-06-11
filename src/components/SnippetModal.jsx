@@ -2,20 +2,23 @@ import { useState, useEffect, useRef } from 'react'
 import { Copy, Check, ArrowUpRight, Pencil, Save, X } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import ModalBase from './ModalBase.jsx'
+import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
 
 export default function SnippetModal({ snippet, onClose, onLoad, onSave, monacoTheme }) {
   const [copied, setCopied] = useState(false)
-  const [colorizedHtml, setColorizedHtml] = useState('')
   const [editing, setEditing] = useState(false)
   const editContainerRef = useRef(null)
   const editEditorRef = useRef(null)
 
+  const colorizedHtml = useMonacoColorize(
+    snippet && snippet !== 'loading' ? snippet.code : null,
+    monacoTheme,
+  )
+
   useEffect(() => {
     if (!snippet || snippet === 'loading') return
     setEditing(false)
-    setColorizedHtml('')
-    monaco.editor.colorize(snippet.code, 'python', {}).then(setColorizedHtml)
-  }, [snippet?.code, monacoTheme])
+  }, [snippet?.code])
 
   useEffect(() => {
     if (!editing || !editContainerRef.current) return
