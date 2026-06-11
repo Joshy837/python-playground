@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
-import { useIsMobile } from '../hooks/useMedia.js'
-import { Play, ChevronLeft, Check, ChevronRight, HelpCircle, Trophy, LayoutGrid } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
 import { NODES } from '../data/courseTree.js'
@@ -9,12 +7,11 @@ import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 import Markdown from '../components/Markdown.jsx'
-import ProgressBar from '../components/ProgressBar.jsx'
-import StepButton from '../components/StepButton.jsx'
 import ConfettiBurst from '../components/ConfettiBurst.jsx'
-import QuizQuestion from '../components/QuizQuestion.jsx'
-
-const NAV_BTN_CLS = "inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.8rem] rounded-[8px] relative border border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_45%,var(--header-border))] bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_8%,var(--btn-secondary-bg))] text-[var(--text-primary)] text-[0.82rem] font-medium cursor-pointer transition-[background-color,border-color] duration-[150ms] enabled:hover:bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_14%,var(--btn-secondary-hover))] enabled:hover:border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_70%,var(--header-border))] disabled:opacity-[0.35] disabled:cursor-not-allowed"
+import LessonHeader from '../components/LessonHeader.jsx'
+import QuizSection from '../components/QuizSection.jsx'
+import ChallengeSection from '../components/ChallengeSection.jsx'
+import LessonNav from '../components/LessonNav.jsx'
 
 function buildTestCode(userCode, tests) {
   const checks = tests.map(t =>
@@ -65,9 +62,6 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
   const SECTION_CHALLENGE = hasQuiz ? 2 : 1
 
   const { isStepComplete, isStepUnlocked, markStepComplete, saveQuizProgress, getQuizAnsweredCount } = useProgress()
-
-  const isMobile = useIsMobile()
-  const [showStepSheet, setShowStepSheet] = useState(false)
 
   const [currentSection, setCurrentSection] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -249,322 +243,94 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
     )
   }
 
-  const passed = testResults?.filter(t => t.passed).length ?? 0
-  const total = currentStep.tests.length
   const totalSteps = node.steps.length
-
   const maxSection = hasQuiz ? 2 : 1
   const progressPct = allPassed ? 100 : currentSection === 0 ? 5 : Math.round(5 + (currentSection / maxSection) * 80)
   const nextDisabled = hasQuiz && currentSection === SECTION_QUIZ && !quizAllAnswered && !allPassed
-
-  function sectionLabel(idx) {
-    if (idx === 0) return 'Description'
-    if (idx === SECTION_QUIZ) return 'Quiz'
-    return 'Challenge'
-  }
-
-  function sectionAccent(idx) {
-    if (idx === 0) return 'var(--accent-try)'
-    if (idx === SECTION_QUIZ) return 'var(--accent-quiz)'
-    return 'var(--accent-challenge)'
-  }
 
   return (
     <div className="flex-1 min-h-0 flex flex-col bg-transparent overflow-hidden page-enter">
       {showConfetti && <ConfettiBurst onDone={() => setShowConfetti(false)} />}
 
-      {/* Sticky header */}
-      <div className="flex items-center gap-[0.65rem] px-4 py-[0.65rem] bg-app-surface border-b border-app-border shrink-0">
-        <button onClick={() => navigate('/course')} className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" title="Back to course">
-          <ChevronLeft size={16} />
-        </button>
-        <div className="flex flex-col min-w-0 flex-1">
-          <span className="text-sm font-semibold truncate">{node.title}</span>
-          <span className="text-xs truncate text-app-muted">
-            Step {stepIdx + 1} / {totalSteps} — {currentStep.title}
-          </span>
-        </div>
-        {isMobile ? (
-          <button
-            className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn"
-            title="Jump to step"
-            onClick={() => setShowStepSheet(true)}
-          >
-            <LayoutGrid size={16} />
-          </button>
-        ) : (
-          <div className="flex items-center gap-1.5 shrink-0">
-            {node.steps.map((s, i) => {
-              const done = isStepComplete(node.id, i)
-              const current = i === stepIdx
-              return (
-                <button
-                  key={i}
-                  className={`w-[32px] h-[32px] rounded-full border-[2.5px] bg-app-bg text-[0.8rem] font-semibold cursor-pointer flex items-center justify-center shrink-0 p-0 transition-[border-color,color] duration-150 ${done ? 'border-app-green text-app-green' : current ? 'border-app-fg text-app-fg' : 'border-app-border text-app-muted hover:border-app-muted hover:text-app-fg'}`}
-                  onClick={() => {
-                    if (current) return
-                    if (done || isStepUnlocked(node.id, i))
-                      navigate(`/learn/${node.id}/${i + 1}`)
-                  }}
-                  title={s.title}
-                >
-                  {done ? <Check size={14} strokeWidth={3} /> : <span>{i + 1}</span>}
-                </button>
-              )
-            })}
-          </div>
-        )}
-      </div>
+      <LessonHeader
+        node={node}
+        stepIdx={stepIdx}
+        totalSteps={totalSteps}
+        stepTitle={currentStep.title}
+        isStepComplete={isStepComplete}
+        isStepUnlocked={isStepUnlocked}
+        onBack={() => navigate('/course')}
+        onNavigateToStep={i => navigate(`/learn/${node.id}/${i + 1}`)}
+      />
 
-      {/* Progress bar */}
       <div className="h-[3px] bg-app-border shrink-0 relative">
         <div className="absolute left-0 top-0 h-full bg-gradient-to-r from-[var(--accent-try)] to-[var(--accent-challenge)] [transition:width_0.55s_cubic-bezier(0.4,0,0.2,1)] rounded-[0_2px_2px_0] shadow-[0_0_8px_color-mix(in_srgb,var(--accent-try)_50%,transparent)]" style={{ width: `${progressPct}%` }} />
       </div>
 
-      {/* Scrollable content */}
       <div className="flex-1 min-h-0 overflow-y-auto bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px]" ref={scrollContainerRef}>
         <div className="max-w-[740px] w-full mx-auto px-6 pt-9 pb-12">
 
-          {/* Section 0: Description */}
           {currentSection === 0 && (
             <div className="text-[0.9rem] leading-[1.75] text-app-fg lesson-section-pop">
               <Markdown md={currentStep.description} monacoTheme={monacoTheme} />
             </div>
           )}
 
-          {/* Section 1: Quiz */}
           {hasQuiz && currentSection === SECTION_QUIZ && (
-            <div className="lesson-section--quiz lesson-section-pop">
-              <p className="lesson-section-label flex items-center gap-[0.35rem] text-[0.68rem] font-bold uppercase tracking-[0.09em] text-app-muted mb-4"><HelpCircle size={12} />Check your understanding</p>
-              <ProgressBar
-                percent={(quizAnsweredCount / currentStep.quiz.length) * 100}
-                color="var(--accent-quiz)"
-                height="6px"
-                className="mb-[0.4rem]"
-              />
-              <p className="text-[0.72rem] text-app-muted mb-6">{quizAnsweredCount} / {currentStep.quiz.length} answered</p>
-              <div className="overflow-hidden relative" ref={quizContainerRef}>
-                {exitingQuizIndex !== null && (
-                  <div className={`quiz-slide-card ${navDirection === 'back' ? 'quiz-slide-exit-back' : 'quiz-slide-exit'}`}>
-                    <QuizQuestion
-                      question={currentStep.quiz[exitingQuizIndex]}
-                      number={exitingQuizIndex + 1}
-                      isLast={exitingQuizIndex === currentStep.quiz.length - 1}
-                      isCompleted={exitingQuizIndex < quizAnsweredCount}
-                      shuffledOptions={quizShufflesRef.current[exitingQuizIndex]}
-                      onAnswer={() => {}}
-                    />
-                  </div>
-                )}
-                {activeQuizIndex < currentStep.quiz.length && (
-                  <div key={`${node.id}-${stepIdx}-${activeQuizIndex}`} className={`quiz-slide-card ${navDirection === 'back' ? 'quiz-slide-enter-back' : 'quiz-slide-enter'}`}>
-                    <QuizQuestion
-                      question={currentStep.quiz[activeQuizIndex]}
-                      number={activeQuizIndex + 1}
-                      isLast={activeQuizIndex === currentStep.quiz.length - 1}
-                      isCompleted={activeQuizIndex < quizAnsweredCount}
-                      shuffledOptions={quizShufflesRef.current[activeQuizIndex]}
-                      onCorrect={handleQuizCorrect}
-                      onAnswer={handleQuizAdvance}
-                      onBack={activeQuizIndex > 0 ? handleQuizBack : undefined}
-                    />
-                  </div>
-                )}
-                {activeQuizIndex >= currentStep.quiz.length && exitingQuizIndex === null && (
-                  <div className="quiz-slide-card quiz-slide-enter flex flex-col items-center gap-2 px-4 py-8 text-center">
-                    <p className="text-lg font-semibold text-app-green m-0">All done!</p>
-                    <p className="text-sm text-app-muted m-0 mb-3">All {currentStep.quiz.length} question{currentStep.quiz.length !== 1 ? 's' : ''} correct.</p>
-                    <div className="flex gap-3">
-                      <button className="flex items-center gap-[0.4rem] py-[0.4rem] px-4 rounded-[7px] border border-app-border text-app-fg bg-app-surface text-[0.83rem] font-medium cursor-pointer transition-[border-color,background] duration-150 hover:border-app-muted hover:bg-app-bg" onClick={handleQuizReset}>Try Again</button>
-                      <button className="inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.9rem] rounded-[6px] text-[0.8rem] font-semibold bg-[var(--accent-quiz)] text-white border-none cursor-pointer whitespace-nowrap shrink-0 transition-opacity duration-150 hover:opacity-85" onClick={() => goToSection(SECTION_CHALLENGE)}>
-                        Continue <ChevronRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <QuizSection
+              quiz={currentStep.quiz}
+              nodeId={node.id}
+              stepIdx={stepIdx}
+              quizAnsweredCount={quizAnsweredCount}
+              activeQuizIndex={activeQuizIndex}
+              exitingQuizIndex={exitingQuizIndex}
+              navDirection={navDirection}
+              quizContainerRef={quizContainerRef}
+              quizShufflesRef={quizShufflesRef}
+              onCorrect={handleQuizCorrect}
+              onAdvance={handleQuizAdvance}
+              onBack={handleQuizBack}
+              onReset={handleQuizReset}
+              onContinue={() => goToSection(SECTION_CHALLENGE)}
+            />
           )}
 
-          {/* Section 2 (or 1): Challenge */}
           {currentSection === SECTION_CHALLENGE && (
-            <div className="lesson-section--challenge lesson-section-pop">
-              <p className="lesson-section-label flex items-center gap-[0.35rem] text-[0.68rem] font-bold uppercase tracking-[0.09em] text-app-muted mb-4"><Trophy size={12} />Challenge</p>
-              <div className="text-[0.9rem] leading-[1.75] text-app-fg">
-                <Markdown md={currentStep.task} monacoTheme={monacoTheme} />
-              </div>
-              <div className="border border-app-border rounded-[10px] overflow-hidden mt-4">
-                <div className="flex items-center gap-2 px-3 py-[0.4rem] bg-app-surface border-b border-app-border">
-                  <span className="text-xs text-app-muted">
-                    {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
-                  </span>
-                  <button
-                    className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
-                    disabled={!pyodideReady || isTestRunning}
-                    onClick={handleRunChallenge}
-                    title="Run Tests (Ctrl+Enter)"
-                  >
-                    <Play size={12} fill="currentColor" stroke="none" />
-                    {isTestRunning ? 'Running…' : 'Run Tests'}
-                  </button>
-                </div>
-                <div className="flex flex-row items-stretch">
-                  <div ref={challengeContainerRef} className="lesson-editor-pane flex-1 min-w-0" />
-                  <div className="w-[40%] border-l border-app-output-border bg-app-surface px-[0.9rem] py-[0.65rem] overflow-y-auto">
-                    {(runtimeOutput?.error || runtimeOutput?.stderr || runtimeOutput?.stdout) ? (
-                      <>
-                        {runtimeOutput.error && <pre className="text-app-error text-xs whitespace-pre-wrap">{runtimeOutput.error}</pre>}
-                        {runtimeOutput.stderr && <pre className="text-app-stderr text-xs whitespace-pre-wrap">{runtimeOutput.stderr}</pre>}
-                        {runtimeOutput.stdout && <pre className="text-app-stdout text-xs whitespace-pre-wrap">{runtimeOutput.stdout}</pre>}
-                      </>
-                    ) : (
-                      <span className="text-xs text-app-muted">Run code to see output</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {testResults && (
-                <div className="flex flex-col gap-2 mt-4">
-                  {testResults.map((t, i) => (
-                    <div key={i} className="flex items-start gap-[0.6rem] text-[0.84rem]">
-                      <span className="shrink-0" style={{ color: t.passed ? 'var(--status-green)' : 'var(--status-red)' }}>
-                        {t.passed ? '✓' : '✗'}
-                      </span>
-                      <span className={`text-sm ${t.passed ? 'text-app-muted' : 'text-app-fg'}`}>
-                        {t.name}
-                        {!t.passed && t.error && (
-                          <span className="text-app-error block text-xs mt-0.5">{t.error}</span>
-                        )}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {allPassed && (
-                <div className="flex items-center justify-between gap-4 mt-6 py-4 px-5 rounded-[10px] bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] border border-[color-mix(in_srgb,var(--status-green)_30%,transparent)]">
-                  <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
-                    {isLastStep ? `${node.title} complete!` : 'All tests pass!'}
-                  </span>
-                  {isLastStep ? (
-                    <button className="bg-app-btn text-app-fg transition-colors duration-150 hover:bg-app-btn-hover text-sm px-4 py-1.5 rounded-lg" onClick={() => navigate('/course')}>
-                      Back to course
-                    </button>
-                  ) : (
-                    <button className="inline-flex items-center gap-[4px] py-[0.35rem] px-[0.85rem] rounded-[8px] border-none bg-app-green text-black text-[0.82rem] font-semibold cursor-pointer transition-opacity duration-150 hover:opacity-85" onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}>
-                      Next step <ChevronRight size={14} />
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
+            <ChallengeSection
+              task={currentStep.task}
+              monacoTheme={monacoTheme}
+              tests={currentStep.tests}
+              testResults={testResults}
+              runtimeOutput={runtimeOutput}
+              isTestRunning={isTestRunning}
+              pyodideReady={pyodideReady}
+              allPassed={allPassed}
+              isLastStep={isLastStep}
+              nodeTitle={node.title}
+              containerRef={challengeContainerRef}
+              onRun={handleRunChallenge}
+              onNextStep={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
+              onBackToCourse={() => navigate('/course')}
+            />
           )}
 
         </div>
       </div>
 
-      {/* Bottom navigation */}
-      <div className="shrink-0 border-t border-app-border bg-app-surface">
-        <div className="flex items-center justify-between shrink-0 max-w-[740px] w-full mx-auto px-6 py-[0.85rem]">
-          <div className="flex-1 flex items-center">
-            {currentSection > 0 ? (
-              <button className={NAV_BTN_CLS} style={{ '--nav-btn-accent': sectionAccent(currentSection - 1) }} onClick={() => goToSection(currentSection - 1)}>
-                <ChevronLeft size={15} className="shrink-0" />
-                <span>{sectionLabel(currentSection - 1)}</span>
-              </button>
-            ) : stepIdx > 0 && (
-              <button
-                className={NAV_BTN_CLS}
-                style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
-                onClick={() => navigate(`/learn/${node.id}/${stepIdx}`, { state: { section: 'challenge' } })}
-              >
-                <ChevronLeft size={15} className="shrink-0" />
-                <span className="flex flex-col items-start leading-tight">
-                  <span className="text-[0.65rem] opacity-60">Prev lesson</span>
-                  <span>{node.steps[stepIdx - 1].title}</span>
-                </span>
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-[0.45rem]">
-            {Array.from({ length: maxSection + 1 }).map((_, i) => (
-              <div key={i} className={`w-[7px] h-[7px] rounded-full [transition:background-color_0.15s,transform_0.1s] ${i === currentSection ? 'bg-app-fg scale-[1.3]' : 'bg-app-border'}`} />
-            ))}
-          </div>
-
-          <div className="flex-1 flex items-center justify-end">
-            {currentSection < maxSection ? (
-              <button
-                className={NAV_BTN_CLS}
-                style={{ '--nav-btn-accent': sectionAccent(currentSection + 1) }}
-                onClick={() => goToSection(currentSection + 1)}
-                disabled={nextDisabled}
-              >
-                <span>{sectionLabel(currentSection + 1)}</span>
-                <ChevronRight size={15} className="shrink-0" />
-              </button>
-            ) : allPassed && (
-              isLastStep ? (
-                <button
-                  className={NAV_BTN_CLS}
-                  style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
-                  onClick={() => navigate('/course')}
-                >
-                  <span>Back to course</span>
-                  <ChevronRight size={15} className="shrink-0" />
-                </button>
-              ) : (
-                <button
-                  className={NAV_BTN_CLS}
-                  style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
-                  onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
-                >
-                  <span className="flex flex-col items-end leading-tight">
-                    <span className="text-[0.65rem] opacity-60">Next lesson</span>
-                    <span>{node.steps[stepIdx + 1].title}</span>
-                  </span>
-                  <ChevronRight size={15} className="shrink-0" />
-                </button>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-
-      {showStepSheet && (
-        <>
-          <div className="fixed inset-0 z-[100] bg-transparent" onClick={() => setShowStepSheet(false)} />
-          <div className="course-sheet">
-            <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
-            <p className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{node.title} — Steps</p>
-            <div className="flex flex-wrap gap-[10px] justify-center">
-              {node.steps.map((s, i) => {
-                const done = isStepComplete(node.id, i)
-                const current = i === stepIdx
-                const unlocked = done || isStepUnlocked(node.id, i)
-                return (
-                  <StepButton
-                    key={i}
-                    done={done}
-                    unlocked={unlocked}
-                    current={current}
-                    number={i + 1}
-                    title={s.title}
-                    onClick={() => {
-                      if (!unlocked) return
-                      setShowStepSheet(false)
-                      if (!current) navigate(`/learn/${node.id}/${i + 1}`)
-                    }}
-                  />
-                )
-              })}
-            </div>
-          </div>
-        </>
-      )}
+      <LessonNav
+        currentSection={currentSection}
+        maxSection={maxSection}
+        nextDisabled={nextDisabled}
+        allPassed={allPassed}
+        isLastStep={isLastStep}
+        stepIdx={stepIdx}
+        node={node}
+        hasQuiz={hasQuiz}
+        onGoToSection={goToSection}
+        onNavigatePrevLesson={() => navigate(`/learn/${node.id}/${stepIdx}`, { state: { section: 'challenge' } })}
+        onNavigateCourse={() => navigate('/course')}
+        onNavigateNextStep={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
+      />
     </div>
   )
 }
-
