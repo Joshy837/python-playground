@@ -9,6 +9,8 @@ import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
 
+const NAV_BTN_CLS = "inline-flex items-center gap-[0.3rem] py-[0.35rem] px-[0.8rem] rounded-[8px] relative border border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_45%,var(--header-border))] bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_8%,var(--btn-secondary-bg))] text-[var(--text-primary)] text-[0.82rem] font-medium cursor-pointer transition-[background-color,border-color] duration-[150ms] enabled:hover:bg-[color-mix(in_srgb,var(--nav-btn-accent,transparent)_14%,var(--btn-secondary-hover))] enabled:hover:border-[color-mix(in_srgb,var(--nav-btn-accent,var(--header-border))_70%,var(--header-border))] disabled:opacity-[0.35] disabled:cursor-not-allowed"
+
 function buildTestCode(userCode, tests) {
   const checks = tests.map(t =>
     `_check(${JSON.stringify(t.name)}, ${t.check}, ${JSON.stringify(t.msg)})`
@@ -651,13 +653,13 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
         <div className="flex items-center justify-between shrink-0 max-w-[740px] w-full mx-auto px-6 py-[0.85rem]">
           <div className="flex-1 flex items-center">
             {currentSection > 0 ? (
-              <button className="lesson-nav-btn" style={{ '--nav-btn-accent': sectionAccent(currentSection - 1) }} onClick={() => goToSection(currentSection - 1)}>
+              <button className={NAV_BTN_CLS} style={{ '--nav-btn-accent': sectionAccent(currentSection - 1) }} onClick={() => goToSection(currentSection - 1)}>
                 <ChevronLeft size={15} className="shrink-0" />
                 <span>{sectionLabel(currentSection - 1)}</span>
               </button>
             ) : stepIdx > 0 && (
               <button
-                className="lesson-nav-btn"
+                className={NAV_BTN_CLS}
                 style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
                 onClick={() => navigate(`/learn/${node.id}/${stepIdx}`, { state: { section: 'challenge' } })}
               >
@@ -679,7 +681,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
           <div className="flex-1 flex items-center justify-end">
             {currentSection < maxSection ? (
               <button
-                className="lesson-nav-btn lesson-nav-btn-fwd"
+                className={NAV_BTN_CLS}
                 style={{ '--nav-btn-accent': sectionAccent(currentSection + 1) }}
                 onClick={() => goToSection(currentSection + 1)}
                 disabled={nextDisabled}
@@ -690,7 +692,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
             ) : allPassed && (
               isLastStep ? (
                 <button
-                  className="lesson-nav-btn lesson-nav-btn-fwd"
+                  className={NAV_BTN_CLS}
                   style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
                   onClick={() => navigate('/course')}
                 >
@@ -699,7 +701,7 @@ export default function LessonPage({ pyodideReady, monacoTheme }) {
                 </button>
               ) : (
                 <button
-                  className="lesson-nav-btn lesson-nav-btn-fwd"
+                  className={NAV_BTN_CLS}
                   style={{ '--nav-btn-accent': 'var(--accent-challenge)' }}
                   onClick={() => navigate(`/learn/${node.id}/${stepIdx + 2}`)}
                 >
@@ -785,19 +787,31 @@ function highlightWithMonaco(code, monacoTheme) {
   }).join('\n')
 }
 
+const MD_CLS = {
+  h1:         'text-[1.35rem] font-bold mb-4 leading-[1.3]',
+  h2:         'text-[0.85rem] font-bold mt-6 mb-2 text-[var(--text-muted)] uppercase tracking-[0.05em]',
+  p:          'mb-[0.9rem]',
+  list:       'mb-[0.9rem] pl-5 list-disc flex flex-col gap-[0.3rem]',
+  table:      'w-full border-collapse mb-[0.9rem] text-[0.85rem]',
+  th:         'text-left font-semibold py-[0.45rem] px-[0.75rem] border-b-2 border-[var(--header-border)] text-[var(--text-muted)]',
+  td:         'py-[0.4rem] px-[0.75rem] border-b border-[var(--header-border)] align-top group-last:border-b-0',
+  inlineCode: 'font-mono text-[0.82em] py-[0.12em] px-[0.4em] rounded-[4px] bg-[color-mix(in_srgb,var(--text-muted)_15%,transparent)]',
+  codeBlock:  'bg-[var(--header-bg)] border border-[var(--header-border)] rounded-[8px] py-[0.9rem] px-[1.1rem] font-mono text-[0.82rem] leading-[1.65] overflow-x-auto mt-[0.75rem] mb-4 text-[var(--output-stdout)]',
+}
+
 function renderMarkdown(md, monacoTheme) {
   let html = md
     .replace(/```python\n([\s\S]*?)```/g, (_, code) =>
-      `<pre class="lesson-code-block"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
+      `<pre class="${MD_CLS.codeBlock}"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
     .replace(/```\n?([\s\S]*?)```/g, (_, code) =>
-      `<pre class="lesson-code-block"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
-    .replace(/^## (.+)$/gm, '<h2 class="lesson-h2">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="lesson-h1">$1</h1>')
+      `<pre class="${MD_CLS.codeBlock}"><code>${highlightWithMonaco(code.trimEnd(), monacoTheme)}</code></pre>`)
+    .replace(/^## (.+)$/gm, `<h2 class="${MD_CLS.h2}">$1</h2>`)
+    .replace(/^# (.+)$/gm, `<h1 class="${MD_CLS.h1}">$1</h1>`)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code class="lesson-inline-code">$1</code>')
+    .replace(/`([^`]+)`/g, `<code class="${MD_CLS.inlineCode}">$1</code>`)
     .replace(/^\* (.+)$/gm, '<li>$1</li>')
     .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul class="lesson-list">${m}</ul>`)
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul class="${MD_CLS.list}">${m}</ul>`)
     .split(/\n\n+/)
     .map(block => {
       block = block.trim()
@@ -808,12 +822,12 @@ function renderMarkdown(md, monacoTheme) {
         const isSep = l => /^\|[\s\-:|]+\|$/.test(l)
         const parseRow = l => l.split('|').slice(1, -1).map(c => c.trim())
         const [header, ...rest] = lines
-        const thead = `<tr>${parseRow(header).map(h => `<th class="lesson-th">${h}</th>`).join('')}</tr>`
+        const thead = `<tr>${parseRow(header).map(h => `<th class="${MD_CLS.th}">${h}</th>`).join('')}</tr>`
         const tbody = rest.filter(l => !isSep(l))
-          .map(l => `<tr>${parseRow(l).map(c => `<td class="lesson-td">${c}</td>`).join('')}</tr>`).join('')
-        return `<table class="lesson-table"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`
+          .map(l => `<tr class="group">${parseRow(l).map(c => `<td class="${MD_CLS.td}">${c}</td>`).join('')}</tr>`).join('')
+        return `<table class="${MD_CLS.table}"><thead>${thead}</thead><tbody>${tbody}</tbody></table>`
       }
-      return `<p class="lesson-p">${block.replace(/\n/g, '<br>')}</p>`
+      return `<p class="${MD_CLS.p}">${block.replace(/\n/g, '<br>')}</p>`
     })
     .join('\n')
   return html

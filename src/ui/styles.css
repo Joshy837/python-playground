@@ -230,61 +230,6 @@ body {
   to   { transform: translateY(100%); }
 }
 
-/* ── Lesson page — slideshow ─────────────────────────── */
-
-.lesson-nav-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.8rem;
-  border-radius: 8px;
-  position: relative;
-  border: 1px solid color-mix(in srgb, var(--nav-btn-accent, var(--header-border)) 45%, var(--header-border));
-  background: color-mix(in srgb, var(--nav-btn-accent, transparent) 8%, var(--btn-secondary-bg));
-  color: var(--text-primary);
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
-}
-.lesson-nav-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--nav-btn-accent, transparent) 14%, var(--btn-secondary-hover));
-  border-color: color-mix(in srgb, var(--nav-btn-accent, var(--header-border)) 70%, var(--header-border));
-}
-.lesson-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.lesson-nav-btn-fwd:hover:not(:disabled) {
-  color: var(--text-primary);
-}
-
-/* Prose (explanation + task — used via renderMarkdown HTML injection) */
-.lesson-h1 { font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
-.lesson-h2 { font-size: 0.85rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.lesson-p { margin-bottom: 0.9rem; }
-.lesson-list { margin-bottom: 0.9rem; padding-left: 1.25rem; list-style: disc; display: flex; flex-direction: column; gap: 0.3rem; }
-.lesson-table { width: 100%; border-collapse: collapse; margin-bottom: 0.9rem; font-size: 0.85rem; }
-.lesson-th { text-align: left; font-weight: 600; padding: 0.45rem 0.75rem; border-bottom: 2px solid var(--header-border); color: var(--text-muted); }
-.lesson-td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--header-border); vertical-align: top; }
-.lesson-table tbody tr:last-child .lesson-td { border-bottom: none; }
-.lesson-inline-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.82em;
-  padding: 0.12em 0.4em;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--text-muted) 15%, transparent);
-}
-.lesson-code-block {
-  background: var(--header-bg);
-  border: 1px solid var(--header-border);
-  border-radius: 8px;
-  padding: 0.9rem 1.1rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.82rem;
-  line-height: 1.65;
-  overflow-x: auto;
-  margin: 0.75rem 0 1rem;
-  color: var(--output-stdout);
-}
-
 .lesson-editor-pane .monaco-editor,
 .lesson-editor-pane .monaco-editor-background,
 .lesson-editor-pane .monaco-editor .margin {
