@@ -199,12 +199,12 @@ export default function SnippetsPage({ monacoTheme }) {
           {/* Side preview panel */}
           {previewOpen && (
             <div
-              className={`snippets-preview-panel${previewClosing ? ' snippets-preview-closing' : ''}`}
+              className={`w-[500px] min-w-[300px] shrink-0 rounded-[10px] border border-app-border bg-app-surface overflow-hidden flex flex-col animate-[preview-panel-in_0.2s_ease] max-md:w-full max-md:max-h-[60vh] max-md:animate-[preview-panel-in-mobile_0.2s_ease]${previewClosing ? ' snippets-preview-closing' : ''}`}
               onAnimationEnd={previewClosing ? handlePanelAnimationEnd : undefined}
             >
               <div
                 key={preview === 'loading' ? '__loading__' : String(preview.id ?? preview.label)}
-                className="snippets-preview-content"
+                className="flex flex-col flex-1 min-h-0 overflow-hidden animate-[preview-content-in_0.15s_ease]"
               >
               {previewLoading ? (
                 <div className="py-8 px-8 text-app-muted text-[0.85rem]">Loading…</div>
