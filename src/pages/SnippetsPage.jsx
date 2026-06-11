@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { X, BookmarkPlus, Copy, Check, ArrowUpRight, Pencil, Save, Trash2 } from 'lucide-react'
 import * as monaco from 'monaco-editor'
+import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
 import DeleteSnippetModal from '../components/DeleteSnippetModal.jsx'
 import Toast from '../components/Toast.jsx'
 
@@ -14,16 +15,9 @@ const EXAMPLES = [
   { label: 'Matplotlib',          file: 'matplotlib_plot.py',     description: 'Plot charts in the browser'        },
 ]
 
-const SNIPPETS_KEY = 'playground-saved-snippets-v1'
-const PENDING_KEY = 'playground-pending-load'
-
-function loadSavedSnippets() {
-  try { return JSON.parse(localStorage.getItem(SNIPPETS_KEY)) || [] } catch { return [] }
-}
-
 export default function SnippetsPage({ monacoTheme }) {
   const navigate = useNavigate()
-  const [savedSnippets, setSavedSnippets] = useState(loadSavedSnippets)
+  const { savedSnippets, updateSnippet, deleteSnippet } = useSnippetManagement()
   const [preview, setPreview] = useState(null)   // null | 'loading' | { id?, label, code }
   const [editing, setEditing] = useState(false)
   const [colorizedHtml, setColorizedHtml] = useState('')
@@ -109,19 +103,15 @@ export default function SnippetsPage({ monacoTheme }) {
     const code = editEditorRef.current?.getValue() ?? preview.code
     const id = preview?.id
     if (!id) return
-    const next = savedSnippets.map(s => s.id === id ? { ...s, code } : s)
-    setSavedSnippets(next)
+    updateSnippet(id, code)
     setPreview(prev => ({ ...prev, code }))
-    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
     setEditing(false)
     setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
   function confirmDelete() {
-    const next = savedSnippets.filter(s => s.id !== deleteTarget.id)
-    setSavedSnippets(next)
+    deleteSnippet(deleteTarget.id)
     if (preview?.id === deleteTarget.id) setPreview(null)
-    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
     setToast({ id: Date.now(), message: 'Snippet deleted' })
   }
 

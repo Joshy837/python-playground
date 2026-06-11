@@ -3,6 +3,7 @@ import { Play, Square, BookmarkPlus } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode, cancelRun } from '../runner.js'
 import { BASE_EDITOR_CONFIG } from '../editor.js'
+import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
 import OutputPanel from '../components/OutputPanel.jsx'
 import SnippetDrawer from '../components/SnippetDrawer.jsx'
 import SnippetModal from '../components/SnippetModal.jsx'
@@ -25,8 +26,6 @@ print("Hello, World!")
 `
 
 const STORAGE_KEY = 'playground-editor-v1'
-const PENDING_KEY = 'playground-pending-load'
-const SNIPPETS_KEY = 'playground-saved-snippets-v1'
 
 function loadSavedCode() {
   try {
@@ -37,10 +36,6 @@ function loadSavedCode() {
     }
     return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE
   } catch { return DEFAULT_CODE }
-}
-
-function loadSavedSnippets() {
-  try { return JSON.parse(localStorage.getItem(SNIPPETS_KEY)) || [] } catch { return [] }
 }
 
 export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
@@ -55,7 +50,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const [isRestarting, setIsRestarting] = useState(false)
   const [output, setOutput] = useState(null)
   const [modalSnippet, setModalSnippet] = useState(null)
-  const [savedSnippets, setSavedSnippets] = useState(loadSavedSnippets)
+  const { savedSnippets, addSnippet, updateSnippet, deleteSnippet } = useSnippetManagement()
   const [saveModalOpen, setSaveModalOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [toast, setToast] = useState(null)
@@ -214,10 +209,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   function handleConfirmSave(name, description) {
     const code = pendingCodeRef.current
     if (!code) return
-    const snippet = { id: Date.now(), label: name, description, code }
-    const next = [...savedSnippets, snippet]
-    setSavedSnippets(next)
-    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+    addSnippet(name, description, code)
     setToast({ id: Date.now(), message: 'Snippet saved' })
   }
 
@@ -229,17 +221,13 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   function handleSaveSnippetEdit(code) {
     const id = modalSnippet?.id
     if (!id) return
-    const next = savedSnippets.map(s => s.id === id ? { ...s, code } : s)
-    setSavedSnippets(next)
+    updateSnippet(id, code)
     setModalSnippet(prev => ({ ...prev, code }))
-    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
     setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
   function confirmDelete() {
-    const next = savedSnippets.filter(s => s.id !== deleteTarget.id)
-    setSavedSnippets(next)
-    try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(next)) } catch {}
+    deleteSnippet(deleteTarget.id)
     setToast({ id: Date.now(), message: 'Snippet deleted' })
   }
 

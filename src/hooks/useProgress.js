@@ -1,35 +1,15 @@
-import { useState } from 'react'
 import { NODES } from '../data/courseTree.js'
-
-function load() {
-  try {
-    const raw = localStorage.getItem('course-progress-v2')
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-function loadQuizProgress() {
-  try {
-    const raw = localStorage.getItem('quiz-progress-v1')
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
+import { useLocalStorage } from './useLocalStorage.js'
 
 export function useProgress() {
-  const [stepsDone, setStepsDone] = useState(load)
-  const [quizProgress, setQuizProgress] = useState(loadQuizProgress)
+  const [stepsDone, setStepsDone] = useLocalStorage('course-progress-v2', {})
+  const [quizProgress, setQuizProgress] = useLocalStorage('quiz-progress-v1', {})
 
   function markStepComplete(nodeId, stepIdx) {
     setStepsDone(prev => {
       const current = prev[nodeId] ?? []
       if (current.includes(stepIdx)) return prev
-      const next = { ...prev, [nodeId]: [...current, stepIdx] }
-      localStorage.setItem('course-progress-v2', JSON.stringify(next))
-      return next
+      return { ...prev, [nodeId]: [...current, stepIdx] }
     })
   }
 
@@ -56,11 +36,7 @@ export function useProgress() {
 
   function saveQuizProgress(nodeId, stepIdx, answeredCount) {
     const key = `${nodeId}:${stepIdx}`
-    setQuizProgress(prev => {
-      const next = { ...prev, [key]: answeredCount }
-      localStorage.setItem('quiz-progress-v1', JSON.stringify(next))
-      return next
-    })
+    setQuizProgress(prev => ({ ...prev, [key]: answeredCount }))
   }
 
   function getQuizAnsweredCount(nodeId, stepIdx) {
