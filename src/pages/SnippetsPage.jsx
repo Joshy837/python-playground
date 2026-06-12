@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BookmarkPlus } from 'lucide-react'
 import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
-import SnippetPreview from '../components/SnippetPreview.jsx'
-import { DeleteSnippetModal } from '../components/SnippetModals.jsx'
-import Toast from '../components/Toast.jsx'
-import SnippetCard from '../components/SnippetCard.jsx'
+import SnippetPreview from '../components/snippets/SnippetPreview.jsx'
+import { DeleteSnippetModal } from '../components/snippets/SnippetModals.jsx'
+import Toast from '../components/shared/Toast.jsx'
+import SnippetCard from '../components/snippets/SnippetCard.jsx'
 
 const EXAMPLES = [
   { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },

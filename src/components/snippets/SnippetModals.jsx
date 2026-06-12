@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Trash2, BookmarkPlus } from 'lucide-react'
-import ModalBase from './ModalBase.jsx'
+import ModalBase from '../shared/ModalBase.jsx'
 import SnippetPreview from './SnippetPreview.jsx'
 
 export function SnippetModal({ snippet, onClose, onLoad, onSave, monacoTheme }) {

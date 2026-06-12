@@ -7,12 +7,12 @@ import { NODES } from '../data/courseTree.js'
 import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useMonacoEditor } from '../hooks/useMonacoEditor.js'
-import Markdown from '../components/Markdown.jsx'
-import ConfettiBurst from '../components/ConfettiBurst.jsx'
-import LessonHeader from '../components/LessonHeader.jsx'
-import QuizSection from '../components/QuizSection.jsx'
-import ChallengeSection from '../components/ChallengeSection.jsx'
-import LessonNav from '../components/LessonNav.jsx'
+import Markdown from '../components/shared/Markdown.jsx'
+import ConfettiBurst from '../components/lesson/ConfettiBurst.jsx'
+import LessonHeader from '../components/lesson/LessonHeader.jsx'
+import QuizSection from '../components/lesson/QuizSection.jsx'
+import ChallengeSection from '../components/lesson/ChallengeSection.jsx'
+import LessonNav from '../components/lesson/LessonNav.jsx'
 
 // currentSection: 0=description, 1=quiz (if hasQuiz), 2=challenge (or 1 without quiz)
 

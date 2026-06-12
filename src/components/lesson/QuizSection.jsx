@@ -1,5 +1,5 @@
 import { ChevronRight, HelpCircle } from 'lucide-react'
-import ProgressBar from './ProgressBar.jsx'
+import ProgressBar from '../shared/ProgressBar.jsx'
 import QuizQuestion from './QuizQuestion.jsx'
 
 export default function QuizSection({

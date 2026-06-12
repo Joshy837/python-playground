@@ -5,11 +5,11 @@ import { runCode, cancelRun } from '../runner.js'
 import { BASE_EDITOR_CONFIG } from '../editor.js'
 import { useSnippetManagement } from '../hooks/useSnippetManagement.js'
 import { STORAGE_KEY, loadSavedCode } from '../utils/playgroundStorage.js'
-import OutputPanel from '../components/OutputPanel.jsx'
-import SnippetDrawer from '../components/SnippetDrawer.jsx'
-import { SnippetModal, SaveSnippetModal, DeleteSnippetModal } from '../components/SnippetModals.jsx'
-import Toast from '../components/Toast.jsx'
-import ExamplesDropdown from '../components/ExamplesDropdown.jsx'
+import OutputPanel from '../components/playground/OutputPanel.jsx'
+import SnippetDrawer from '../components/snippets/SnippetDrawer.jsx'
+import { SnippetModal, SaveSnippetModal, DeleteSnippetModal } from '../components/snippets/SnippetModals.jsx'
+import Toast from '../components/shared/Toast.jsx'
+import ExamplesDropdown from '../components/playground/ExamplesDropdown.jsx'
 
 const EXAMPLES = [
   { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },

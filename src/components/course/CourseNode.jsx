@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import { Check, Lock } from 'lucide-react'
-import { NODE_W, NODE_H } from '../data/courseTree.js'
+import { NODE_W, NODE_H } from '../../data/courseTree.js'
 import StepButton from './StepButton.jsx'
 
 export default function CourseNode({ data }) {

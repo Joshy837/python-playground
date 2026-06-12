@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Play, Copy, Check, ArrowUpRight } from 'lucide-react'
-import { runCode } from '../runner.js'
-import { PENDING_KEY } from '../hooks/useSnippetManagement.js'
-import ColorizedCodeBlock from './ColorizedCodeBlock.jsx'
+import { runCode } from '../../runner.js'
+import { PENDING_KEY } from '../../hooks/useSnippetManagement.js'
+import ColorizedCodeBlock from '../shared/ColorizedCodeBlock.jsx'
 
 export default function DocCard({ item, pyodideReady, monacoTheme }) {
   const [output, setOutput] = useState(null)

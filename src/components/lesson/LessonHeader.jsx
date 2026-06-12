@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useIsMobile } from '../hooks/useMedia.js'
+import { useIsMobile } from '../../hooks/useMedia.js'
 import { ChevronLeft, Check, LayoutGrid } from 'lucide-react'
-import StepButton from './StepButton.jsx'
+import StepButton from '../course/StepButton.jsx'
 
 export default function LessonHeader({ node, stepIdx, totalSteps, stepTitle, isStepComplete, isStepUnlocked, onBack, onNavigateToStep }) {
   const isMobile = useIsMobile()

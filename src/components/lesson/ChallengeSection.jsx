@@ -1,5 +1,5 @@
 import { Play, Trophy, ChevronRight } from 'lucide-react'
-import Markdown from './Markdown.jsx'
+import Markdown from '../shared/Markdown.jsx'
 
 export default function ChallengeSection({
   task,

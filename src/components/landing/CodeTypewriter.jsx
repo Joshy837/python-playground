@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePageTheme } from '../hooks/useMedia.js'
-import { tokenize } from '../utils/tokenize.js'
+import { usePageTheme } from '../../hooks/useMedia.js'
+import { tokenize } from '../../utils/tokenize.js'
 
 const SNIPPETS = [
   `# say hello

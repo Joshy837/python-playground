@@ -5,10 +5,10 @@ import '@xyflow/react/dist/style.css'
 import { NODES, EDGES, NODE_W, NODE_H } from '../data/courseTree.js'
 import { useProgress } from '../hooks/useProgress.js'
 import { useIsMobile, usePageTheme } from '../hooks/useMedia.js'
-import ProgressBar from '../components/ProgressBar.jsx'
-import StepButton from '../components/StepButton.jsx'
-import CourseNode from '../components/CourseNode.jsx'
-import MobileZoomFitter from '../components/MobileZoomFitter.jsx'
+import ProgressBar from '../components/shared/ProgressBar.jsx'
+import StepButton from '../components/course/StepButton.jsx'
+import CourseNode from '../components/course/CourseNode.jsx'
+import MobileZoomFitter from '../components/course/MobileZoomFitter.jsx'
 
 const nodeTypes = { courseNode: CourseNode }
 const nodeOrigin = [0.5, 0.5]

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useReactFlow, useOnViewportChange } from '@xyflow/react'
-import { NODES, NODE_W, NODE_H } from '../data/courseTree.js'
+import { NODES, NODE_W, NODE_H } from '../../data/courseTree.js'
 
 export default function MobileZoomFitter({ isMobile }) {
   const { setViewport } = useReactFlow()

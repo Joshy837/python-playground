@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import DocCard from '../components/DocCard.jsx'
+import DocCard from '../components/docs/DocCard.jsx'
 
 const CATEGORIES = [
   { label: 'Variables',      file: 'variables' },

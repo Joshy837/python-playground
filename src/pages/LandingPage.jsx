@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Terminal, GraduationCap, BookOpen, Zap, Globe, Lock } from 'lucide-react'
-import CodeTypewriter from '../components/CodeTypewriter.jsx'
+import CodeTypewriter from '../components/landing/CodeTypewriter.jsx'
 
 const features = [
   {

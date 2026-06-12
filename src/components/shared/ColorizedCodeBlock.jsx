@@ -1,4 +1,4 @@
-import { useMonacoColorize } from '../hooks/useMonacoColorize.js'
+import { useMonacoColorize } from '../../hooks/useMonacoColorize.js'
 
 export default function ColorizedCodeBlock({ code, monacoTheme, className }) {
   const colorizedHtml = useMonacoColorize(code, monacoTheme)

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Copy, Check, ArrowUpRight, Pencil, Save, X, Trash2 } from 'lucide-react'
 import * as monaco from 'monaco-editor'
-import ColorizedCodeBlock from './ColorizedCodeBlock.jsx'
+import ColorizedCodeBlock from '../shared/ColorizedCodeBlock.jsx'
 
 export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, onDelete, onClose, className = '' }) {
   const [editing, setEditing] = useState(false)
