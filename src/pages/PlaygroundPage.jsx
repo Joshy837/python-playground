@@ -3,7 +3,8 @@ import { Play, Square, BookmarkPlus } from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import { runCode, cancelRun } from '../runner.js'
 import { BASE_EDITOR_CONFIG } from '../editor.js'
-import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
+import { useSnippetManagement } from '../hooks/useSnippetManagement.js'
+import { STORAGE_KEY, loadSavedCode } from '../utils/playgroundStorage.js'
 import OutputPanel from '../components/OutputPanel.jsx'
 import SnippetDrawer from '../components/SnippetDrawer.jsx'
 import { SnippetModal, SaveSnippetModal, DeleteSnippetModal } from '../components/SnippetModals.jsx'
@@ -18,23 +19,6 @@ const EXAMPLES = [
   { label: 'Classes',             file: 'classes.py',             description: 'OOP with classes & inheritance'    },
   { label: 'Matplotlib',          file: 'matplotlib_plot.py',     description: 'Plot charts in the browser'        },
 ]
-
-const DEFAULT_CODE = `# Write your Python code here and press Run (or Ctrl+Enter / Cmd+Enter)
-print("Hello, World!")
-`
-
-const STORAGE_KEY = 'playground-editor-v1'
-
-function loadSavedCode() {
-  try {
-    const pending = localStorage.getItem(PENDING_KEY)
-    if (pending !== null) {
-      localStorage.removeItem(PENDING_KEY)
-      return pending
-    }
-    return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE
-  } catch { return DEFAULT_CODE }
-}
 
 export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
   const editorContainerRef = useRef(null)

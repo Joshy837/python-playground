@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { usePageTheme } from '../hooks/useMedia.js'
+import { tokenize } from '../utils/tokenize.js'
 import { Terminal, GraduationCap, BookOpen, Zap, Globe, Lock } from 'lucide-react'
 
 const features = [
@@ -59,9 +60,6 @@ print(words)`,
 const CHAR_DELAY = 40
 const PAUSE_AFTER = 2400
 
-// Tokenizer — maps to existing CSS accent variables
-const TOKEN_RE = /(?<comment>#[^\n]*)|(?<string>f?"""[\s\S]*?"""|f?'''[\s\S]*?'''|f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')|(?<number>\b\d+(?:\.\d+)?\b)|(?<kw>\b(?:def|class|return|if|elif|else|for|while|in|import|from|as|with|pass|break|continue|lambda|and|or|not|is|None|True|False|yield|raise|try|except|finally|global|nonlocal|del|assert)\b)|(?<builtin>\b(?:print|range|len|sorted|list|dict|set|tuple|str|int|float|bool|type|zip|map|filter|enumerate|sum|min|max|abs|round|open|input|repr)\b)|(?<plain>[\s\S])/g
-
 // Colors match Monaco theme definitions in monacoSetup.js / LessonPage TOKEN_COLORS
 const DEMO_COLORS = {
   '':        { kw: '#e06c75', string: '#e5c07b', number: '#c678dd', comment: '#676f7d', builtin: '#56b6c2', plain: '#abb2bf' },
@@ -69,21 +67,6 @@ const DEMO_COLORS = {
   'light':   { kw: '#0000ff', string: '#a31515', number: '#098658', comment: '#008000', builtin: '#000000', plain: '#000000' },
   'hc-dark': { kw: '#c586c0', string: '#ce9178', number: '#b5cea8', comment: '#608b4e', builtin: '#9cdcfe', plain: '#ffffff' },
   'hc-light':{ kw: '#0f4a85', string: '#b94824', number: '#005000', comment: '#4d7a00', builtin: '#0f4a85', plain: '#000000' },
-}
-
-function tokenize(code) {
-  const tokens = []
-  let last = null
-  for (const m of code.matchAll(TOKEN_RE)) {
-    const type = Object.keys(m.groups).find(k => m.groups[k] !== undefined)
-    if (last && last.type === type) {
-      last.text += m[0]
-    } else {
-      last = { type, text: m[0] }
-      tokens.push(last)
-    }
-  }
-  return tokens
 }
 
 const TOKENIZED = SNIPPETS.map(tokenize)

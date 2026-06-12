@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import * as monaco from 'monaco-editor'
 import { runCode } from '../runner.js'
+import { buildTestCode, parseTestResults, stripTestLine } from '../utils/lessonTest.js'
 import { NODES } from '../data/courseTree.js'
 import { loadStep } from '../data/loadStep.js'
 import { useProgress } from '../hooks/useProgress.js'
@@ -12,35 +13,6 @@ import LessonHeader from '../components/LessonHeader.jsx'
 import QuizSection from '../components/QuizSection.jsx'
 import ChallengeSection from '../components/ChallengeSection.jsx'
 import LessonNav from '../components/LessonNav.jsx'
-
-function buildTestCode(userCode, tests) {
-  const checks = tests.map(t =>
-    `_check(${JSON.stringify(t.name)}, ${t.check}, ${JSON.stringify(t.msg)})`
-  ).join('\n')
-  return `${userCode}
-
-import json as _json
-_results = []
-
-def _check(name, condition, msg=""):
-    _results.append({"name": name, "passed": bool(condition), "error": "" if condition else msg})
-
-${checks}
-
-print("__TESTS__:" + _json.dumps(_results))
-`
-}
-
-function parseTestResults(stdout) {
-  const marker = '__TESTS__:'
-  const line = stdout.split('\n').find(l => l.startsWith(marker))
-  if (!line) return null
-  try { return JSON.parse(line.slice(marker.length)) } catch { return null }
-}
-
-function stripTestLine(stdout) {
-  return stdout.split('\n').filter(l => !l.startsWith('__TESTS__:')).join('\n').trimEnd()
-}
 
 // currentSection: 0=description, 1=quiz (if hasQuiz), 2=challenge (or 1 without quiz)
 
