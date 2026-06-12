@@ -53,6 +53,11 @@ Exports both `renderOutput` and `clearOutput`. `clearOutput` is not currently wi
 
 **Example snippets** live in `public/examples/` as plain `.py` files, served as static assets and fetched at runtime via `fetch('/examples/<file>')`.
 
+## Coding Principles
+
+- **Small, single-purpose functions:** Each function should do one thing. If a function is growing large or doing multiple distinct things, split it.
+- **No unused variables or imports:** Remove dead code immediately — don't leave unreferenced variables, unused imports, or commented-out code lying around.
+
 ## Ideas
 
 ### Course / Tech Tree page
