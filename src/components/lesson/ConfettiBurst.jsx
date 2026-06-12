@@ -2,13 +2,24 @@ import { useRef, useEffect } from 'react'
 
 export default function ConfettiBurst({ onDone }) {
   const canvasRef = useRef(null)
+  const onDoneRef = useRef(onDone)
+  useEffect(() => {
+    onDoneRef.current = onDone
+  })
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     const ctx = canvas.getContext('2d')
-    const COLORS = ['#38bdf8', '#a78bfa', '#fbbf24', '#4ade80', '#f472b6', '#fb923c']
+    const COLORS = [
+      '#38bdf8',
+      '#a78bfa',
+      '#fbbf24',
+      '#4ade80',
+      '#f472b6',
+      '#fb923c',
+    ]
     const particles = Array.from({ length: 90 }, () => ({
       x: canvas.width * (0.2 + Math.random() * 0.6),
       y: -10 - Math.random() * 40,
@@ -21,13 +32,17 @@ export default function ConfettiBurst({ onDone }) {
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       alpha: 1,
     }))
-    let raf, t = 0
+    let raf,
+      t = 0
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       t++
       let alive = false
       for (const p of particles) {
-        p.x += p.vx; p.vy += 0.15; p.y += p.vy; p.rot += p.rotV
+        p.x += p.vx
+        p.vy += 0.15
+        p.y += p.vy
+        p.rot += p.rotV
         if (t > 55) p.alpha = Math.max(0, p.alpha - 0.018)
         if (p.alpha > 0 && p.y < canvas.height + 20) {
           alive = true
@@ -40,10 +55,24 @@ export default function ConfettiBurst({ onDone }) {
           ctx.restore()
         }
       }
-      if (alive) { raf = requestAnimationFrame(draw) } else { onDone?.() }
+      if (alive) {
+        raf = requestAnimationFrame(draw)
+      } else {
+        onDoneRef.current?.()
+      }
     }
     raf = requestAnimationFrame(draw)
     return () => cancelAnimationFrame(raf)
   }, [])
-  return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }} />
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        pointerEvents: 'none',
+        zIndex: 9999,
+      }}
+    />
+  )
 }

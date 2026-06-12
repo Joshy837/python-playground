@@ -7,9 +7,12 @@ export default function MobileZoomFitter({ isMobile }) {
   const lockedX = useRef(null)
 
   useEffect(() => {
-    if (!isMobile) { lockedX.current = null; return }
+    if (!isMobile) {
+      lockedX.current = null
+      return
+    }
     const w = window.innerWidth
-    const xs = NODES.map(n => n.vx)
+    const xs = NODES.map((n) => n.vx)
     const graphLeft = Math.min(...xs) - NODE_W / 2
     const graphRight = Math.max(...xs) + NODE_W / 2
     const graphWidth = graphRight - graphLeft
@@ -21,8 +24,11 @@ export default function MobileZoomFitter({ isMobile }) {
   }, [isMobile, setViewport])
 
   useOnViewportChange({
-    onChange: viewport => {
-      if (lockedX.current !== null && Math.abs(viewport.x - lockedX.current) > 0.5) {
+    onChange: (viewport) => {
+      if (
+        lockedX.current !== null &&
+        Math.abs(viewport.x - lockedX.current) > 0.5
+      ) {
         setViewport({ ...viewport, x: lockedX.current })
       }
     },

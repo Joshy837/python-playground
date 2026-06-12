@@ -1,25 +1,52 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BookmarkPlus } from 'lucide-react'
-import { useSnippetManagement, PENDING_KEY } from '../hooks/useSnippetManagement.js'
+import {
+  useSnippetManagement,
+  PENDING_KEY,
+} from '../hooks/useSnippetManagement.js'
 import SnippetPreview from '../components/snippets/SnippetPreview.jsx'
 import { DeleteSnippetModal } from '../components/snippets/SnippetModals.jsx'
 import Toast from '../components/shared/Toast.jsx'
 import SnippetCard from '../components/snippets/SnippetCard.jsx'
 
 const EXAMPLES = [
-  { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },
-  { label: 'Fibonacci',           file: 'fibonacci.py',           description: 'Classic number sequence'           },
-  { label: 'FizzBuzz',            file: 'fizzbuzz.py',            description: 'Divisibility with conditionals'    },
-  { label: 'List Comprehensions', file: 'list_comprehensions.py', description: 'Concise list transformations'      },
-  { label: 'Classes',             file: 'classes.py',             description: 'OOP with classes & inheritance'    },
-  { label: 'Matplotlib',          file: 'matplotlib_plot.py',     description: 'Plot charts in the browser'        },
+  {
+    label: 'Hello World',
+    file: 'hello_world.py',
+    description: 'Your first Python program',
+  },
+  {
+    label: 'Fibonacci',
+    file: 'fibonacci.py',
+    description: 'Classic number sequence',
+  },
+  {
+    label: 'FizzBuzz',
+    file: 'fizzbuzz.py',
+    description: 'Divisibility with conditionals',
+  },
+  {
+    label: 'List Comprehensions',
+    file: 'list_comprehensions.py',
+    description: 'Concise list transformations',
+  },
+  {
+    label: 'Classes',
+    file: 'classes.py',
+    description: 'OOP with classes & inheritance',
+  },
+  {
+    label: 'Matplotlib',
+    file: 'matplotlib_plot.py',
+    description: 'Plot charts in the browser',
+  },
 ]
 
 export default function SnippetsPage({ monacoTheme }) {
   const navigate = useNavigate()
   const { savedSnippets, updateSnippet, deleteSnippet } = useSnippetManagement()
-  const [preview, setPreview] = useState(null)   // null | 'loading' | { id?, label, code }
+  const [preview, setPreview] = useState(null) // null | 'loading' | { id?, label, code }
   const [previewClosing, setPreviewClosing] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [toast, setToast] = useState(null)
@@ -54,7 +81,9 @@ export default function SnippetsPage({ monacoTheme }) {
   }
 
   function loadInPlayground(code) {
-    try { localStorage.setItem(PENDING_KEY, code) } catch {}
+    try {
+      localStorage.setItem(PENDING_KEY, code)
+    } catch {}
     navigate('/playground')
   }
 
@@ -62,7 +91,7 @@ export default function SnippetsPage({ monacoTheme }) {
     const id = preview?.id
     if (!id) return
     updateSnippet(id, newCode)
-    setPreview(prev => ({ ...prev, code: newCode }))
+    setPreview((prev) => ({ ...prev, code: newCode }))
     setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
@@ -76,72 +105,101 @@ export default function SnippetsPage({ monacoTheme }) {
 
   return (
     <main className="flex-1 overflow-y-auto md:overflow-hidden relative bg-[radial-gradient(circle,color-mix(in_srgb,var(--text-muted)_18%,transparent)_1px,transparent_1px)] [background-size:22px_22px] bg-fixed text-app-fg flex flex-col page-enter">
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_25%_45%,color-mix(in_srgb,var(--accent-try)_9%,transparent)_0%,transparent_70%),radial-gradient(ellipse_50%_55%_at_80%_30%,color-mix(in_srgb,var(--accent-quiz)_8%,transparent)_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_55%_80%,color-mix(in_srgb,var(--accent-challenge)_7%,transparent)_0%,transparent_70%)] blur-[60px] pointer-events-none" aria-hidden="true" />
+      <div
+        className="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_25%_45%,color-mix(in_srgb,var(--accent-try)_9%,transparent)_0%,transparent_70%),radial-gradient(ellipse_50%_55%_at_80%_30%,color-mix(in_srgb,var(--accent-quiz)_8%,transparent)_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_55%_80%,color-mix(in_srgb,var(--accent-challenge)_7%,transparent)_0%,transparent_70%)] blur-[60px] pointer-events-none"
+        aria-hidden="true"
+      />
       <div className="shrink-0 max-w-6xl w-full mx-auto px-4 sm:px-6 pt-8 pb-4">
         <h1 className="text-xl font-bold text-app-fg">Snippets</h1>
       </div>
 
       <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-6 max-w-6xl w-full mx-auto px-4 sm:px-6 pb-6 md:overflow-hidden">
-          {/* Card list */}
-          <div className="flex-1 min-w-0 md:overflow-y-auto">
-            <section className="mb-10">
-              <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">Examples</h2>
-              <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                {EXAMPLES.map(({ label, file, description }) => (
+        {/* Card list */}
+        <div className="flex-1 min-w-0 md:overflow-y-auto">
+          <section className="mb-10">
+            <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">
+              Examples
+            </h2>
+            <div
+              className="grid gap-3"
+              style={{
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+              }}
+            >
+              {EXAMPLES.map(({ label, file, description }) => (
+                <SnippetCard
+                  key={file}
+                  label={label}
+                  description={description}
+                  active={preview?.label === label && !preview?.id}
+                  onClick={() => handleExampleClick({ label, file })}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">
+              My Snippets
+            </h2>
+            {savedSnippets.length === 0 ? (
+              <div className="flex flex-col items-center gap-2 py-12 text-app-muted border border-dashed border-app-border rounded-xl">
+                <BookmarkPlus size={26} style={{ opacity: 0.35 }} />
+                <p className="text-sm">No saved snippets yet.</p>
+                <p className="text-xs" style={{ opacity: 0.6 }}>
+                  Save code from the Playground to see it here.
+                </p>
+              </div>
+            ) : (
+              <div
+                className="grid gap-3"
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                }}
+              >
+                {savedSnippets.map(({ id, label, description, code }) => (
                   <SnippetCard
-                    key={file}
+                    key={id}
                     label={label}
                     description={description}
-                    active={preview?.label === label && !preview?.id}
-                    onClick={() => handleExampleClick({ label, file })}
+                    active={preview?.id === id}
+                    onClick={() => handleSavedClick({ id, label, code })}
+                    onDelete={() =>
+                      setDeleteTarget({ id, label, description, code })
+                    }
                   />
                 ))}
               </div>
-            </section>
+            )}
+          </section>
+        </div>
 
-            <section>
-              <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-4">My Snippets</h2>
-              {savedSnippets.length === 0 ? (
-                <div className="flex flex-col items-center gap-2 py-12 text-app-muted border border-dashed border-app-border rounded-xl">
-                  <BookmarkPlus size={26} style={{ opacity: 0.35 }} />
-                  <p className="text-sm">No saved snippets yet.</p>
-                  <p className="text-xs" style={{ opacity: 0.6 }}>Save code from the Playground to see it here.</p>
-                </div>
-              ) : (
-                <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
-                  {savedSnippets.map(({ id, label, description, code }) => (
-                    <SnippetCard
-                      key={id}
-                      label={label}
-                      description={description}
-                      active={preview?.id === id}
-                      onClick={() => handleSavedClick({ id, label, code })}
-                      onDelete={() => setDeleteTarget({ id, label, description, code })}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
+        {/* Side preview panel */}
+        {previewOpen && (
+          <div
+            className={`w-[500px] min-w-[300px] shrink-0 rounded-[10px] border border-app-border bg-app-surface overflow-hidden flex flex-col animate-[preview-panel-in_0.2s_ease] max-md:w-full max-md:max-h-[60vh] max-md:animate-[preview-panel-in-mobile_0.2s_ease]${previewClosing ? ' snippets-preview-closing' : ''}`}
+            onAnimationEnd={
+              previewClosing ? handlePanelAnimationEnd : undefined
+            }
+          >
+            <SnippetPreview
+              key={
+                preview === 'loading'
+                  ? '__loading__'
+                  : String(preview?.id ?? preview?.label)
+              }
+              snippet={preview}
+              monacoTheme={monacoTheme}
+              onLoad={loadInPlayground}
+              onSave={preview?.id ? handleSaveEdit : undefined}
+              onDelete={
+                preview?.id ? () => setDeleteTarget(preview) : undefined
+              }
+              onClose={closePreview}
+              className="animate-[preview-content-in_0.15s_ease]"
+            />
           </div>
-
-          {/* Side preview panel */}
-          {previewOpen && (
-            <div
-              className={`w-[500px] min-w-[300px] shrink-0 rounded-[10px] border border-app-border bg-app-surface overflow-hidden flex flex-col animate-[preview-panel-in_0.2s_ease] max-md:w-full max-md:max-h-[60vh] max-md:animate-[preview-panel-in-mobile_0.2s_ease]${previewClosing ? ' snippets-preview-closing' : ''}`}
-              onAnimationEnd={previewClosing ? handlePanelAnimationEnd : undefined}
-            >
-              <SnippetPreview
-                key={preview === 'loading' ? '__loading__' : String(preview?.id ?? preview?.label)}
-                snippet={preview}
-                monacoTheme={monacoTheme}
-                onLoad={loadInPlayground}
-                onSave={preview?.id ? handleSaveEdit : undefined}
-                onDelete={preview?.id ? () => setDeleteTarget(preview) : undefined}
-                onClose={closePreview}
-                className="animate-[preview-content-in_0.15s_ease]"
-              />
-            </div>
-          )}
+        )}
       </div>
 
       {deleteTarget && (
@@ -151,7 +209,13 @@ export default function SnippetsPage({ monacoTheme }) {
           onClose={() => setDeleteTarget(null)}
         />
       )}
-      {toast && <Toast key={toast.id} message={toast.message} onDone={() => setToast(null)} />}
+      {toast && (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          onDone={() => setToast(null)}
+        />
+      )}
     </main>
   )
 }

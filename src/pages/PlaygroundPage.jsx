@@ -7,24 +7,52 @@ import { useSnippetManagement } from '../hooks/useSnippetManagement.js'
 import { STORAGE_KEY, loadSavedCode } from '../utils/playgroundStorage.js'
 import OutputPanel from '../components/playground/OutputPanel.jsx'
 import SnippetDrawer from '../components/snippets/SnippetDrawer.jsx'
-import { SnippetModal, SaveSnippetModal, DeleteSnippetModal } from '../components/snippets/SnippetModals.jsx'
+import {
+  SnippetModal,
+  SaveSnippetModal,
+  DeleteSnippetModal,
+} from '../components/snippets/SnippetModals.jsx'
 import Toast from '../components/shared/Toast.jsx'
 import ExamplesDropdown from '../components/playground/ExamplesDropdown.jsx'
 
 const EXAMPLES = [
-  { label: 'Hello World',         file: 'hello_world.py',         description: 'Your first Python program'         },
-  { label: 'Fibonacci',           file: 'fibonacci.py',           description: 'Classic number sequence'           },
-  { label: 'FizzBuzz',            file: 'fizzbuzz.py',            description: 'Divisibility with conditionals'    },
-  { label: 'List Comprehensions', file: 'list_comprehensions.py', description: 'Concise list transformations'      },
-  { label: 'Classes',             file: 'classes.py',             description: 'OOP with classes & inheritance'    },
-  { label: 'Matplotlib',          file: 'matplotlib_plot.py',     description: 'Plot charts in the browser'        },
+  {
+    label: 'Hello World',
+    file: 'hello_world.py',
+    description: 'Your first Python program',
+  },
+  {
+    label: 'Fibonacci',
+    file: 'fibonacci.py',
+    description: 'Classic number sequence',
+  },
+  {
+    label: 'FizzBuzz',
+    file: 'fizzbuzz.py',
+    description: 'Divisibility with conditionals',
+  },
+  {
+    label: 'List Comprehensions',
+    file: 'list_comprehensions.py',
+    description: 'Concise list transformations',
+  },
+  {
+    label: 'Classes',
+    file: 'classes.py',
+    description: 'OOP with classes & inheritance',
+  },
+  {
+    label: 'Matplotlib',
+    file: 'matplotlib_plot.py',
+    description: 'Plot charts in the browser',
+  },
 ]
 
-export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme }) {
+export default function PlaygroundPage({ pyodideReady, monacoTheme }) {
   const editorContainerRef = useRef(null)
   const editorRef = useRef(null)
-  const initialThemeRef = useRef(monacoTheme)
   const mainRef = useRef(null)
+  const themeAtMountRef = useRef(monacoTheme)
   const outputPanelRef = useRef(null)
   const resizeHandleRef = useRef(null)
 
@@ -32,7 +60,8 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const [isRestarting, setIsRestarting] = useState(false)
   const [output, setOutput] = useState(null)
   const [modalSnippet, setModalSnippet] = useState(null)
-  const { savedSnippets, addSnippet, updateSnippet, deleteSnippet } = useSnippetManagement()
+  const { savedSnippets, addSnippet, updateSnippet, deleteSnippet } =
+    useSnippetManagement()
   const [saveModalOpen, setSaveModalOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [toast, setToast] = useState(null)
@@ -44,7 +73,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     const editor = monaco.editor.create(editorContainerRef.current, {
       ...BASE_EDITOR_CONFIG,
       value: loadSavedCode(),
-      theme: initialThemeRef.current,
+      theme: themeAtMountRef.current,
       fontSize: 14,
       padding: { top: 16, bottom: 16 },
     })
@@ -53,7 +82,9 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
       handleRunRef.current()
     })
     const disposable = editor.onDidChangeModelContent(() => {
-      try { localStorage.setItem(STORAGE_KEY, editor.getValue()) } catch {}
+      try {
+        localStorage.setItem(STORAGE_KEY, editor.getValue())
+      } catch {}
     })
     return () => {
       disposable.dispose()
@@ -70,11 +101,18 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     if (!handle || !panel || !main) return
 
     const isDesktop = () => window.innerWidth >= 768
-    const applyWidth = (px) => { panel.style.width = `${px}px`; panel.style.flex = 'none' }
-    const resetWidth = () => { panel.style.width = ''; panel.style.flex = '' }
-    const initWidth = () => isDesktop()
-      ? applyWidth(main.getBoundingClientRect().width * 0.4)
-      : resetWidth()
+    const applyWidth = (px) => {
+      panel.style.width = `${px}px`
+      panel.style.flex = 'none'
+    }
+    const resetWidth = () => {
+      panel.style.width = ''
+      panel.style.flex = ''
+    }
+    const initWidth = () =>
+      isDesktop()
+        ? applyWidth(main.getBoundingClientRect().width * 0.4)
+        : resetWidth()
 
     let dragging = false
     const onMouseDown = (e) => {
@@ -137,7 +175,9 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
 
   // Keep ref current so Monaco's Ctrl+Enter always calls the latest handleRun
   const handleRunRef = useRef(handleRun)
-  useEffect(() => { handleRunRef.current = handleRun })
+  useEffect(() => {
+    handleRunRef.current = handleRun
+  })
 
   function loadCodeAnimated(code) {
     if (animationRef.current) animationRef.current.cancelled = true
@@ -169,7 +209,10 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   }
 
   async function handleSnippetSelect({ id, label, file, code }) {
-    if (code !== undefined) { setModalSnippet({ id, label, code }); return }
+    if (code !== undefined) {
+      setModalSnippet({ id, label, code })
+      return
+    }
     setModalSnippet('loading')
     try {
       const res = await fetch(`/examples/${file}`)
@@ -196,7 +239,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   }
 
   function handleDeleteSnippet(id) {
-    const snippet = savedSnippets.find(s => s.id === id)
+    const snippet = savedSnippets.find((s) => s.id === id)
     if (snippet) setDeleteTarget(snippet)
   }
 
@@ -204,7 +247,7 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
     const id = modalSnippet?.id
     if (!id) return
     updateSnippet(id, code)
-    setModalSnippet(prev => ({ ...prev, code }))
+    setModalSnippet((prev) => ({ ...prev, code }))
     setToast({ id: Date.now(), message: 'Snippet updated' })
   }
 
@@ -216,9 +259,11 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
   const running = isRunning || isRestarting
   const runBtnDisabled = !pyodideReady || isRestarting
 
-
   return (
-    <main ref={mainRef} className="flex flex-col md:flex-row flex-1 overflow-hidden page-enter">
+    <main
+      ref={mainRef}
+      className="flex flex-col md:flex-row flex-1 overflow-hidden page-enter"
+    >
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden border-t-2 border-t-green-500/30">
         <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0 bg-app-surface border-app-border">
           <ExamplesDropdown examples={EXAMPLES} onSelect={loadExample} />
@@ -237,18 +282,33 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
                 : 'text-green-500 border-green-500/30 bg-green-500/10 hover:bg-green-500/20'
             }`}
             disabled={runBtnDisabled}
-            title={isRunning ? 'Stop' : isRestarting ? 'Restarting…' : 'Run (Ctrl+Enter)'}
+            title={
+              isRunning
+                ? 'Stop'
+                : isRestarting
+                  ? 'Restarting…'
+                  : 'Run (Ctrl+Enter)'
+            }
             onClick={handleRun}
           >
-            {running
-              ? <Square size={13} fill="currentColor" stroke="none" />
-              : <Play size={13} fill="currentColor" stroke="none" />}
-            <span>{isRestarting ? 'Restarting…' : running ? 'Stop' : 'Run'}</span>
+            {running ? (
+              <Square size={13} fill="currentColor" stroke="none" />
+            ) : (
+              <Play size={13} fill="currentColor" stroke="none" />
+            )}
+            <span>
+              {isRestarting ? 'Restarting…' : running ? 'Stop' : 'Run'}
+            </span>
           </button>
         </div>
         <div className="relative flex-1 min-h-0">
           <div ref={editorContainerRef} className="absolute inset-0" />
-          <SnippetDrawer examples={EXAMPLES.slice(0, 1)} onSelect={handleSnippetSelect} savedSnippets={savedSnippets} onDeleteSnippet={handleDeleteSnippet} />
+          <SnippetDrawer
+            examples={EXAMPLES.slice(0, 1)}
+            onSelect={handleSnippetSelect}
+            savedSnippets={savedSnippets}
+            onDeleteSnippet={handleDeleteSnippet}
+          />
         </div>
       </div>
       <div ref={resizeHandleRef} className="resize-handle shrink-0" />
@@ -274,7 +334,13 @@ export default function PlaygroundPage({ pyodideReady, pyodideError, monacoTheme
           onClose={() => setDeleteTarget(null)}
         />
       )}
-{toast && <Toast key={toast.id} message={toast.message} onDone={() => setToast(null)} />}
+      {toast && (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          onDone={() => setToast(null)}
+        />
+      )}
     </main>
   )
 }

@@ -1,86 +1,93 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-.theme-switching, .theme-switching * { transition: none !important; }
+.theme-switching,
+.theme-switching * {
+  transition: none !important;
+}
 
 /* ── Tailwind theme tokens (bridge CSS vars → utilities) ── */
 @theme inline {
-  --color-app-bg:             var(--app-bg);
-  --color-app-surface:        var(--header-bg);
-  --color-app-border:         var(--header-border);
-  --color-app-output:         var(--output-bg);
-  --color-app-output-border:  var(--output-border);
-  --color-app-fg:             var(--text-primary);
-  --color-app-muted:          var(--text-muted);
-  --color-app-btn:            var(--btn-secondary-bg);
-  --color-app-btn-hover:      var(--btn-secondary-hover);
-  --color-app-select:         var(--select-bg);
-  --color-app-select-border:  var(--select-border);
-  --color-app-stdout:         var(--output-stdout);
-  --color-app-stderr:         var(--output-stderr);
-  --color-app-error:          var(--output-error);
-  --color-app-yellow:         var(--status-yellow);
-  --color-app-green:          var(--status-green);
-  --color-app-red:            var(--status-red);
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--header-bg);
+  --color-app-border: var(--header-border);
+  --color-app-output: var(--output-bg);
+  --color-app-output-border: var(--output-border);
+  --color-app-fg: var(--text-primary);
+  --color-app-muted: var(--text-muted);
+  --color-app-btn: var(--btn-secondary-bg);
+  --color-app-btn-hover: var(--btn-secondary-hover);
+  --color-app-select: var(--select-bg);
+  --color-app-select-border: var(--select-border);
+  --color-app-stdout: var(--output-stdout);
+  --color-app-stderr: var(--output-stderr);
+  --color-app-error: var(--output-error);
+  --color-app-yellow: var(--status-yellow);
+  --color-app-green: var(--status-green);
+  --color-app-red: var(--status-red);
 }
 
 /* ── Theme variables ─────────────────────────────────── */
 :root {
-  --app-bg:           #111827;
-  --header-bg:        #1f2937;
-  --header-border:    #374151;
-  --output-bg:        #030712;
-  --output-border:    #1f2937;
-  --text-primary:     #f3f4f6;
-  --text-muted:       #6b7280;
-  --btn-secondary-bg:    #374151;
+  --app-bg: #111827;
+  --header-bg: #1f2937;
+  --header-border: #374151;
+  --output-bg: #030712;
+  --output-border: #1f2937;
+  --text-primary: #f3f4f6;
+  --text-muted: #6b7280;
+  --btn-secondary-bg: #374151;
   --btn-secondary-hover: #4b5563;
-  --select-bg:        #374151;
-  --select-border:    #4b5563;
-  --output-stdout:    #f3f4f6;
-  --output-stderr:    #fbbf24;
-  --output-error:     #f87171;
-  --status-yellow:    #facc15;
-  --status-green:     #4ade80;
-  --status-red:       #f87171;
+  --select-bg: #374151;
+  --select-border: #4b5563;
+  --output-stdout: #f3f4f6;
+  --output-stderr: #fbbf24;
+  --output-error: #f87171;
+  --status-yellow: #facc15;
+  --status-green: #4ade80;
+  --status-red: #f87171;
   --lesson-editor-bg: #222c38;
-  --course-bg:        #111827;
-  --course-dot:       #374151;
-  --accent-try:       #38bdf8;
-  --accent-quiz:      #a78bfa;
+  --course-bg: #111827;
+  --course-dot: #374151;
+  --accent-try: #38bdf8;
+  --accent-quiz: #a78bfa;
   --accent-challenge: #fbbf24;
-  --monaco-bg:        #282c34;
+  --monaco-bg: #282c34;
 }
 
-[data-theme="light"] {
-  --app-bg:           #ffffff;
-  --header-bg:        #f3f4f6;
-  --header-border:    #e5e7eb;
-  --output-bg:        #f9fafb;
-  --output-border:    #e5e7eb;
-  --text-primary:     #111827;
-  --text-muted:       #6b7280;
-  --btn-secondary-bg:    #e5e7eb;
+[data-theme='light'] {
+  --app-bg: #ffffff;
+  --header-bg: #f3f4f6;
+  --header-border: #e5e7eb;
+  --output-bg: #f9fafb;
+  --output-border: #e5e7eb;
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --btn-secondary-bg: #e5e7eb;
   --btn-secondary-hover: #d1d5db;
-  --select-bg:        #e5e7eb;
-  --select-border:    #d1d5db;
-  --output-stdout:    #111827;
-  --output-stderr:    #b45309;
-  --output-error:     #dc2626;
-  --status-yellow:    #b45309;
-  --status-green:     #15803d;
-  --status-red:       #dc2626;
+  --select-bg: #e5e7eb;
+  --select-border: #d1d5db;
+  --output-stdout: #111827;
+  --output-stderr: #b45309;
+  --output-error: #dc2626;
+  --status-yellow: #b45309;
+  --status-green: #15803d;
+  --status-red: #dc2626;
   --lesson-editor-bg: #f3f4f6;
-  --course-bg:        #fefce8;
-  --course-dot:       #d1d5db;
-  --accent-try:       #0369a1;
-  --accent-quiz:      #7c3aed;
+  --course-bg: #fefce8;
+  --course-dot: #d1d5db;
+  --accent-try: #0369a1;
+  --accent-quiz: #7c3aed;
   --accent-challenge: #b45309;
-  --monaco-bg:        #fffffe;
+  --monaco-bg: #fffffe;
 }
 
 /* ── Theme-switch fade (whole page) ──────────────────── */
-body { transition: opacity 0.2s ease; }
-[data-theme-switching] body { opacity: 0; }
+body {
+  transition: opacity 0.2s ease;
+}
+[data-theme-switching] body {
+  opacity: 0;
+}
 
 /* ── Page enter transition ───────────────────────────── */
 @keyframes page-enter {
@@ -100,22 +107,48 @@ body { transition: opacity 0.2s ease; }
 /* ── Structural theming ──────────────────────────────── */
 body {
   background:
-    radial-gradient(ellipse 70% 55% at 8% 5%,   color-mix(in srgb, var(--accent-quiz)      9%, transparent) 0%, transparent 100%),
-    radial-gradient(ellipse 60% 50% at 92% 95%,  color-mix(in srgb, var(--accent-try)       8%, transparent) 0%, transparent 100%),
-    radial-gradient(ellipse 45% 40% at 85% 8%,   color-mix(in srgb, var(--accent-challenge) 5%, transparent) 0%, transparent 100%),
+    radial-gradient(
+      ellipse 70% 55% at 8% 5%,
+      color-mix(in srgb, var(--accent-quiz) 9%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 92% 95%,
+      color-mix(in srgb, var(--accent-try) 8%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 45% 40% at 85% 8%,
+      color-mix(in srgb, var(--accent-challenge) 5%, transparent) 0%,
+      transparent 100%
+    ),
     var(--app-bg);
   color: var(--text-primary);
   font-family: 'Space Grotesk', sans-serif;
 }
-[data-theme="light"] body {
+[data-theme='light'] body {
   background:
-    radial-gradient(ellipse 70% 55% at 8% 5%,   color-mix(in srgb, var(--accent-quiz)      4%, transparent) 0%, transparent 100%),
-    radial-gradient(ellipse 60% 50% at 92% 95%,  color-mix(in srgb, var(--accent-try)       3%, transparent) 0%, transparent 100%),
-    radial-gradient(ellipse 45% 40% at 85% 8%,   color-mix(in srgb, var(--accent-challenge) 2%, transparent) 0%, transparent 100%),
+    radial-gradient(
+      ellipse 70% 55% at 8% 5%,
+      color-mix(in srgb, var(--accent-quiz) 4%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 92% 95%,
+      color-mix(in srgb, var(--accent-try) 3%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 45% 40% at 85% 8%,
+      color-mix(in srgb, var(--accent-challenge) 2%, transparent) 0%,
+      transparent 100%
+    ),
     var(--app-bg);
 }
-[data-theme="hc-dark"] body,
-[data-theme="hc-light"] body { background: var(--app-bg); }
+[data-theme='hc-dark'] body,
+[data-theme='hc-light'] body {
+  background: var(--app-bg);
+}
 .resize-handle {
   background-color: var(--header-border);
   height: 1px;
@@ -141,7 +174,9 @@ body {
     transform: translateX(-50%);
     width: 1px;
     background-color: var(--header-border);
-    transition: width 0.15s, background-color 0.15s;
+    transition:
+      width 0.15s,
+      background-color 0.15s;
   }
 
   .resize-handle:hover::after,
@@ -151,23 +186,40 @@ body {
   }
 }
 .status-badge {
-  display: flex; align-items: center; gap: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.75rem;
   flex-shrink: 0;
 }
-.status-badge[data-status="yellow"] { color: var(--status-yellow); }
-.status-badge[data-status="yellow"] .status-dot { background-color: var(--status-yellow); }
-.status-badge[data-status="green"]  { color: var(--status-green); }
-.status-badge[data-status="green"]  .status-dot { background-color: var(--status-green); }
-.status-badge[data-status="red"]    { color: var(--status-red); }
-.status-badge[data-status="red"]    .status-dot { background-color: var(--status-red); }
-
+.status-badge[data-status='yellow'] {
+  color: var(--status-yellow);
+}
+.status-badge[data-status='yellow'] .status-dot {
+  background-color: var(--status-yellow);
+}
+.status-badge[data-status='green'] {
+  color: var(--status-green);
+}
+.status-badge[data-status='green'] .status-dot {
+  background-color: var(--status-green);
+}
+.status-badge[data-status='red'] {
+  color: var(--status-red);
+}
+.status-badge[data-status='red'] .status-dot {
+  background-color: var(--status-red);
+}
 
 /* ── React Flow theme overrides ─────────────────────── */
 .react-flow,
 .react-flow__renderer,
-.react-flow__background { background: transparent !important; }
-.react-flow__attribution { display: none; }
+.react-flow__background {
+  background: transparent !important;
+}
+.react-flow__attribution {
+  display: none;
+}
 
 /* ── Course tech tree ────────────────────────────────── */
 
@@ -221,13 +273,21 @@ body {
 }
 
 @keyframes sheet-in {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 @keyframes sheet-out {
-  from { transform: translateY(0); }
-  to   { transform: translateY(100%); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
 }
 
 .lesson-editor-pane .monaco-editor,
@@ -281,24 +341,46 @@ body {
 }
 
 @keyframes lesson-continue-pulse {
-  0%, 100% { transform: translateY(0); opacity: 0.7; }
-  50% { transform: translateY(4px); opacity: 1; }
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
 }
 
 /* ── Section reveal pop animation ───────────────────── */
 @keyframes lesson-section-pop {
-  0%   { opacity: 0; transform: translateY(8px) scale(0.98); }
-  65%  { opacity: 1; transform: translateY(-2px) scale(1.004); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.004);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .lesson-section-pop {
   animation: lesson-section-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 /* ── Section accent theming ──────────────────────────── */
-.lesson-section--try       { --section-accent: var(--accent-try); }
-.lesson-section--quiz      { --section-accent: var(--accent-quiz); }
-.lesson-section--challenge { --section-accent: var(--accent-challenge); }
+.lesson-section--try {
+  --section-accent: var(--accent-try);
+}
+.lesson-section--quiz {
+  --section-accent: var(--accent-quiz);
+}
+.lesson-section--challenge {
+  --section-accent: var(--accent-challenge);
+}
 
 .lesson-section--try .lesson-section-label,
 .lesson-section--quiz .lesson-section-label,
@@ -323,20 +405,44 @@ body {
 
 /* ── Quiz ────────────────────────────────────────────── */
 @keyframes quiz-in {
-  from { transform: translateX(56px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from {
+    transform: translateX(56px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes quiz-out {
-  from { transform: translateX(0);     opacity: 1; }
-  to   { transform: translateX(-56px); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-56px);
+    opacity: 0;
+  }
 }
 @keyframes quiz-in-back {
-  from { transform: translateX(-56px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+  from {
+    transform: translateX(-56px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 @keyframes quiz-out-back {
-  from { transform: translateX(0);    opacity: 1; }
-  to   { transform: translateX(56px); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(56px);
+    opacity: 0;
+  }
 }
 .quiz-slide-enter {
   animation: quiz-in 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -363,17 +469,33 @@ body {
 
 /* Quiz marker background overrides (nested selectors — can't be inline) */
 .quiz-option-correct .quiz-marker,
-.quiz-option-reveal .quiz-marker { background: color-mix(in srgb, var(--status-green) 25%, transparent); }
-.quiz-option-wrong .quiz-marker  { background: color-mix(in srgb, var(--status-red) 25%, transparent); }
+.quiz-option-reveal .quiz-marker {
+  background: color-mix(in srgb, var(--status-green) 25%, transparent);
+}
+.quiz-option-wrong .quiz-marker {
+  background: color-mix(in srgb, var(--status-red) 25%, transparent);
+}
 
 /* ── Documentation page ─────────────────────────────── */
 @keyframes doc-content-enter {
-  from { opacity: 0; transform: translateY(7px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes doc-content-exit {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-7px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-7px);
+  }
 }
 .doc-content-enter {
   animation: doc-content-enter 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -385,20 +507,44 @@ body {
 
 /* ── Snippets page side preview panel ────────────────── */
 @keyframes preview-panel-in {
-  from { opacity: 0; transform: translateX(16px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes preview-panel-out {
-  from { opacity: 1; transform: translateX(0); }
-  to   { opacity: 0; transform: translateX(16px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(16px);
+  }
 }
 @keyframes preview-panel-in-mobile {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes preview-panel-out-mobile {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(12px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 }
 
 .snippets-preview-panel.snippets-preview-closing {
@@ -412,26 +558,52 @@ body {
 }
 
 @keyframes preview-content-in {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Snippet modal ───────────────────────────────────── */
 @keyframes modal-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes modal-backdrop-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.95) translateY(12px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 @keyframes modal-out {
-  from { opacity: 1; transform: scale(1)    translateY(0); }
-  to   { opacity: 0; transform: scale(0.95) translateY(8px); }
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
 }
 
 .modal-backdrop {
@@ -442,7 +614,11 @@ body {
   align-items: center;
   justify-content: center;
   background:
-    radial-gradient(ellipse 55% 55% at 50% 50%, color-mix(in srgb, var(--accent-quiz) 7%, transparent), transparent 70%),
+    radial-gradient(
+      ellipse 55% 55% at 50% 50%,
+      color-mix(in srgb, var(--accent-quiz) 7%, transparent),
+      transparent 70%
+    ),
     color-mix(in srgb, #000 65%, transparent);
   backdrop-filter: blur(8px);
   padding: 1rem;
@@ -470,7 +646,8 @@ body {
 .modal {
   max-width: 600px;
   height: 55vh;
-  border: 1px solid color-mix(in srgb, var(--accent-try) 30%, var(--header-border));
+  border: 1px solid
+    color-mix(in srgb, var(--accent-try) 30%, var(--header-border));
   box-shadow:
     0 32px 72px color-mix(in srgb, #000 60%, transparent),
     0 0 0 1px color-mix(in srgb, var(--accent-try) 10%, transparent),
@@ -508,33 +685,63 @@ body {
   background: color-mix(in srgb, var(--_accent) 14%, var(--header-bg));
   color: var(--_accent);
   cursor: pointer;
-  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s;
   backdrop-filter: blur(6px);
 }
 .modal-code-btn:hover {
   background: color-mix(in srgb, var(--_accent) 22%, var(--header-bg));
   border-color: color-mix(in srgb, var(--_accent) 55%, transparent);
 }
-.modal-code-btn-copied    { --_accent: var(--status-green); }
-.modal-code-btn-load      { --_accent: var(--accent-try); }
-.modal-code-btn-edit      { --_accent: var(--accent-challenge); }
-.modal-code-btn-cancel-edit { --_accent: var(--status-red); }
-.modal-code-btn-save      { --_accent: var(--status-green); }
+.modal-code-btn-copied {
+  --_accent: var(--status-green);
+}
+.modal-code-btn-load {
+  --_accent: var(--accent-try);
+}
+.modal-code-btn-edit {
+  --_accent: var(--accent-challenge);
+}
+.modal-code-btn-cancel-edit {
+  --_accent: var(--status-red);
+}
+.modal-code-btn-save {
+  --_accent: var(--status-green);
+}
 
 /* ── Toast ────────────────────────────────────────────── */
 @keyframes toast-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 @keyframes toast-out {
-  from { opacity: 1; transform: translateX(-50%) translateY(0); }
-  to   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
 }
 
 /* ── Landing page animated cursor ────────────────────── */
 @keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .landing-code-cursor {

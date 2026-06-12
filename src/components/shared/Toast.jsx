@@ -20,9 +20,17 @@ export default function Toast({ message, onDone }) {
         'text-[0.8rem] font-medium whitespace-nowrap',
         'z-[1000] pointer-events-none',
         'shadow-[0_8px_24px_color-mix(in_srgb,#000_40%,transparent)]',
-        dismissing ? 'animate-[toast-out_0.2s_ease_both]' : 'animate-[toast-in_0.2s_ease_both]',
+        dismissing
+          ? 'animate-[toast-out_0.2s_ease_both]'
+          : 'animate-[toast-in_0.2s_ease_both]',
       ].join(' ')}
-      onAnimationEnd={dismissing ? e => { if (e.animationName === 'toast-out') onDone() } : undefined}
+      onAnimationEnd={
+        dismissing
+          ? (e) => {
+              if (e.animationName === 'toast-out') onDone()
+            }
+          : undefined
+      }
     >
       <Check size={13} />
       {message}

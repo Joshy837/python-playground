@@ -11,9 +11,11 @@ export function useLocalStorage(key, initialValue) {
   })
 
   function setValue(valueOrFn) {
-    setStoredValue(prev => {
+    setStoredValue((prev) => {
       const next = typeof valueOrFn === 'function' ? valueOrFn(prev) : valueOrFn
-      try { localStorage.setItem(key, JSON.stringify(next)) } catch {}
+      try {
+        localStorage.setItem(key, JSON.stringify(next))
+      } catch {}
       return next
     })
   }

@@ -30,11 +30,46 @@ const PAUSE_AFTER = 2400
 
 // Colors match Monaco theme definitions in monacoSetup.js / LessonPage TOKEN_COLORS
 const DEMO_COLORS = {
-  '':        { kw: '#e06c75', string: '#e5c07b', number: '#c678dd', comment: '#676f7d', builtin: '#56b6c2', plain: '#abb2bf' },
-  'dark':    { kw: '#e06c75', string: '#e5c07b', number: '#c678dd', comment: '#676f7d', builtin: '#56b6c2', plain: '#abb2bf' },
-  'light':   { kw: '#0000ff', string: '#a31515', number: '#098658', comment: '#008000', builtin: '#000000', plain: '#000000' },
-  'hc-dark': { kw: '#c586c0', string: '#ce9178', number: '#b5cea8', comment: '#608b4e', builtin: '#9cdcfe', plain: '#ffffff' },
-  'hc-light':{ kw: '#0f4a85', string: '#b94824', number: '#005000', comment: '#4d7a00', builtin: '#0f4a85', plain: '#000000' },
+  '': {
+    kw: '#e06c75',
+    string: '#e5c07b',
+    number: '#c678dd',
+    comment: '#676f7d',
+    builtin: '#56b6c2',
+    plain: '#abb2bf',
+  },
+  dark: {
+    kw: '#e06c75',
+    string: '#e5c07b',
+    number: '#c678dd',
+    comment: '#676f7d',
+    builtin: '#56b6c2',
+    plain: '#abb2bf',
+  },
+  light: {
+    kw: '#0000ff',
+    string: '#a31515',
+    number: '#098658',
+    comment: '#008000',
+    builtin: '#000000',
+    plain: '#000000',
+  },
+  'hc-dark': {
+    kw: '#c586c0',
+    string: '#ce9178',
+    number: '#b5cea8',
+    comment: '#608b4e',
+    builtin: '#9cdcfe',
+    plain: '#ffffff',
+  },
+  'hc-light': {
+    kw: '#0f4a85',
+    string: '#b94824',
+    number: '#005000',
+    comment: '#4d7a00',
+    builtin: '#0f4a85',
+    plain: '#000000',
+  },
 }
 
 const TOKENIZED = SNIPPETS.map(tokenize)
@@ -63,7 +98,8 @@ export default function CodeTypewriter() {
         s.charIdx++
         const ch = snippet[s.charIdx - 1]
         setCharCount(s.charIdx)
-        const delay = ch === '\n' ? CHAR_DELAY * 4 : CHAR_DELAY + (Math.random() * 20 - 10)
+        const delay =
+          ch === '\n' ? CHAR_DELAY * 4 : CHAR_DELAY + (Math.random() * 20 - 10)
         timer = setTimeout(tick, delay)
       } else {
         s.pausing = true
@@ -81,17 +117,33 @@ export default function CodeTypewriter() {
     const { type, text } = TOKENIZED[snippetIdx][i]
     const visible = text.slice(0, remaining)
     remaining -= visible.length
-    spans.push(<span key={i} style={{ color: colors[type] }}>{visible}</span>)
+    spans.push(
+      <span key={i} style={{ color: colors[type] }}>
+        {visible}
+      </span>
+    )
   }
 
   return (
     <div className="bg-[var(--monaco-bg)] border border-app-border rounded-xl overflow-hidden relative z-[1]">
       <div className="flex items-center gap-[6px] px-[14px] py-[10px] border-b border-app-border bg-app-surface">
-        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#ff5f57' }} />
-        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#ffbd2e' }} />
-        <span className="inline-block w-[11px] h-[11px] rounded-full opacity-85" style={{ background: '#28ca41' }} />
+        <span
+          className="inline-block w-[11px] h-[11px] rounded-full opacity-85"
+          style={{ background: '#ff5f57' }}
+        />
+        <span
+          className="inline-block w-[11px] h-[11px] rounded-full opacity-85"
+          style={{ background: '#ffbd2e' }}
+        />
+        <span
+          className="inline-block w-[11px] h-[11px] rounded-full opacity-85"
+          style={{ background: '#28ca41' }}
+        />
       </div>
-      <pre className="m-0 px-6 py-5 font-mono text-[0.83rem] leading-[1.65] text-app-fg min-h-[9rem] whitespace-pre [tab-size:4]">{spans}<span className="landing-code-cursor">▋</span></pre>
+      <pre className="m-0 px-6 py-5 font-mono text-[0.83rem] leading-[1.65] text-app-fg min-h-[9rem] whitespace-pre [tab-size:4]">
+        {spans}
+        <span className="landing-code-cursor">▋</span>
+      </pre>
     </div>
   )
 }

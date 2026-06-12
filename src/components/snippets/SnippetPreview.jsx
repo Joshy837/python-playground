@@ -1,9 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
-import { Copy, Check, ArrowUpRight, Pencil, Save, X, Trash2 } from 'lucide-react'
+import {
+  Copy,
+  Check,
+  ArrowUpRight,
+  Pencil,
+  Save,
+  X,
+  Trash2,
+} from 'lucide-react'
 import * as monaco from 'monaco-editor'
 import ColorizedCodeBlock from '../shared/ColorizedCodeBlock.jsx'
 
-export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, onDelete, onClose, className = '' }) {
+export default function SnippetPreview({
+  snippet,
+  monacoTheme,
+  onLoad,
+  onSave,
+  onDelete,
+  onClose,
+  className = '',
+}) {
   const [editing, setEditing] = useState(false)
   const [copied, setCopied] = useState(false)
   const editContainerRef = useRef(null)
@@ -11,7 +27,11 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
 
   const code = snippet && snippet !== 'loading' ? snippet.code : null
 
-  useEffect(() => { setEditing(false) }, [code])
+  const [prevCode, setPrevCode] = useState(code)
+  if (prevCode !== code) {
+    setPrevCode(code)
+    setEditing(false)
+  }
 
   useEffect(() => {
     if (!editing || !editContainerRef.current || !code) return
@@ -30,14 +50,22 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
       overviewRulerLanes: 0,
     })
     editEditorRef.current = editor
-    return () => { editor.dispose(); editEditorRef.current = null }
+    return () => {
+      editor.dispose()
+      editEditorRef.current = null
+    }
+    // code and monacoTheme intentionally omitted: editor mounts/unmounts on editing toggle only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing])
 
   // When editing, intercept Escape before ModalBase closes the modal
   useEffect(() => {
     if (!editing) return
     function handler(e) {
-      if (e.key === 'Escape') { e.stopImmediatePropagation(); setEditing(false) }
+      if (e.key === 'Escape') {
+        e.stopImmediatePropagation()
+        setEditing(false)
+      }
     }
     document.addEventListener('keydown', handler, true)
     return () => document.removeEventListener('keydown', handler, true)
@@ -58,43 +86,76 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
 
   if (!snippet || snippet === 'loading') {
     return (
-      <div className={`py-8 px-8 text-app-muted text-[0.85rem] ${className}`}>Loading…</div>
+      <div className={`py-8 px-8 text-app-muted text-[0.85rem] ${className}`}>
+        Loading…
+      </div>
     )
   }
 
   return (
-    <div className={`flex flex-col flex-1 min-h-0 overflow-hidden ${className}`}>
+    <div
+      className={`flex flex-col flex-1 min-h-0 overflow-hidden ${className}`}
+    >
       <div className="flex items-center justify-between gap-2 py-[0.6rem] px-[0.75rem] border-b border-app-border shrink-0">
         <div className="flex items-center gap-[0.55rem] min-w-0">
-          <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[--accent-try]/18 text-[var(--accent-try)] border border-[--accent-try]/40 shrink-0 leading-[1.6]">py</span>
-          <span className="text-[0.88rem] font-semibold text-app-fg truncate">{snippet.label}</span>
+          <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[--accent-try]/18 text-[var(--accent-try)] border border-[--accent-try]/40 shrink-0 leading-[1.6]">
+            py
+          </span>
+          <span className="text-[0.88rem] font-semibold text-app-fg truncate">
+            {snippet.label}
+          </span>
         </div>
         <div className="flex items-center gap-1">
           {!editing ? (
             <>
-              <button className={`modal-code-btn modal-code-btn-copy${copied ? ' modal-code-btn-copied' : ''}`} onClick={handleCopy} title="Copy">
+              <button
+                className={`modal-code-btn modal-code-btn-copy${copied ? ' modal-code-btn-copied' : ''}`}
+                onClick={handleCopy}
+                title="Copy"
+              >
                 {copied ? <Check size={13} /> : <Copy size={13} />}
               </button>
               {onSave && (
-                <button className="modal-code-btn modal-code-btn-edit" onClick={() => setEditing(true)} title="Edit">
+                <button
+                  className="modal-code-btn modal-code-btn-edit"
+                  onClick={() => setEditing(true)}
+                  title="Edit"
+                >
                   <Pencil size={13} />
                 </button>
               )}
               {onDelete && (
-                <button className="modal-code-btn" style={{ color: 'var(--status-red)' }} onClick={onDelete} title="Delete">
+                <button
+                  className="modal-code-btn"
+                  style={{ color: 'var(--status-red)' }}
+                  onClick={onDelete}
+                  title="Delete"
+                >
                   <Trash2 size={13} />
                 </button>
               )}
-              <button className="modal-code-btn modal-code-btn-load" onClick={() => onLoad(snippet.code)} title="Load in Playground">
+              <button
+                className="modal-code-btn modal-code-btn-load"
+                onClick={() => onLoad(snippet.code)}
+                title="Load in Playground"
+              >
                 <ArrowUpRight size={13} />
               </button>
             </>
           ) : (
             <>
-              <button className="modal-code-btn modal-code-btn-cancel-edit" onClick={() => setEditing(false)} title="Cancel">
+              <button
+                className="modal-code-btn modal-code-btn-cancel-edit"
+                onClick={() => setEditing(false)}
+                title="Cancel"
+              >
                 <X size={13} />
               </button>
-              <button className="modal-code-btn modal-code-btn-save" onClick={handleSaveEdit} title="Save changes">
+              <button
+                className="modal-code-btn modal-code-btn-save"
+                onClick={handleSaveEdit}
+                title="Save changes"
+              >
                 <Save size={13} />
               </button>
             </>
@@ -112,14 +173,18 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {editing
-          ? <div className="relative h-[min(400px,60vh)]" ref={editContainerRef} />
-          : <ColorizedCodeBlock
-              code={code}
-              monacoTheme={monacoTheme}
-              className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full"
-            />
-        }
+        {editing ? (
+          <div
+            className="relative h-[min(400px,60vh)]"
+            ref={editContainerRef}
+          />
+        ) : (
+          <ColorizedCodeBlock
+            code={code}
+            monacoTheme={monacoTheme}
+            className="m-0 p-4 font-mono text-[0.82rem] leading-[1.65] text-app-stdout whitespace-pre overflow-x-auto min-h-full"
+          />
+        )}
       </div>
     </div>
   )

@@ -12,8 +12,8 @@ import SnippetsPage from './pages/SnippetsPage.jsx'
 import { initPyodide } from './runner.js'
 
 const PAGE_THEME = {
-  'monokai':  'dark',
-  'vs':       'light',
+  monokai: 'dark',
+  vs: 'light',
   'hc-black': 'hc-dark',
   'hc-light': 'hc-light',
 }
@@ -21,7 +21,11 @@ const PAGE_THEME = {
 const THEME_KEY = 'app-theme-v1'
 
 function loadTheme() {
-  try { return localStorage.getItem(THEME_KEY) || 'monokai' } catch { return 'monokai' }
+  try {
+    return localStorage.getItem(THEME_KEY) || 'monokai'
+  } catch {
+    return 'monokai'
+  }
 }
 
 export default function App() {
@@ -31,7 +35,7 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = PAGE_THEME[monacoTheme]
-  }, [])
+  }, [monacoTheme])
 
   useEffect(() => {
     initPyodide()
@@ -46,21 +50,59 @@ export default function App() {
     root.dataset.theme = PAGE_THEME[next]
     setMonacoTheme(next)
     monaco.editor.setTheme(next)
-    try { localStorage.setItem(THEME_KEY, next) } catch {}
-    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-switching')))
+    try {
+      localStorage.setItem(THEME_KEY, next)
+    } catch {}
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => root.classList.remove('theme-switching'))
+    )
   }
 
   return (
     <BrowserRouter>
-      <Header isDark={monacoTheme === 'monokai'} onToggleTheme={toggleTheme} pyodideReady={pyodideReady} pyodideError={pyodideError} />
+      <Header
+        isDark={monacoTheme === 'monokai'}
+        onToggleTheme={toggleTheme}
+        pyodideReady={pyodideReady}
+        pyodideError={pyodideError}
+      />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/playground" element={<PlaygroundPage pyodideReady={pyodideReady} pyodideError={pyodideError} monacoTheme={monacoTheme} />} />
+        <Route
+          path="/playground"
+          element={
+            <PlaygroundPage
+              pyodideReady={pyodideReady}
+              monacoTheme={monacoTheme}
+            />
+          }
+        />
         <Route path="/course" element={<CoursePage />} />
-        <Route path="/learn/:id" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
-        <Route path="/learn/:id/:step" element={<LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
-        <Route path="/docs" element={<DocumentationPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />} />
-        <Route path="/snippets" element={<SnippetsPage monacoTheme={monacoTheme} />} />
+        <Route
+          path="/learn/:id"
+          element={
+            <LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />
+          }
+        />
+        <Route
+          path="/learn/:id/:step"
+          element={
+            <LessonPage pyodideReady={pyodideReady} monacoTheme={monacoTheme} />
+          }
+        />
+        <Route
+          path="/docs"
+          element={
+            <DocumentationPage
+              pyodideReady={pyodideReady}
+              monacoTheme={monacoTheme}
+            />
+          }
+        />
+        <Route
+          path="/snippets"
+          element={<SnippetsPage monacoTheme={monacoTheme} />}
+        />
       </Routes>
     </BrowserRouter>
   )

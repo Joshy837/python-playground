@@ -29,7 +29,9 @@ export function initPyodide() {
 export function cancelRun() {
   pendingResult = null
   spawnWorker()
-  return new Promise((resolve) => { pendingReady = resolve })
+  return new Promise((resolve) => {
+    pendingReady = resolve
+  })
 }
 
 export function runCode(code) {
@@ -37,7 +39,9 @@ export function runCode(code) {
     const timer = setTimeout(() => {
       pendingResult = null
       spawnWorker()
-      const restartPromise = new Promise((res) => { pendingReady = res })
+      const restartPromise = new Promise((res) => {
+        pendingReady = res
+      })
       resolve({
         stdout: '',
         stderr: '',

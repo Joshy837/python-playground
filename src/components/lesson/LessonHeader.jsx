@@ -3,14 +3,27 @@ import { useIsMobile } from '../../hooks/useMedia.js'
 import { ChevronLeft, Check, LayoutGrid } from 'lucide-react'
 import StepButton from '../course/StepButton.jsx'
 
-export default function LessonHeader({ node, stepIdx, totalSteps, stepTitle, isStepComplete, isStepUnlocked, onBack, onNavigateToStep }) {
+export default function LessonHeader({
+  node,
+  stepIdx,
+  totalSteps,
+  stepTitle,
+  isStepComplete,
+  isStepUnlocked,
+  onBack,
+  onNavigateToStep,
+}) {
   const isMobile = useIsMobile()
   const [showStepSheet, setShowStepSheet] = useState(false)
 
   return (
     <>
       <div className="flex items-center gap-[0.65rem] px-4 py-[0.65rem] bg-app-surface border-b border-app-border shrink-0">
-        <button onClick={onBack} className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn" title="Back to course">
+        <button
+          onClick={onBack}
+          className="flex items-center justify-center w-[26px] h-[26px] rounded-[6px] border-none bg-transparent text-app-muted cursor-pointer transition-[color,background-color] duration-150 shrink-0 hover:text-app-fg hover:bg-app-btn"
+          title="Back to course"
+        >
           <ChevronLeft size={16} />
         </button>
         <div className="flex flex-col min-w-0 flex-1">
@@ -42,7 +55,11 @@ export default function LessonHeader({ node, stepIdx, totalSteps, stepTitle, isS
                   }}
                   title={s.title}
                 >
-                  {done ? <Check size={14} strokeWidth={3} /> : <span>{i + 1}</span>}
+                  {done ? (
+                    <Check size={14} strokeWidth={3} />
+                  ) : (
+                    <span>{i + 1}</span>
+                  )}
                 </button>
               )
             })}
@@ -52,10 +69,15 @@ export default function LessonHeader({ node, stepIdx, totalSteps, stepTitle, isS
 
       {showStepSheet && (
         <>
-          <div className="fixed inset-0 z-[100] bg-transparent" onClick={() => setShowStepSheet(false)} />
+          <div
+            className="fixed inset-0 z-[100] bg-transparent"
+            onClick={() => setShowStepSheet(false)}
+          />
           <div className="course-sheet">
             <div className="w-9 h-1 rounded-sm bg-app-border mx-auto mb-[14px]" />
-            <p className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">{node.title} — Steps</p>
+            <p className="text-[0.85rem] font-semibold text-app-fg text-center mb-[14px]">
+              {node.title} — Steps
+            </p>
             <div className="flex flex-wrap gap-[10px] justify-center">
               {node.steps.map((s, i) => {
                 const done = isStepComplete(node.id, i)

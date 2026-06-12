@@ -6,6 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "lint": "eslint src",
+    "format": "prettier --write src",
     "postinstall": "node -e \"const fs=require('fs'),f='node_modules/vite-plugin-monaco-editor/dist/workerMiddleware.js';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('fs.rmdirSync','fs.rmSync'))\""
   },
   "dependencies": {
@@ -17,8 +19,16 @@
     "react-router-dom": "^7.16.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
     "tailwindcss": "^4.0.0",
     "vite": "^6.0.0",
     "vite-plugin-monaco-editor": "^1.1.0"

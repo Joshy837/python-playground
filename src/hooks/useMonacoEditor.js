@@ -16,18 +16,36 @@ import { BASE_EDITOR_CONFIG, editorHeight } from '../editor.js'
  * @param {function}         opts.onRun         – called when Ctrl/Cmd+Enter is pressed
  * @param {object}           [opts.extraOptions] – extra Monaco options merged last
  */
-export function useMonacoEditor({ active, containerRef, editorRef, initialCode, stepKey, theme, onRun, extraOptions = {}, autoGrow = false }) {
+export function useMonacoEditor({
+  active,
+  containerRef,
+  editorRef,
+  initialCode,
+  stepKey,
+  theme,
+  onRun,
+  extraOptions = {},
+  autoGrow = false,
+}) {
   const savedCodeRef = useRef(null)
   const runRef = useRef(onRun)
-  useEffect(() => { runRef.current = onRun })
+  useEffect(() => {
+    runRef.current = onRun
+  })
   const themeRef = useRef(theme)
-  useEffect(() => { themeRef.current = theme })
+  useEffect(() => {
+    themeRef.current = theme
+  })
 
-  // Reset saved code on render when the step changes so the new step's
-  // initialCode is used rather than code saved from the previous step.
+  // Reset saved code when the step changes so the new step uses initialCode.
+  // prevStepKeyRef/.savedCodeRef are cache values not needed for rendering;
+  // reading/writing them here is safe even though the rule flags it.
   const prevStepKeyRef = useRef(stepKey)
+  // eslint-disable-next-line react-hooks/refs
   if (prevStepKeyRef.current !== stepKey) {
+    // eslint-disable-next-line react-hooks/refs
     prevStepKeyRef.current = stepKey
+    // eslint-disable-next-line react-hooks/refs
     savedCodeRef.current = null
   }
 
@@ -49,7 +67,9 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
       theme: themeRef.current,
     })
     editorRef.current = editor
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current?.())
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () =>
+      runRef.current?.()
+    )
     const contentListener = autoGrow
       ? editor.onDidChangeModelContent(() => updateHeight(editor.getValue()))
       : null
@@ -64,8 +84,8 @@ export function useMonacoEditor({ active, containerRef, editorRef, initialCode, 
       editor.dispose()
       editorRef.current = null
     }
-  // active and stepKey are the only meaningful triggers; initialCode/theme/
-  // extraOptions change in lockstep with these and don't need separate deps.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // active and stepKey are the only meaningful triggers; initialCode/theme/
+    // extraOptions change in lockstep with these and don't need separate deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, stepKey])
 }

@@ -1,4 +1,12 @@
-import { Tag, GitBranch, List, Repeat, BookOpen, Code2, Lightbulb } from 'lucide-react'
+import {
+  Tag,
+  GitBranch,
+  List,
+  Repeat,
+  BookOpen,
+  Code2,
+  Lightbulb,
+} from 'lucide-react'
 
 // Horizontal layout (desktop): flows left→right, branches spread up/down.
 // Vertical layout (mobile):  flows top→bottom, branches spread left/right.
@@ -8,21 +16,22 @@ export const NODES = [
     id: 'basics',
     title: 'Getting Started',
     icon: Lightbulb,
-    x: 60,  y: 250,
-    vx: 0,  vy: 0,
+    x: 60,
+    y: 250,
+    vx: 0,
+    vy: 0,
     requires: [],
     description: 'Learn to show output and leave notes in your code.',
-    steps: [
-      { title: 'print()' },
-      { title: 'Comments' },
-    ],
+    steps: [{ title: 'print()' }, { title: 'Comments' }],
   },
   {
     id: 'variables',
     title: 'Variables',
     icon: Tag,
-    x: 220, y: 250,
-    vx: 0,  vy: 140,
+    x: 220,
+    y: 250,
+    vx: 0,
+    vy: 140,
     requires: ['basics'],
     description: 'Learn how to store data in variables.',
     steps: [
@@ -39,8 +48,10 @@ export const NODES = [
     id: 'conditionals',
     title: 'Conditionals',
     icon: GitBranch,
-    x: 420, y: 175,
-    vx: -100, vy: 280,
+    x: 420,
+    y: 175,
+    vx: -100,
+    vy: 280,
     requires: ['variables'],
     description: 'Make decisions in your code with if, elif, and else.',
     steps: [
@@ -54,8 +65,10 @@ export const NODES = [
     id: 'lists',
     title: 'Lists',
     icon: List,
-    x: 420, y: 325,
-    vx: 100, vy: 280,
+    x: 420,
+    y: 325,
+    vx: 100,
+    vy: 280,
     requires: ['variables'],
     description: 'Store and work with collections of values.',
     steps: [
@@ -69,8 +82,10 @@ export const NODES = [
     id: 'loops',
     title: 'Loops',
     icon: Repeat,
-    x: 620, y: 250,
-    vx: 0,  vy: 420,
+    x: 620,
+    y: 250,
+    vx: 0,
+    vy: 420,
     requires: ['conditionals', 'lists'],
     description: 'Repeat actions with for and while loops.',
     steps: [
@@ -83,8 +98,10 @@ export const NODES = [
     id: 'functions',
     title: 'Functions',
     icon: Code2,
-    x: 800, y: 250,
-    vx: 0,  vy: 560,
+    x: 800,
+    y: 250,
+    vx: 0,
+    vy: 560,
     requires: ['loops'],
     description: 'Write reusable blocks of code with def.',
     steps: [
@@ -97,8 +114,10 @@ export const NODES = [
     id: 'dicts',
     title: 'Dictionaries',
     icon: BookOpen,
-    x: 980, y: 250,
-    vx: 0,  vy: 700,
+    x: 980,
+    y: 250,
+    vx: 0,
+    vy: 700,
     requires: ['functions'],
     description: 'Store labelled information with keys and values.',
     steps: [
@@ -111,8 +130,8 @@ export const NODES = [
   },
 ]
 
-export const EDGES = NODES.flatMap(node =>
-  node.requires.map(req => ({ from: req, to: node.id }))
+export const EDGES = NODES.flatMap((node) =>
+  node.requires.map((req) => ({ from: req, to: node.id }))
 )
 
 export const NODE_W = 140

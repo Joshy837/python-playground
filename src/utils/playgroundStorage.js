@@ -14,5 +14,7 @@ export function loadSavedCode() {
       return pending
     }
     return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE
-  } catch { return DEFAULT_CODE }
+  } catch {
+    return DEFAULT_CODE
+  }
 }
