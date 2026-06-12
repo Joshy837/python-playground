@@ -76,7 +76,7 @@ export function SaveSnippetModal({ defaultName, defaultDescription = '', isEdit 
               Cancel
             </button>
             <button
-              className="flex items-center gap-[0.35rem] py-[0.4rem] px-[0.85rem] rounded-[7px] border border-[color-mix(in_srgb,var(--accent)_40%,transparent)] bg-[color-mix(in_srgb,var(--accent)_15%,transparent)] text-[var(--accent)] text-[0.8rem] font-semibold cursor-pointer transition-[background-color] duration-150 hover:bg-[color-mix(in_srgb,var(--accent)_25%,transparent)]"
+              className="flex items-center gap-[0.35rem] py-[0.4rem] px-[0.85rem] rounded-[7px] border border-[--accent]/40 bg-[--accent]/15 text-[var(--accent)] text-[0.8rem] font-semibold cursor-pointer transition-[background-color] duration-150 hover:bg-[--accent]/25"
               onClick={() => handleSave(close)}
             >
               <BookmarkPlus size={13} />
@@ -109,7 +109,7 @@ export function DeleteSnippetModal({ snippet, onConfirm, onClose }) {
               Cancel
             </button>
             <button
-              className="flex items-center gap-[0.35rem] py-[0.4rem] px-[0.85rem] rounded-[7px] border border-[color-mix(in_srgb,#f87171_40%,transparent)] bg-[color-mix(in_srgb,#f87171_15%,transparent)] text-[#f87171] text-[0.8rem] font-semibold cursor-pointer transition-[background-color] duration-150 hover:bg-[color-mix(in_srgb,#f87171_25%,transparent)]"
+              className="flex items-center gap-[0.35rem] py-[0.4rem] px-[0.85rem] rounded-[7px] border border-[#f87171]/40 bg-[#f87171]/15 text-[#f87171] text-[0.8rem] font-semibold cursor-pointer transition-[background-color] duration-150 hover:bg-[#f87171]/25"
               onClick={() => { onConfirm(); close() }}
             >
               <Trash2 size={13} />

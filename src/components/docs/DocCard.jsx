@@ -52,7 +52,7 @@ export default function DocCard({ item, pyodideReady, monacoTheme }) {
             style={{ background: 'color-mix(in srgb, var(--header-bg) 60%, var(--monaco-bg))' }}
           >
             <button
-              className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.2rem] px-[0.55rem] rounded-[5px] text-[0.72rem] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
+              className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.2rem] px-[0.55rem] rounded-[5px] text-[0.72rem] shrink-0 disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[#16a34a]/12"
               onClick={handleRun}
               disabled={!pyodideReady || isRunning}
               title={isRunning ? 'Running…' : pyodideReady ? 'Run (click)' : 'Connecting to Python…'}

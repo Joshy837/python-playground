@@ -66,7 +66,7 @@ export default function SnippetPreview({ snippet, monacoTheme, onLoad, onSave, o
     <div className={`flex flex-col flex-1 min-h-0 overflow-hidden ${className}`}>
       <div className="flex items-center justify-between gap-2 py-[0.6rem] px-[0.75rem] border-b border-app-border shrink-0">
         <div className="flex items-center gap-[0.55rem] min-w-0">
-          <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[color-mix(in_srgb,var(--accent-try)_18%,transparent)] text-[var(--accent-try)] border border-[color-mix(in_srgb,var(--accent-try)_40%,transparent)] shrink-0 leading-[1.6]">py</span>
+          <span className="text-[0.65rem] font-bold tracking-[0.07em] uppercase py-[0.18em] px-[0.55em] rounded-[5px] bg-[--accent-try]/18 text-[var(--accent-try)] border border-[--accent-try]/40 shrink-0 leading-[1.6]">py</span>
           <span className="text-[0.88rem] font-semibold text-app-fg truncate">{snippet.label}</span>
         </div>
         <div className="flex items-center gap-1">

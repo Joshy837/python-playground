@@ -50,8 +50,8 @@ export default function QuizQuestion({ question, number, onCorrect, onAnswer, on
         {shuffledOptions ? (
           <div className="flex flex-col gap-1.5">
             {shuffledOptions.map(({ text }, i) => (
-              <button key={i} className={`quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface${i === shuffledAnswer ? ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
-                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
+              <button key={i} className={`quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface${i === shuffledAnswer ? ' quiz-option-correct !border-app-green !bg-app-green/10 !text-app-green cursor-default' : ''}`} disabled style={{ opacity: i === shuffledAnswer ? 1 : 0.38 }}>
+                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-app-muted/20 inline-flex items-center justify-center shrink-0">{i === shuffledAnswer ? '✓' : String.fromCharCode(65 + i)}</span>
                 {text}
               </button>
             ))}
@@ -93,7 +93,7 @@ export default function QuizQuestion({ question, number, onCorrect, onAnswer, on
             spellCheck={false}
           />
           <button
-            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
+            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[#16a34a]/12"
             disabled={(fitbSubmitted && fitbCorrect) || !fitbInput.trim()}
             onClick={submitFitb}
           >
@@ -116,10 +116,10 @@ export default function QuizQuestion({ question, number, onCorrect, onAnswer, on
           {shuffledOptions.map(({ text }, i) => {
             const optCorrect = i === shuffledAnswer
             let cls = 'quiz-option flex items-center gap-3 py-[0.55rem] px-[0.85rem] rounded-[8px] border border-app-border bg-transparent text-app-fg text-[0.86rem] text-left cursor-pointer transition-[border-color,background-color] duration-[120ms] w-full hover:border-app-muted hover:bg-app-surface'
-            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct !border-app-green !bg-[color-mix(in_srgb,var(--status-green)_10%,transparent)] !text-app-green cursor-default'
+            if (answered && mcqCorrect && optCorrect) cls += ' quiz-option-correct !border-app-green !bg-app-green/10 !text-app-green cursor-default'
             return (
               <button key={i} className={cls} disabled={answered} onClick={() => { setSelected(i); if (i === shuffledAnswer) onCorrect?.() }}>
-                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-[color-mix(in_srgb,var(--text-muted)_20%,transparent)] inline-flex items-center justify-center shrink-0">
+                <span className="quiz-marker text-[0.75rem] font-bold w-[18px] h-[18px] rounded-full bg-app-muted/20 inline-flex items-center justify-center shrink-0">
                   {answered && mcqCorrect && optCorrect ? '✓' : String.fromCharCode(65 + i)}
                 </span>
                 {text}
@@ -128,7 +128,7 @@ export default function QuizQuestion({ question, number, onCorrect, onAnswer, on
           })}
         </div>
         {answered && !mcqCorrect && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[0.9rem] rounded-[10px] bg-[color-mix(in_srgb,var(--app-bg)_75%,transparent)] backdrop-blur-sm">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-[0.9rem] rounded-[10px] bg-app-bg/75 backdrop-blur-sm">
             <span className="text-[0.88rem] font-semibold text-app-red">Not quite — give it another go.</span>
             <button className="flex items-center gap-[0.4rem] py-[0.4rem] px-4 rounded-[7px] border border-app-border text-app-fg bg-app-surface text-[0.83rem] font-medium cursor-pointer transition-[border-color,background] duration-150 hover:border-app-muted hover:bg-app-bg" onClick={() => setSelected(null)}>
               <RotateCcw size={13} />

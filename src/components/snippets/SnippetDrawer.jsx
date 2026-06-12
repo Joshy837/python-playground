@@ -15,7 +15,7 @@ export default function SnippetDrawer({ examples, onSelect, savedSnippets = [], 
           <BookOpen size={12} />
           <span>Drawer</span>
           {savedSnippets.length > 0 && (
-            <span className="text-[0.65rem] font-semibold bg-[color-mix(in_srgb,var(--accent-try)_20%,transparent)] text-[var(--accent-try)] rounded-full px-[0.35rem] leading-[1.5]">
+            <span className="text-[0.65rem] font-semibold bg-[--accent-try]/20 text-[var(--accent-try)] rounded-full px-[0.35rem] leading-[1.5]">
               {savedSnippets.length}
             </span>
           )}
@@ -53,7 +53,7 @@ export default function SnippetDrawer({ examples, onSelect, savedSnippets = [], 
               <span className="text-[0.7rem] text-app-muted leading-[1.4] line-clamp-2">{description || 'Saved snippet'}</span>
             </button>
             <button
-              className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_8px_8px_0] hover:text-[#f87171] hover:bg-[color-mix(in_srgb,#f87171_12%,transparent)]"
+              className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_8px_8px_0] hover:text-[#f87171] hover:bg-[#f87171]/12"
               title="Delete"
               onClick={e => { e.stopPropagation(); onDeleteSnippet(id) }}
             >

@@ -32,7 +32,7 @@ export default function ChallengeSection({
             {testResults ? `${passed} / ${total} tests passing` : `${total} test${total !== 1 ? 's' : ''}`}
           </span>
           <button
-            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[color-mix(in_srgb,#16a34a_12%,transparent)]"
+            className="inline-flex items-center gap-[0.3rem] border-none bg-transparent text-[#16a34a] font-semibold cursor-pointer transition-[background-color,opacity] duration-150 py-[0.22rem] px-[0.65rem] rounded-[6px] text-[0.75rem] ml-auto disabled:opacity-40 disabled:cursor-not-allowed enabled:hover:bg-[#16a34a]/12"
             disabled={!pyodideReady || isTestRunning}
             onClick={onRun}
             title="Run Tests (Ctrl+Enter)"
@@ -76,7 +76,7 @@ export default function ChallengeSection({
       )}
 
       {allPassed && (
-        <div className="flex items-center justify-between gap-4 mt-6 py-4 px-5 rounded-[10px] bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] border border-[color-mix(in_srgb,var(--status-green)_30%,transparent)]">
+        <div className="flex items-center justify-between gap-4 mt-6 py-4 px-5 rounded-[10px] bg-[color-mix(in_srgb,var(--status-green)_10%,var(--header-bg))] border border-app-green/30">
           <span className="text-sm font-semibold" style={{ color: 'var(--status-green)' }}>
             {isLastStep ? `${nodeTitle} complete!` : 'All tests pass!'}
           </span>

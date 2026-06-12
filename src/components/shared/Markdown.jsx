@@ -44,7 +44,7 @@ const MD_CLS = {
   table:      'w-full border-collapse mb-[0.9rem] text-[0.85rem]',
   th:         'text-left font-semibold py-[0.45rem] px-[0.75rem] border-b-2 border-[var(--header-border)] text-[var(--text-muted)]',
   td:         'py-[0.4rem] px-[0.75rem] border-b border-[var(--header-border)] align-top group-last:border-b-0',
-  inlineCode: 'font-mono text-[0.82em] py-[0.12em] px-[0.4em] rounded-[4px] bg-[color-mix(in_srgb,var(--text-muted)_15%,transparent)]',
+  inlineCode: 'font-mono text-[0.82em] py-[0.12em] px-[0.4em] rounded-[4px] bg-app-muted/15',
   codeBlock:  'bg-[var(--header-bg)] border border-[var(--header-border)] rounded-[8px] py-[0.9rem] px-[1.1rem] font-mono text-[0.82rem] leading-[1.65] overflow-x-auto mt-[0.75rem] mb-4 text-[var(--output-stdout)]',
 }
 

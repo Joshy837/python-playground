@@ -17,7 +17,7 @@ export default function SnippetCard({ label, description, active, onClick, onDel
           <span className={descCls}>{description || 'Saved snippet'}</span>
         </button>
         <button
-          className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_10px_10px_0] hover:text-[#f87171] hover:bg-[color-mix(in_srgb,#f87171_12%,transparent)]"
+          className="flex items-center justify-center px-[0.45rem] bg-transparent border-none border-l border-app-border text-app-muted cursor-pointer transition-[color,background-color] duration-150 rounded-[0_10px_10px_0] hover:text-[#f87171] hover:bg-[#f87171]/12"
           title="Delete"
           onClick={e => { e.stopPropagation(); onDelete() }}
         >
